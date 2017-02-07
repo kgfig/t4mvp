@@ -1,3 +1,10 @@
 <resources>
-    <string name="app_name">HelloWorld</string>
+    <string name="app_name">T4 Test</string>
+    <string-array name="filenames">
+        <item>video1.mp4</item>
+        <item>video2.mp4</item>
+        <item>video3.mp4</item>
+        <item>video4.mp4</item>
+        <item>video5.mp4</item>
+    </string-array>
 </resources>
