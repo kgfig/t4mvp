@@ -10,16 +10,6 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.aclass.edx.helloworld.VideoActivity">
 
-    <TextView
-        android:text="TextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/filename"
-        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-        android:gravity="bottom|center_horizontal"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
-
     <VideoView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -28,5 +18,5 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_marginBottom="30dp"
-        android:foregroundGravity="center_vertical|center_horizontal" />
+        android:foregroundGravity="top|center_horizontal" />
 </RelativeLayout>

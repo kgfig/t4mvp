@@ -2,18 +2,17 @@ package com.aclass.edx.helloworld;
 
 import android.content.Intent;
 import android.media.MediaPlayer;
-import android.os.Handler;
+import android.net.Uri;
 import android.widget.MediaController;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.TextView;
 import android.widget.VideoView;
 
-public class VideoActivity extends AppCompatActivity implements MediaController.MediaPlayerControl {
+public class VideoActivity extends AppCompatActivity {
 
-    private MediaPlayer mediaPlayer;
+    private int position;
+    private VideoView videoView;
     private MediaController mediaController;
-    private Handler handler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,107 +22,69 @@ public class VideoActivity extends AppCompatActivity implements MediaController.
         Intent intent = getIntent();
         String selectedFilename = intent.getStringExtra(MainActivity.SELECTED_FILENAME);
 
-        TextView filename = (TextView) findViewById(R.id.filename);
-        filename.setText(selectedFilename);
-
-        VideoView video = (VideoView) findViewById(R.id.videoView);
-
-        mediaPlayer = MediaPlayer.create(this, R.raw.video1);
+        // Init video player and controls
         mediaController = new MediaController(VideoActivity.this);
-        mediaController.setAnchorView(video);
-        mediaController.setMediaPlayer(this);
-
-        mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+        videoView = (VideoView)findViewById (R.id.videoView);
+        videoView.setMediaController(mediaController);
+        videoView.setVideoURI(getVideoUri(selectedFilename));
+        videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mp) {
-                mediaPlayer.start();
+                videoView.seekTo(position);
 
+                if (position == 0) {
+                    videoView.start();
+                } else {
+                    videoView.resume();
+                }
 
-                handler.post(new Runnable(){
-                    @Override
-                    public void run() {
-                        mediaController.setEnabled(true);
-                        mediaController.show(0);
-                    }
-                });
+                mediaController.setEnabled(true);
+                mediaController.show(0);
             }
         });
-    }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        mediaPlayer.stop();
-        mediaPlayer.release();
+        mediaController.setAnchorView(videoView);
+        mediaController.setMediaPlayer(videoView);
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt("position", mediaPlayer.getCurrentPosition());
-        mediaPlayer.pause();
+        outState.putInt("position", videoView.getCurrentPosition());
+        videoView.pause();
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        int position = savedInstanceState.getInt("position");
-        mediaPlayer.seekTo(position);
+        position = savedInstanceState.getInt("position");
+        videoView.seekTo(position);
     }
 
-    @Override
-    public void start() {
-        mediaPlayer.start();
+    private Uri getVideoUri(String filename) {
+        int videoId;
+        switch(filename) {
+            case "video1.mp4":
+                videoId = R.raw.video1;
+                break;
+            case "video2.mp4":
+                videoId = R.raw.video2;
+                break;
+            case "video3.mp4":
+                videoId = R.raw.video3;
+                break;
+            case "video4.mp4":
+                videoId = R.raw.video4;
+                break;
+            case "video5.mp4":
+                videoId = R.raw.video5;
+                break;
+            default:
+                videoId = R.raw.video5;
+                break;
+        }
+
+        return Uri.parse("android.resource://"+getPackageName() + "/" + videoId);
     }
 
-    @Override
-    public void pause() {
-        mediaPlayer.pause();
-    }
-
-    @Override
-    public int getDuration() {
-        return mediaPlayer.getDuration();
-    }
-
-    @Override
-    public boolean isPlaying() {
-        return mediaPlayer.isPlaying();
-    }
-
-    @Override
-    public boolean canPause() {
-        return true;
-    }
-
-
-    @Override
-    public boolean canSeekForward() {
-        return true;
-    }
-
-    @Override
-    public boolean canSeekBackward() {
-        return true;
-    }
-
-    @Override
-    public void seekTo(int pos) {
-        mediaPlayer.seekTo(pos);
-    }
-
-    @Override
-    public int getBufferPercentage() {
-        return 0;
-    }
-
-    @Override
-    public int getCurrentPosition() {
-        return mediaPlayer.getCurrentPosition();
-    }
-
-    @Override
-    public int getAudioSessionId() {
-        return mediaPlayer.getAudioSessionId();
-    }
 }
