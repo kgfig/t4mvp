@@ -1,6 +1,7 @@
 package com.aclass.edx.helloworld;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.widget.MediaController;
@@ -64,19 +65,19 @@ public class VideoActivity extends AppCompatActivity {
     private Uri getVideoUri(String filename) {
         int videoId;
         switch(filename) {
-            case "video1.mp4":
+            case "Courtesy":
                 videoId = R.raw.video1;
                 break;
-            case "video2.mp4":
+            case "Warmth":
                 videoId = R.raw.video2;
                 break;
-            case "video3.mp4":
+            case "Initiative":
                 videoId = R.raw.video3;
                 break;
-            case "video4.mp4":
+            case "Teamwork":
                 videoId = R.raw.video4;
                 break;
-            case "video5.mp4":
+            case "Knowledge":
                 videoId = R.raw.video5;
                 break;
             default:

@@ -17,7 +17,7 @@ public class MainActivity extends ListActivity {
 
         Resources res = getResources();
         String[] filenames = res.getStringArray(R.array.filenames);
-        ArrayAdapter<String> listAdapter = new ArrayAdapter<String>(this, R.layout.list_item, R.id.list_item_filename, filenames);
+        ArrayAdapter<String> listAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, filenames);
         setListAdapter(listAdapter);
     }
 
