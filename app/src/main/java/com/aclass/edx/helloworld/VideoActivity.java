@@ -9,7 +9,6 @@ import android.widget.TextView;
 public class VideoActivity extends AppCompatActivity {
 
     private MediaPlayer mediaPlayer;
-    private int currentPosition = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,42 +20,39 @@ public class VideoActivity extends AppCompatActivity {
 
         TextView filename = (TextView) findViewById(R.id.filename);
         filename.setText(selectedFilename);
-
-        mediaPlayer = MediaPlayer.create(this, R.raw.closing);
     }
 
     @Override
-    protected void onStart() {
+    protected void onStart(){
         super.onStart();
-
+        mediaPlayer = MediaPlayer.create(this, R.raw.video1);
         mediaPlayer.start();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-
-        mediaPlayer.stop();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mediaPlayer.release();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        mediaPlayer.start();
+    }
 
-        currentPosition = mediaPlayer.getCurrentPosition();
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("position", mediaPlayer.getCurrentPosition());
         mediaPlayer.pause();
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        mediaPlayer.seekTo(currentPosition);
-        mediaPlayer.start();
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        int position = savedInstanceState.getInt("position");
+        mediaPlayer.seekTo(position);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mediaPlayer.stop();
+        mediaPlayer.release();
     }
 }
