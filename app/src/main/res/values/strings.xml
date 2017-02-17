@@ -1,10 +1,14 @@
 <resources>
-    <string name="app_name">T4 Test</string>
+    <string name="app_name">T4 MVP</string>
     <string-array name="filenames">
         <item>Courtesy</item>
         <item>Warmth</item>
         <item>Initiative</item>
         <item>Teamwork</item>
         <item>Knowledge</item>
+    </string-array>
+    <string-array name="menu_items">
+        <item>Video List + Player</item>
+        <item>Audio Recorder and Player</item>
     </string-array>
 </resources>

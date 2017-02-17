@@ -20,8 +20,9 @@ public class VideoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video);
 
+        // Get selected file
         Intent intent = getIntent();
-        String selectedFilename = intent.getStringExtra(MainActivity.SELECTED_FILENAME);
+        String selectedFilename = intent.getStringExtra(VideoListActivity.SELECTED);
 
         // Init video player and controls
         mediaController = new MediaController(VideoActivity.this);

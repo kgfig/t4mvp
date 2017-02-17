@@ -10,22 +10,30 @@ import android.widget.ListView;
 
 public class MainActivity extends ListActivity {
 
-    public final static String SELECTED_FILENAME = "com.aclass.edx.helloworld.SELECTED_FILENAME";
+    private final static String MENU_ITEM_VIDEO = "Video List + Player";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         Resources res = getResources();
-        String[] filenames = res.getStringArray(R.array.filenames);
-        ArrayAdapter<String> listAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, filenames);
+        String[] menuItems = res.getStringArray(R.array.menu_items);
+        ArrayAdapter<String> listAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, menuItems);
         setListAdapter(listAdapter);
     }
 
     @Override
     public void onListItemClick(ListView parent, View v, int position, long id) {
-        String filename = (String) getListAdapter().getItem(position);
-        Intent intent = new Intent(this, VideoActivity.class);
-        intent.putExtra(MainActivity.SELECTED_FILENAME, filename);
-        startActivity(intent);
+        String menuItem = (String) getListAdapter().getItem(position);
+        Intent intent = null;
+
+        if (menuItem.equalsIgnoreCase(MENU_ITEM_VIDEO)) {
+            intent = new Intent(this, VideoListActivity.class);
+        }
+
+        if (intent != null) {
+            startActivity(intent);
+        }
+
     }
 }
