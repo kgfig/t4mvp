@@ -11,6 +11,7 @@ import android.widget.ListView;
 public class MainActivity extends ListActivity {
 
     private final static String MENU_ITEM_VIDEO = "Video List + Player";
+    private final static String MENU_ITEM_AUDIO = "Audio Recorder and Player";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,8 +28,13 @@ public class MainActivity extends ListActivity {
         String menuItem = (String) getListAdapter().getItem(position);
         Intent intent = null;
 
-        if (menuItem.equalsIgnoreCase(MENU_ITEM_VIDEO)) {
-            intent = new Intent(this, VideoListActivity.class);
+        switch(menuItem) {
+            case MENU_ITEM_VIDEO:
+                intent = new Intent(this, VideoListActivity.class);
+                break;
+            case MENU_ITEM_AUDIO:
+                intent = new Intent(this, AudioRecorderActivity.class);
+                break;
         }
 
         if (intent != null) {
