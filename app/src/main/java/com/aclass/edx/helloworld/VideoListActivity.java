@@ -5,10 +5,15 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+
+import com.aclass.edx.helloworld.models.Video;
+
+import java.util.List;
 
 public class VideoListActivity extends ListActivity {
 
@@ -18,10 +23,9 @@ public class VideoListActivity extends ListActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Resources res = getResources();
-        String[] filenames = res.getStringArray(R.array.filenames);
-        ArrayAdapter<String> listAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, filenames);
+        Video.prepopulate();
 
+        ArrayAdapter<String> listAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, Video.getAllTitles());
         setListAdapter(listAdapter);
     }
 
