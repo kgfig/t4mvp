@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.util.Log;
 import android.widget.MediaController;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,13 +23,15 @@ public class VideoActivity extends AppCompatActivity {
 
         // Get selected file
         Intent intent = getIntent();
-        String selectedFilename = intent.getStringExtra(VideoListActivity.SELECTED);
+        String filename = intent.getStringExtra(VideoListActivity.SELECTED);
+        Uri videoUri = Uri.parse("android.resource://"+getPackageName() + "/" + getResources().getIdentifier(filename, "raw", getPackageName()));
+        Log.d("VIDEO ACTIVITY", "intent string extra is " + filename);
 
         // Init video player and controls
         mediaController = new MediaController(VideoActivity.this);
         videoView = (VideoView)findViewById (R.id.videoView);
         videoView.setMediaController(mediaController);
-        videoView.setVideoURI(getVideoUri(selectedFilename));
+        videoView.setVideoURI(videoUri);
         videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mp) {
@@ -61,32 +64,6 @@ public class VideoActivity extends AppCompatActivity {
         super.onRestoreInstanceState(savedInstanceState);
         position = savedInstanceState.getInt("position");
         videoView.seekTo(position);
-    }
-
-    private Uri getVideoUri(String filename) {
-        int videoId;
-        switch(filename) {
-            case "Courtesy":
-                videoId = R.raw.video1;
-                break;
-            case "Warmth":
-                videoId = R.raw.video2;
-                break;
-            case "Initiative":
-                videoId = R.raw.video3;
-                break;
-            case "Teamwork":
-                videoId = R.raw.video4;
-                break;
-            case "Knowledge":
-                videoId = R.raw.video5;
-                break;
-            default:
-                videoId = R.raw.video5;
-                break;
-        }
-
-        return Uri.parse("android.resource://"+getPackageName() + "/" + videoId);
     }
 
 }
