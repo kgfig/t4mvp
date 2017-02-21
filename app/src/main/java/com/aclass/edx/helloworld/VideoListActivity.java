@@ -2,37 +2,72 @@ package com.aclass.edx.helloworld;
 
 import android.app.ListActivity;
 import android.content.Intent;
-import android.content.res.Resources;
-import android.support.v7.app.AppCompatActivity;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
+
+import com.aclass.edx.helloworld.data.MVPDbHelper;
+import com.aclass.edx.helloworld.data.models.Media;
+import com.aclass.edx.helloworld.data.services.MediaService;
+
+import static com.aclass.edx.helloworld.data.tables.MediaContract.MediaEntry;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class VideoListActivity extends ListActivity {
 
     public static final String SELECTED = "VideoListActivity.SELECTED";
 
+    private MVPDbHelper mvpDbHelper;
+    private MediaService mediaService;
+    private MediaListAdapter listAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Resources res = getResources();
-        String[] filenames = res.getStringArray(R.array.filenames);
-        ArrayAdapter<String> listAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, filenames);
+        mvpDbHelper = new MVPDbHelper(this);
+        // TODO: use asynctask when getting database
+        SQLiteDatabase db = mvpDbHelper.getReadableDatabase();
+        mediaService = new MediaService(db);
 
+        initDb();
+
+        List<Media> videos = mediaService.getAllVideoOrderById();
+        listAdapter = new MediaListAdapter(this, android.R.layout.simple_list_item_1, videos);
         setListAdapter(listAdapter);
     }
 
     @Override
-    protected void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
-        //TODO: try using getSelectedItem
-        String selectedFilename = (String) getListAdapter().getItem(position);
+    protected void onDestroy() {
+        mediaService.deleteMedia(null, null);
+        mvpDbHelper.close();
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onListItemClick(ListView listView, View view, int position, long id) {
+        super.onListItemClick(listView, view, position, id);
+
+        Media media = listAdapter.getItem(position);
 
         Intent intent = new Intent(this, VideoActivity.class);
-        intent.putExtra(VideoListActivity.SELECTED, selectedFilename);
+        intent.putExtra(VideoListActivity.SELECTED, media.getFilename());
+
         startActivity(intent);
+    }
+
+    private void initDb() {
+        List<Media> mediaFiles = new ArrayList<Media>(5);
+        mediaFiles.add(new Media("Courtesy", "video1", MediaEntry.TYPE_VIDEO));
+        mediaFiles.add(new Media("Warmth", "video2", MediaEntry.TYPE_VIDEO));
+        mediaFiles.add(new Media("Initiative", "video3", MediaEntry.TYPE_VIDEO));
+
+        for (Media mediaFile : mediaFiles) {
+            mediaService.insertSingleRow(mediaFile.getTitle(), mediaFile.getFilename(), MediaEntry.TYPE_VIDEO);
+        }
     }
 }
