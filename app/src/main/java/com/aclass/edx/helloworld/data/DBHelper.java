@@ -10,9 +10,9 @@ import static com.aclass.edx.helloworld.data.tables.MediaContract.MediaEntry;
  * Created by ertd on 2/21/2017.
  */
 
-public class MVPDbHelper extends SQLiteOpenHelper {
+public class DBHelper extends SQLiteOpenHelper {
 
-    public static final String DATABASE_NAME = "t4_mvp.db";
+    public static final String DATABASE_NAME = "t4.db";
     public static final int DATABASE_VERSION = 1;
 
     private static final String INT_PK_AUTOINCREMENT = " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL";
@@ -28,8 +28,7 @@ public class MVPDbHelper extends SQLiteOpenHelper {
     private static final String SQL_DROP_TABLES =
             "DROP TABLE IF EXISTS " + MediaEntry.TABLE_NAME + ";";
 
-
-    public MVPDbHelper(Context context) {
+    public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 

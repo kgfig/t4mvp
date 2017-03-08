@@ -1,4 +1,4 @@
-package com.aclass.edx.helloworld.data;
+package com.aclass.edx.helloworld.data.tables;
 
 import android.provider.BaseColumns;
 
