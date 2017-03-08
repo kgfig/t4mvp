@@ -1,9 +1,12 @@
 package com.aclass.edx.helloworld.data.services;
 
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 
+import com.aclass.edx.helloworld.data.MediaContentProvider;
 import com.aclass.edx.helloworld.data.exceptions.InconsistentDataException;
 import com.aclass.edx.helloworld.data.models.Media;
 import com.aclass.edx.helloworld.data.tables.MediaContract;
@@ -18,20 +21,19 @@ import static com.aclass.edx.helloworld.data.tables.MediaContract.MediaEntry;
  */
 
 public class MediaService {
-    private SQLiteDatabase db;
+    private ContentResolver contentResolver;
 
-    public MediaService(SQLiteDatabase db) {
-        this.db = db;
+    public MediaService(ContentResolver db) {
+        this.contentResolver = db;
     }
 
-    public long insertSingleRow(String title, String filename, int type) {
-        if (db.isReadOnly()) return -1;
+    public Uri insertSingleRow(String title, String filename, int type) {
         ContentValues values = new ContentValues();
         values.put(MediaEntry.COLUMN_NAME_TITLE, title);
         values.put(MediaEntry.COLUMN_NAME_FILENAME, filename);
         values.put(MediaEntry.COLUMN_NAME_TYPE, type);
 
-        return db.insert(MediaEntry.TABLE_NAME, null, values);
+        return contentResolver.insert(MediaContentProvider.CONTENT_URI, values);
     }
 
     private String columnsToSelection(String[] columns) {
@@ -51,11 +53,9 @@ public class MediaService {
 
     public List<String> getAllMediaTitles() {
         List<String> titles = new ArrayList<String>();
-        Cursor cursor = db.query(
-                MediaEntry.TABLE_NAME,
+        Cursor cursor = contentResolver.query(
+                MediaContentProvider.CONTENT_URI,
                 new String[]{MediaEntry.COLUMN_NAME_TITLE},
-                null,
-                null,
                 null,
                 null,
                 MediaEntry.COLUMN_NAME_TITLE);
@@ -115,13 +115,11 @@ public class MediaService {
         List<Media> mediaFiles = new ArrayList<Media>();
         String selection = columnsToSelection(selectionColumns);
 
-        Cursor cursor = db.query(
-                MediaEntry.TABLE_NAME,
+        Cursor cursor = contentResolver.query(
+                MediaContentProvider.CONTENT_URI,
                 projection,
                 selection,
                 selectionArgs,
-                null,
-                null,
                 sortOrder);
 
         while (cursor.moveToNext()) {
@@ -138,8 +136,7 @@ public class MediaService {
     }
 
     public void deleteMedia(String[] selectionColumns, String[] selectionArgs) {
-        String selection = columnsToSelection(selectionColumns);
-        db.delete(MediaEntry.TABLE_NAME, selection, selectionArgs);
+        contentResolver.delete(MediaContentProvider.CONTENT_URI, null, null);
     }
 }
 

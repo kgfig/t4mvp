@@ -4,11 +4,10 @@ import android.app.ListActivity;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 
-import com.aclass.edx.helloworld.data.MVPDbHelper;
+import com.aclass.edx.helloworld.data.DBHelper;
 import com.aclass.edx.helloworld.data.models.Media;
 import com.aclass.edx.helloworld.data.services.MediaService;
 
@@ -21,7 +20,6 @@ public class VideoListActivity extends ListActivity {
 
     public static final String SELECTED = "VideoListActivity.SELECTED";
 
-    private MVPDbHelper mvpDbHelper;
     private MediaService mediaService;
     private MediaListAdapter listAdapter;
 
@@ -29,10 +27,8 @@ public class VideoListActivity extends ListActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mvpDbHelper = new MVPDbHelper(this);
         // TODO: use asynctask when getting database
-        SQLiteDatabase db = mvpDbHelper.getReadableDatabase();
-        mediaService = new MediaService(db);
+        mediaService = new MediaService(this.getContentResolver());
 
         initDb();
 
@@ -44,7 +40,6 @@ public class VideoListActivity extends ListActivity {
     @Override
     protected void onDestroy() {
         mediaService.deleteMedia(null, null);
-        mvpDbHelper.close();
         super.onDestroy();
     }
 

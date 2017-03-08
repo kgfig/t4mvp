@@ -28,6 +28,13 @@
             android:configChanges="orientation" />
         <activity android:name=".VideoListActivity" />
         <activity android:name=".AudioRecorderActivity"></activity>
+
+        <provider
+            android:authorities="com.aclass.edx.helloworld.data.provider"
+            android:name=".data.MediaContentProvider">
+        </provider>
+
     </application>
+
 
 </manifest>
