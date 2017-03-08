@@ -2,33 +2,25 @@ package com.aclass.edx.helloworld;
 
 import android.app.ListActivity;
 import android.app.LoaderManager;
-import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 
-import com.aclass.edx.helloworld.data.DBHelper;
 import com.aclass.edx.helloworld.data.MediaContentProvider;
-import com.aclass.edx.helloworld.data.models.Media;
-import com.aclass.edx.helloworld.data.services.MediaService;
 
 import static com.aclass.edx.helloworld.data.tables.MediaContract.MediaEntry;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class VideoListActivity extends ListActivity implements LoaderManager.LoaderCallbacks<Cursor>{
 
     private static final int VIDEO_LIST_LOADER = 0;
     public static final String SELECTED = "VideoListActivity.SELECTED";
 
-    private SimpleCursorAdapter cursorAdapter;
+    private MediaCursorAdapter cursorAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,16 +28,14 @@ public class VideoListActivity extends ListActivity implements LoaderManager.Loa
 
         initDb();
 
-        String[] projection = new String[] { MediaEntry.COLUMN_NAME_TITLE};
-        int[] label = new int[] { android.R.id.text1 };
         getLoaderManager().initLoader(VIDEO_LIST_LOADER, null, this);
-        cursorAdapter = new SimpleCursorAdapter(this, android.R.layout.simple_list_item_1, null, projection, label, 0);
+        cursorAdapter = new MediaCursorAdapter(this, null);
         setListAdapter(cursorAdapter);
     }
 
     @Override
     protected void onDestroy() {
-        this.getContentResolver().delete(MediaContentProvider.CONTENT_URI, null, null);
+        this.getContentResolver().delete(MediaContentProvider.MEDIA_URI, null, null);
         super.onDestroy();
     }
 
@@ -63,9 +53,19 @@ public class VideoListActivity extends ListActivity implements LoaderManager.Loa
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String[] projection = { MediaEntry._ID, MediaEntry.COLUMN_NAME_TITLE, MediaEntry.COLUMN_NAME_FILENAME };
-        CursorLoader cursorLoader = new CursorLoader(this,
-                MediaContentProvider.CONTENT_URI, projection, null, null, null);
+        String[] projection = {
+                MediaEntry._ID,
+                MediaEntry.COLUMN_NAME_TITLE,
+                MediaEntry.COLUMN_NAME_FILENAME };
+
+        CursorLoader cursorLoader = new CursorLoader(
+                this, // context
+                MediaContentProvider.MEDIA_URI,
+                projection,
+                null, // select columns
+                null, //select args
+                null //sortOrder
+        );
         return cursorLoader;
     }
 
@@ -76,19 +76,22 @@ public class VideoListActivity extends ListActivity implements LoaderManager.Loa
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        // data is not available anymore, delete reference
         cursorAdapter.swapCursor(null);
     }
 
+    // This is a dummy method for pre-populating database.
+    // TODO find out how to do this properly
     private void initDb() {
-        List<Media> mediaFiles = new ArrayList<Media>(5);
-        mediaFiles.add(new Media("Courtesy", "video1", MediaEntry.TYPE_VIDEO));
-        mediaFiles.add(new Media("Warmth", "video2", MediaEntry.TYPE_VIDEO));
-        mediaFiles.add(new Media("Initiative", "video3", MediaEntry.TYPE_VIDEO));
+        String[] titles = new String[]{"Courtesy", "Warmth", "Initiative"};
+        String[] filenames = new String[]{"video1", "video2", "video3"};
 
-        MediaService mediaService = new MediaService(this.getContentResolver());
-        for (Media mediaFile : mediaFiles) {
-            mediaService.insertSingleRow(mediaFile.getTitle(), mediaFile.getFilename(), MediaEntry.TYPE_VIDEO);
+        for (int i = 0; i < titles.length && i < filenames.length ; i++) {
+            ContentValues values = new ContentValues();
+            values.put(MediaEntry.COLUMN_NAME_TITLE, titles[i]);
+            values.put(MediaEntry.COLUMN_NAME_FILENAME, filenames[i]);
+            values.put(MediaEntry.COLUMN_NAME_TYPE, MediaEntry.TYPE_VIDEO);
+            getContentResolver().insert(MediaContentProvider.MEDIA_URI, values);
         }
     }
+
 }

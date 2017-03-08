@@ -13,7 +13,7 @@ import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
-import com.aclass.edx.helloworld.data.models.Media;
+import com.aclass.edx.helloworld.data.exceptions.UnsupportedURIException;
 import com.aclass.edx.helloworld.data.tables.MediaContract;
 
 import static com.aclass.edx.helloworld.data.tables.MediaContract.MediaEntry;
@@ -21,17 +21,24 @@ import static com.aclass.edx.helloworld.data.tables.MediaContract.MediaEntry;
 public class MediaContentProvider extends ContentProvider {
 
     private static final String AUTHORITY = "com.aclass.edx.helloworld.data.provider";
-    public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + MediaContract.BASE_PATH);
+
+    // TODO discuss where to include these constants (see comments in Contract)
+    // Adding these in the Contract to avoid clutter in MediaContentProvider
+    // because there are so many table constants to put in just one class
+    private static final String APP_PACKAGE = "helloworld";
+    private static final String LIST_TYPE_MEDIA = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + APP_PACKAGE + "/" + MediaContract.BASE_PATH;
+    private static final String ITEM_TYPE_MEDIA = ContentResolver.CURSOR_ITEM_BASE_TYPE+ "/" + APP_PACKAGE + "/" + MediaContract.BASE_PATH;
+
+    public static final Uri MEDIA_URI = Uri.parse("content://" + AUTHORITY + "/" + MediaContract.BASE_PATH);
 
     private static final UriMatcher uriMatcher;
-
-    private DBHelper dbHelper;
-
     static {
         uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         uriMatcher.addURI(AUTHORITY, MediaContract.BASE_PATH, MediaContract.LIST_URI_CODE);
         uriMatcher.addURI(AUTHORITY, MediaContract.BASE_PATH + "/#", MediaContract.ID_URI_CODE);
     }
+
+    private DBHelper dbHelper;
 
     @Override
     public boolean onCreate() {
@@ -53,7 +60,7 @@ public class MediaContentProvider extends ContentProvider {
                 queryBuilder.appendWhere(MediaEntry._ID + " = " + uri.getLastPathSegment());
                 break;
             default:
-                throw new IllegalArgumentException("Unknown uri: " + uri);
+                throw new UnsupportedURIException(uri);
         }
 
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -66,7 +73,15 @@ public class MediaContentProvider extends ContentProvider {
     @Nullable
     @Override
     public String getType(Uri uri) {
-        return null;
+        int uriType = uriMatcher.match(uri);
+        switch(uriType) {
+            case MediaContract.LIST_URI_CODE:
+                return LIST_TYPE_MEDIA;
+            case MediaContract.ID_URI_CODE:
+                return ITEM_TYPE_MEDIA;
+            default:
+                throw new UnsupportedURIException(uri);
+        }
     }
 
     @Nullable
@@ -81,7 +96,7 @@ public class MediaContentProvider extends ContentProvider {
                 id = db.insertOrThrow(MediaEntry.TABLE_NAME, null, values);
                 break;
             default:
-                throw new IllegalArgumentException("Unknown URI:" + uri);
+                throw new UnsupportedURIException(uri);
         }
 
         if (id > 0) {
@@ -111,7 +126,7 @@ public class MediaContentProvider extends ContentProvider {
                 }
                 break;
             default:
-                throw new IllegalArgumentException("Unknown uri: " + uri);
+                throw new UnsupportedURIException(uri);
         }
 
         getContext().getContentResolver().notifyChange(uri, null);
