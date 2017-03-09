@@ -13,9 +13,9 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.aclass.edx.helloworld.data.exceptions.UnsupportedURIException;
-import com.aclass.edx.helloworld.data.tables.MediaContract;
+import com.aclass.edx.helloworld.data.contracts.MediaContract;
 
-import static com.aclass.edx.helloworld.data.tables.MediaContract.MediaEntry;
+import static com.aclass.edx.helloworld.data.contracts.MediaContract.MediaEntry;
 
 public class MediaContentProvider extends ContentProvider {
 
@@ -27,11 +27,9 @@ public class MediaContentProvider extends ContentProvider {
         uriMatcher.addURI(MediaContract.AUTHORITY, MediaEntry.TABLE_NAME + "/#", MediaEntry.ITEM);
     }
 
-    private DBHelper dbHelper;
-
     @Override
     public boolean onCreate() {
-        dbHelper = new DBHelper(getContext());
+        DBHelper.getInstance(getContext());
         return true;
     }
 
@@ -52,7 +50,7 @@ public class MediaContentProvider extends ContentProvider {
                 throw new UnsupportedURIException(uri);
         }
 
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        SQLiteDatabase db = DBHelper.getInstance(getContext()).getReadableDatabase();
         Cursor cursor = queryBuilder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
         cursor.setNotificationUri(getContext().getContentResolver(), uri);
 
@@ -76,7 +74,7 @@ public class MediaContentProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(Uri uri, ContentValues values) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        SQLiteDatabase db = DBHelper.getInstance(getContext()).getWritableDatabase();
         int uriType = uriMatcher.match(uri);
         long id = 0;
 
@@ -98,7 +96,7 @@ public class MediaContentProvider extends ContentProvider {
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        SQLiteDatabase db = DBHelper.getInstance(getContext()).getWritableDatabase();
         int uriType = uriMatcher.match(uri);
         int rowsDeleted = 0;
 
@@ -109,7 +107,7 @@ public class MediaContentProvider extends ContentProvider {
             case MediaEntry.ITEM:
                 String id = uri.getLastPathSegment();
                 if (TextUtils.isEmpty(selection)) {
-                    rowsDeleted = db.delete(MediaEntry.TABLE_NAME, MediaEntry._ID + " = " + id, null);
+                    rowsDeleted = db.delete(MediaEntry.TABLE_NAME, MediaEntry._ID + " = ? ", new String[]{id});
                 } else {
                     rowsDeleted = db.delete(MediaEntry.TABLE_NAME, MediaEntry._ID + " = " + id + " and " + selection, selectionArgs);
                 }

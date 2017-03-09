@@ -2,18 +2,20 @@ package com.aclass.edx.helloworld;
 
 import android.app.ListActivity;
 import android.app.LoaderManager;
-import android.content.AsyncQueryHandler;
-import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
 
-import static com.aclass.edx.helloworld.data.tables.MediaContract.MediaEntry;
+import com.aclass.edx.helloworld.data.models.Media;
+import com.aclass.edx.helloworld.data.asynctasks.AsyncInsertMedia;
+
+import java.util.List;
+
+import static com.aclass.edx.helloworld.data.contracts.MediaContract.MediaEntry;
 
 public class VideoListActivity extends ListActivity implements LoaderManager.LoaderCallbacks<Cursor>{
 
@@ -26,9 +28,18 @@ public class VideoListActivity extends ListActivity implements LoaderManager.Loa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        initDb();
+        // TODO: learn and apply best practices in populating db
+        Media courtesy = new Media("Courtesy", "video1", MediaEntry.TYPE_VIDEO);
+        Media warmth = new Media("Warmth", "video2", MediaEntry.TYPE_VIDEO);
+        AsyncInsertMedia asyncInsertMedia = new AsyncInsertMedia(getContentResolver()){
+            @Override
+            protected void onPostExecute(List list) {
+                // Load data from db and init list only after insert queries are done
+                initLoaderAndAdapter();
+            }
+        };
 
-        initLoaderAndAdapter();
+        asyncInsertMedia.execute(courtesy, warmth);
     }
 
     @Override
@@ -81,33 +92,6 @@ public class VideoListActivity extends ListActivity implements LoaderManager.Loa
         getLoaderManager().initLoader(VIDEO_LIST_LOADER, null, VideoListActivity.this);
         cursorAdapter = new MediaCursorAdapter(VideoListActivity.this, null);
         setListAdapter(cursorAdapter);
-    }
-
-    private void asyncInsert() {
-        AsyncQueryHandler queryHandler = new AsyncQueryHandler(getContentResolver()) {
-            @Override
-            protected void onInsertComplete(int token, Object cookie, Uri uri) {
-                super.onInsertComplete(token, cookie, uri);
-                initLoaderAndAdapter();
-            }
-        };
-
-
-    }
-
-    // This is a dummy method for pre-populating database.
-    // TODO find out how to do this properly
-    private void initDb() {
-        String[] titles = new String[]{"Courtesy", "Warmth", "Initiative"};
-        String[] filenames = new String[]{"video1", "video2", "video3"};
-
-        for (int i = 0; i < titles.length && i < filenames.length ; i++) {
-            ContentValues values = new ContentValues();
-            values.put(MediaEntry.COLUMN_NAME_TITLE, titles[i]);
-            values.put(MediaEntry.COLUMN_NAME_FILENAME, filenames[i]);
-            values.put(MediaEntry.COLUMN_NAME_TYPE, MediaEntry.TYPE_VIDEO);
-            getContentResolver().insert(MediaEntry.CONTENT_URI, values);
-        }
     }
 
 }

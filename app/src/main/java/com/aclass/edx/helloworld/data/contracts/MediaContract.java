@@ -1,4 +1,4 @@
-package com.aclass.edx.helloworld.data.tables;
+package com.aclass.edx.helloworld.data.contracts;
 
 import android.content.ContentResolver;
 import android.net.Uri;

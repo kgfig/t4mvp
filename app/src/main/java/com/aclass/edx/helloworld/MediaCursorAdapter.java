@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
 
-import static com.aclass.edx.helloworld.data.tables.MediaContract.MediaEntry;
+import static com.aclass.edx.helloworld.data.contracts.MediaContract.MediaEntry;
 
 /**
  * Created by ertd on 3/8/2017.

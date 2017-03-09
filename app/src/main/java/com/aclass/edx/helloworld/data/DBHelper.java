@@ -4,7 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import static com.aclass.edx.helloworld.data.tables.MediaContract.MediaEntry;
+import static com.aclass.edx.helloworld.data.contracts.MediaContract.MediaEntry;
 
 /**
  * Created by ertd on 2/21/2017.
@@ -28,8 +28,18 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String SQL_DROP_TABLES =
             "DROP TABLE IF EXISTS " + MediaEntry.TABLE_NAME + ";";
 
-    public DBHelper(Context context) {
+    private static DBHelper instance;
+
+    private DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    }
+
+    public static DBHelper getInstance(Context context) {
+        if (instance == null) {
+            instance = new DBHelper(context);
+        }
+
+        return instance;
     }
 
     @Override
