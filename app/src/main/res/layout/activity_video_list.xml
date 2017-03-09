@@ -4,17 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/video_title"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/video_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:minHeight="?android:attr/listPreferredItemHeightSmall"
-        android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
-        android:paddingStart="?android:attr/listPreferredItemPaddingStart"
-        android:paddingLeft="?android:attr/listPreferredItemPaddingLeft"
-        android:paddingRight="?android:attr/listPreferredItemPaddingRight"
-        android:textAppearance="?android:attr/textAppearanceListItemSmall"
-        android:text="Video Title" />
+        android:layout_height="match_parent">
+
+    </android.support.v7.widget.RecyclerView>
 
 </LinearLayout>

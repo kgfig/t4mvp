@@ -29,7 +29,7 @@ public abstract class AsyncInsertMedia extends AsyncTask<Media, Object, List> {
         for (Media param : params) {
             Uri resultUri = contentResolver.insert(
                     MediaContract.MediaEntry.CONTENT_URI,
-                    param.toContenValues()
+                    param.toContentValues()
             );
 
             uris.add(resultUri);
