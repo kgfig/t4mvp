@@ -2,16 +2,16 @@ package com.aclass.edx.helloworld;
 
 import android.app.ListActivity;
 import android.app.LoaderManager;
+import android.content.AsyncQueryHandler;
 import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
-
-import com.aclass.edx.helloworld.data.MediaContentProvider;
 
 import static com.aclass.edx.helloworld.data.tables.MediaContract.MediaEntry;
 
@@ -28,14 +28,12 @@ public class VideoListActivity extends ListActivity implements LoaderManager.Loa
 
         initDb();
 
-        getLoaderManager().initLoader(VIDEO_LIST_LOADER, null, this);
-        cursorAdapter = new MediaCursorAdapter(this, null);
-        setListAdapter(cursorAdapter);
+        initLoaderAndAdapter();
     }
 
     @Override
     protected void onDestroy() {
-        this.getContentResolver().delete(MediaContentProvider.MEDIA_URI, null, null);
+        this.getContentResolver().delete(MediaEntry.CONTENT_URI, null, null);
         super.onDestroy();
     }
 
@@ -60,7 +58,7 @@ public class VideoListActivity extends ListActivity implements LoaderManager.Loa
 
         CursorLoader cursorLoader = new CursorLoader(
                 this, // context
-                MediaContentProvider.MEDIA_URI,
+                MediaEntry.CONTENT_URI,
                 projection,
                 null, // select columns
                 null, //select args
@@ -79,6 +77,24 @@ public class VideoListActivity extends ListActivity implements LoaderManager.Loa
         cursorAdapter.swapCursor(null);
     }
 
+    private void initLoaderAndAdapter() {
+        getLoaderManager().initLoader(VIDEO_LIST_LOADER, null, VideoListActivity.this);
+        cursorAdapter = new MediaCursorAdapter(VideoListActivity.this, null);
+        setListAdapter(cursorAdapter);
+    }
+
+    private void asyncInsert() {
+        AsyncQueryHandler queryHandler = new AsyncQueryHandler(getContentResolver()) {
+            @Override
+            protected void onInsertComplete(int token, Object cookie, Uri uri) {
+                super.onInsertComplete(token, cookie, uri);
+                initLoaderAndAdapter();
+            }
+        };
+
+
+    }
+
     // This is a dummy method for pre-populating database.
     // TODO find out how to do this properly
     private void initDb() {
@@ -90,7 +106,7 @@ public class VideoListActivity extends ListActivity implements LoaderManager.Loa
             values.put(MediaEntry.COLUMN_NAME_TITLE, titles[i]);
             values.put(MediaEntry.COLUMN_NAME_FILENAME, filenames[i]);
             values.put(MediaEntry.COLUMN_NAME_TYPE, MediaEntry.TYPE_VIDEO);
-            getContentResolver().insert(MediaContentProvider.MEDIA_URI, values);
+            getContentResolver().insert(MediaEntry.CONTENT_URI, values);
         }
     }
 

@@ -1,7 +1,6 @@
 package com.aclass.edx.helloworld.data;
 
 import android.content.ContentProvider;
-import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
@@ -20,22 +19,12 @@ import static com.aclass.edx.helloworld.data.tables.MediaContract.MediaEntry;
 
 public class MediaContentProvider extends ContentProvider {
 
-    private static final String AUTHORITY = "com.aclass.edx.helloworld.data.provider";
-
-    // TODO discuss where to include these constants (see comments in Contract)
-    // Adding these in the Contract to avoid clutter in MediaContentProvider
-    // because there are so many table constants to put in just one class
-    private static final String APP_PACKAGE = "helloworld";
-    private static final String LIST_TYPE_MEDIA = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + APP_PACKAGE + "/" + MediaContract.BASE_PATH;
-    private static final String ITEM_TYPE_MEDIA = ContentResolver.CURSOR_ITEM_BASE_TYPE+ "/" + APP_PACKAGE + "/" + MediaContract.BASE_PATH;
-
-    public static final Uri MEDIA_URI = Uri.parse("content://" + AUTHORITY + "/" + MediaContract.BASE_PATH);
-
     private static final UriMatcher uriMatcher;
+
     static {
         uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        uriMatcher.addURI(AUTHORITY, MediaContract.BASE_PATH, MediaContract.LIST_URI_CODE);
-        uriMatcher.addURI(AUTHORITY, MediaContract.BASE_PATH + "/#", MediaContract.ID_URI_CODE);
+        uriMatcher.addURI(MediaContract.AUTHORITY, MediaEntry.TABLE_NAME, MediaEntry.LIST);
+        uriMatcher.addURI(MediaContract.AUTHORITY, MediaEntry.TABLE_NAME + "/#", MediaEntry.ITEM);
     }
 
     private DBHelper dbHelper;
@@ -54,9 +43,9 @@ public class MediaContentProvider extends ContentProvider {
 
         int uriType = uriMatcher.match(uri);
         switch(uriType) {
-            case MediaContract.LIST_URI_CODE:
+            case MediaEntry.LIST:
                 break;
-            case MediaContract.ID_URI_CODE:
+            case MediaEntry.ITEM:
                 queryBuilder.appendWhere(MediaEntry._ID + " = " + uri.getLastPathSegment());
                 break;
             default:
@@ -75,10 +64,10 @@ public class MediaContentProvider extends ContentProvider {
     public String getType(Uri uri) {
         int uriType = uriMatcher.match(uri);
         switch(uriType) {
-            case MediaContract.LIST_URI_CODE:
-                return LIST_TYPE_MEDIA;
-            case MediaContract.ID_URI_CODE:
-                return ITEM_TYPE_MEDIA;
+            case MediaEntry.LIST:
+                return MediaEntry.CONTENT_TYPE;
+            case MediaEntry.ITEM:
+                return MediaEntry.CONTENT_ITEM_TYPE;
             default:
                 throw new UnsupportedURIException(uri);
         }
@@ -92,7 +81,7 @@ public class MediaContentProvider extends ContentProvider {
         long id = 0;
 
         switch(uriType) {
-            case MediaContract.LIST_URI_CODE:
+            case MediaEntry.LIST:
                 id = db.insertOrThrow(MediaEntry.TABLE_NAME, null, values);
                 break;
             default:
@@ -114,10 +103,10 @@ public class MediaContentProvider extends ContentProvider {
         int rowsDeleted = 0;
 
         switch(uriType) {
-            case MediaContract.LIST_URI_CODE:
+            case MediaEntry.LIST:
                 rowsDeleted = db.delete(MediaEntry.TABLE_NAME, selection, selectionArgs);
                 break;
-            case MediaContract.ID_URI_CODE:
+            case MediaEntry.ITEM:
                 String id = uri.getLastPathSegment();
                 if (TextUtils.isEmpty(selection)) {
                     rowsDeleted = db.delete(MediaEntry.TABLE_NAME, MediaEntry._ID + " = " + id, null);
