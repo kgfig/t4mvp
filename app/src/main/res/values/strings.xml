@@ -12,4 +12,6 @@
         <item>Audio Recorder and Player</item>
         <item>Dashboard</item>
     </string-array>
+    <string name="profile">Profile</string>
+    <string name="practice">Practice</string>
 </resources>
