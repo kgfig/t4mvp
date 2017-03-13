@@ -23,6 +23,10 @@ public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHold
 
     private DataSetObserver mDataSetObserver;
 
+    public interface ListItemClickListener {
+        public void onListItemClick(int clickedItemPosition);
+    }
+
     public CursorRecyclerViewAdapter(Context context, Cursor cursor) {
         mContext = context;
         mCursor = cursor;
