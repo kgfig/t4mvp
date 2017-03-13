@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.DividerItemDecoration;
 import android.view.View;
 import android.widget.ListView;
 
@@ -47,9 +48,12 @@ public class VideoListActivity extends AppCompatActivity implements LoaderManage
         asyncInsertMedia.execute(courtesy, warmth);
 
         // Assemble RecyclerView
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        DividerItemDecoration divider = new DividerItemDecoration(this, layoutManager.getOrientation());
+
         videoList = (RecyclerView) findViewById(R.id.video_list);
         videoList.setLayoutManager(layoutManager);
+        videoList.addItemDecoration(divider);
     }
 
     @Override

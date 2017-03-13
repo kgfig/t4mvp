@@ -10,11 +10,11 @@
 
     <application
         android:allowBackup="true"
+        android:debuggable="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:debuggable="true"
         tools:ignore="HardcodedDebugMode">
         <activity android:name=".MainActivity">
             <intent-filter>
@@ -27,14 +27,13 @@
             android:name=".VideoActivity"
             android:configChanges="orientation" />
         <activity android:name=".VideoListActivity" />
-        <activity android:name=".AudioRecorderActivity"></activity>
+        <activity android:name=".AudioRecorderActivity" />
 
         <provider
-            android:authorities="com.aclass.edx.helloworld.data.provider"
-            android:name=".data.MediaContentProvider">
-        </provider>
+            android:name=".data.MediaContentProvider"
+            android:authorities="com.aclass.edx.helloworld.data.provider"></provider>
 
+        <activity android:name=".DashboardActivity"></activity>
     </application>
-
 
 </manifest>
