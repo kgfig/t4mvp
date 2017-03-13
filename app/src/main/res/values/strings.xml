@@ -10,5 +10,6 @@
     <string-array name="menu_items">
         <item>Video List + Player</item>
         <item>Audio Recorder and Player</item>
+        <item>Dashboard</item>
     </string-array>
 </resources>

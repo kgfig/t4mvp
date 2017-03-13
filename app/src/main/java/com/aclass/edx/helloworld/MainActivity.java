@@ -12,6 +12,8 @@ public class MainActivity extends ListActivity {
 
     private final static String MENU_ITEM_VIDEO = "Video List + Player";
     private final static String MENU_ITEM_AUDIO = "Audio Recorder and Player";
+    private final static String MENU_ITEM_DASHBOARD = "Dashboard";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +36,9 @@ public class MainActivity extends ListActivity {
                 break;
             case MENU_ITEM_AUDIO:
                 intent = new Intent(this, AudioRecorderActivity.class);
+                break;
+            case MENU_ITEM_DASHBOARD:
+                intent = new Intent(this, DashboardActivity.class);
                 break;
         }
 
