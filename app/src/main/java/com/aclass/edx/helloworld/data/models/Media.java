@@ -35,28 +35,28 @@ public class Media {
         this.id = id;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setFilename(String filename) {
-        this.filename = filename;
-    }
-
-    public void setType(int type) {
-        this.type = type;
-    }
-
     public long getId() {
         return id;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getTitle() {
         return title;
     }
 
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
+
     public String getFilename() {
         return filename;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 
     public int getType() {

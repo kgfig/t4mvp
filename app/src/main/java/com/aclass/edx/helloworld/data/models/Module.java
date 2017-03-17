@@ -1,5 +1,6 @@
 package com.aclass.edx.helloworld.data.models;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -77,5 +78,11 @@ public class Module implements Parcelable {
         module.setTitle(cursor.getString(cursor.getColumnIndex(ModuleEntry.COLUMN_NAME_TITLE)));
 
         return module;
+    }
+
+    public ContentValues toContentValues() {
+        ContentValues values = new ContentValues();
+        values.put(ModuleEntry.COLUMN_NAME_TITLE, title);
+        return values;
     }
 }

@@ -28,12 +28,10 @@
             android:configChanges="orientation" />
         <activity android:name=".VideoListActivity" />
         <activity android:name=".AudioRecorderActivity" />
-
+        <activity android:name=".DashboardActivity" />
         <provider
             android:name=".data.MediaContentProvider"
             android:authorities="com.aclass.edx.helloworld.data.provider"></provider>
-
-        <activity android:name=".DashboardActivity"></activity>
     </application>
 
 </manifest>

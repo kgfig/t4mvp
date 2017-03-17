@@ -24,16 +24,11 @@ public class MediaRecyclerAdapter extends CursorRecyclerViewAdapter<MediaRecycle
         this.clickListener = clickListener;
     }
 
-    public interface ListItemClickListener {
-        void onListItemClick(int clickedItemIndex);
-    }
-
     @Override
     public MediaTitleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
-        View view = LayoutInflater.from(context).inflate(R.layout.video_list_item, parent, false);
-        MediaTitleViewHolder holder = new MediaTitleViewHolder(view);
-        return holder;
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        View view = inflater.inflate(R.layout.video_list_item, parent, false);
+        return new MediaTitleViewHolder(view);
     }
 
     @Override
@@ -53,8 +48,7 @@ public class MediaRecyclerAdapter extends CursorRecyclerViewAdapter<MediaRecycle
 
         @Override
         public void onClick(View v) {
-            int position = getAdapterPosition();
-            clickListener.onListItemClick(position);
+            clickListener.onListItemClick(getAdapterPosition());
         }
 
         void bind(Media newMedia) {

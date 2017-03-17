@@ -11,6 +11,7 @@ public abstract class ClickableViewHolder<D> extends RecyclerView.ViewHolder imp
 
     public ClickableViewHolder(View itemView) {
         super(itemView);
+        itemView.setOnClickListener(this);
     }
 
     public abstract void onClick(View view);
