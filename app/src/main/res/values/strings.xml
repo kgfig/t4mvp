@@ -21,5 +21,6 @@
     <string name="all_prefs_file">com.aclass.edx.helloworld.app.preferences</string>
     <string name="prefs_nickname">Prefs:Nickname</string>
     <string name="prefs_skip_nickname">Prefs:Skip Nickname</string>
-    <string name="all_hello">Hello</string>
+    <string name="all_hello">Hello!</string>
+    <string name="all_hello_format">Hello %s,</string>
 </resources>

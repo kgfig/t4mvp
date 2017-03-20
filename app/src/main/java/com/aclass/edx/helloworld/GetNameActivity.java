@@ -1,8 +1,6 @@
 package com.aclass.edx.helloworld;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -10,7 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.aclass.edx.helloworld.utils.AppUtils;
+import com.aclass.edx.helloworld.utils.PrefUtils;
 
 public class GetNameActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -45,11 +43,7 @@ public class GetNameActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void saveChoiceToSkipAndProceed() {
-        SharedPreferences sharedPrefs = getSharedPreferences(getString(R.string.all_prefs_file), Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPrefs.edit();
-        editor.putBoolean(getString(R.string.prefs_skip_nickname), true);
-        editor.commit();
-
+        PrefUtils.saveBoolean(this, R.string.prefs_skip_nickname, true);
         goToDashboardActivity();
     }
 
@@ -57,12 +51,8 @@ public class GetNameActivity extends AppCompatActivity implements View.OnClickLi
         String nickname = nicknameField.getText().toString();
 
         if (!TextUtils.isEmpty(nickname)) {
-            SharedPreferences sharedPrefs = getSharedPreferences(getString(R.string.all_prefs_file), Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPrefs.edit();
-            editor.putString(getString(R.string.prefs_nickname), nickname);
-            editor.commit();
+            PrefUtils.saveString(this, R.string.prefs_nickname, nickname);
             //prompt that it was saved then go to Activity
-
             goToDashboardActivity();
         }
     }

@@ -1,9 +1,7 @@
 package com.aclass.edx.helloworld;
 
-import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.app.LoaderManager;
 import android.content.Loader;
@@ -13,16 +11,16 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import static com.aclass.edx.helloworld.data.contracts.MediaContract.ModuleEntry;
 
 import com.aclass.edx.helloworld.data.asynctasks.AsyncInsertModule;
 import com.aclass.edx.helloworld.data.models.Module;
-import com.aclass.edx.helloworld.utils.AppUtils;
+import com.aclass.edx.helloworld.utils.PrefUtils;
 import com.aclass.edx.helloworld.viewgroup.utils.CursorRecyclerViewAdapter;
 import com.aclass.edx.helloworld.viewgroup.utils.ModuleRecyclerAdapter;
 
@@ -37,14 +35,26 @@ public class DashboardActivity extends AppCompatActivity implements LoaderManage
 
     private RecyclerView moduleList;
     private ModuleRecyclerAdapter adapter;
+    private TextView greetUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 
-        if (AppUtils.resumeContext(this)) {
-            initDashboard();
+        if (PrefUtils.skippedOrSavedNickname(this)) {
+            String greeting;
+
+            if (PrefUtils.skippedNickname(this)) {
+                greeting = getString(R.string.all_hello);
+            } else {
+                greeting = String.format(getString(R.string.all_hello_format), PrefUtils.getNickname(this));
+            }
+
+            initViews(greeting);
+        } else {
+            Intent intent = new Intent(this, GetNameActivity.class);
+            startActivity(intent);
         }
     }
 
@@ -115,7 +125,7 @@ public class DashboardActivity extends AppCompatActivity implements LoaderManage
         adapter.changeCursor(null);
     }
 
-    private void initDashboard() {
+    private void initViews(String greeting) {
         AsyncInsertModule asyncInsertTask = new AsyncInsertModule(getContentResolver()) {
             @Override
             protected void onPostExecute(List list) {
@@ -126,6 +136,9 @@ public class DashboardActivity extends AppCompatActivity implements LoaderManage
 
         asyncInsertTask.execute(new Module("Interview"), new Module("Meetings"), new Module("Business Writing"));
 
+        greetUser = (TextView) findViewById(R.id.dashboard_greet_user);
+        greetUser.setText(greeting);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.dashboard_toolbar);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         DividerItemDecoration divider = new DividerItemDecoration(this, layoutManager.getOrientation());
@@ -135,6 +148,7 @@ public class DashboardActivity extends AppCompatActivity implements LoaderManage
         moduleList.setLayoutManager(layoutManager);
         moduleList.addItemDecoration(divider);
         moduleList.setAdapter(adapter);
+
 
         setSupportActionBar(toolbar);
         getLoaderManager().initLoader(FETCH_MODULES_LOADER, null, this);
