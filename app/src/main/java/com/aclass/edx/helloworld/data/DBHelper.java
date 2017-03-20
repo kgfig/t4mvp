@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.aclass.edx.helloworld.data.models.DBQueries;
+import com.aclass.edx.helloworld.utils.TempUtils;
 
 /**
  * Created by ertd on 2/21/2017.
@@ -36,6 +37,10 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(DBQueries.CREATE_TABLE_MEDIA);
         db.execSQL(DBQueries.CREATE_TABLE_MODULE);
+        db.execSQL(DBQueries.CREATE_TABLE_CONTENT);
+        TempUtils.insertMediaTestData(db);
+        TempUtils.insertModuleTestData(db);
+        TempUtils.insertContentTestData(db);
     }
 
     @Override

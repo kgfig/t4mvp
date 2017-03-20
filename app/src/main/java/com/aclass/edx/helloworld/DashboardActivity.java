@@ -18,19 +18,14 @@ import android.widget.Toast;
 
 import static com.aclass.edx.helloworld.data.contracts.MediaContract.ModuleEntry;
 
-import com.aclass.edx.helloworld.data.asynctasks.AsyncInsertModule;
 import com.aclass.edx.helloworld.data.models.Module;
 import com.aclass.edx.helloworld.utils.PrefUtils;
 import com.aclass.edx.helloworld.viewgroup.utils.CursorRecyclerViewAdapter;
 import com.aclass.edx.helloworld.viewgroup.utils.ModuleRecyclerAdapter;
 
-import java.util.List;
-
 public class DashboardActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, CursorRecyclerViewAdapter.ListItemClickListener {
 
     private static final String TAG = DashboardActivity.class.getSimpleName();
-
-    private static final String SELECTED_MODULE = "DashboardActivity.SELECTED_MODULE";
     private static final int FETCH_MODULES_LOADER = 1;
 
     private RecyclerView moduleList;
@@ -56,12 +51,6 @@ public class DashboardActivity extends AppCompatActivity implements LoaderManage
             Intent intent = new Intent(this, GetNameActivity.class);
             startActivity(intent);
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-        getContentResolver().delete(ModuleEntry.CONTENT_URI, null, null);
-        super.onDestroy();
     }
 
     @Override
@@ -92,7 +81,7 @@ public class DashboardActivity extends AppCompatActivity implements LoaderManage
         Module module = Module.from(cursor);
 
         Intent intent = new Intent(this, VideoListActivity.class);
-        intent.putExtra(SELECTED_MODULE, module);
+        intent.putExtra(getString(R.string.intent_extra_dashboard_selected_module), module);
         startActivity(intent);
     }
 
@@ -126,15 +115,7 @@ public class DashboardActivity extends AppCompatActivity implements LoaderManage
     }
 
     private void initViews(String greeting) {
-        AsyncInsertModule asyncInsertTask = new AsyncInsertModule(getContentResolver()) {
-            @Override
-            protected void onPostExecute(List list) {
-                super.onPostExecute(list);
-                getLoaderManager().initLoader(FETCH_MODULES_LOADER, null, DashboardActivity.this);
-            }
-        };
-
-        asyncInsertTask.execute(new Module("Interview"), new Module("Meetings"), new Module("Business Writing"));
+        getLoaderManager().initLoader(FETCH_MODULES_LOADER, null, DashboardActivity.this);
 
         greetUser = (TextView) findViewById(R.id.dashboard_greet_user);
         greetUser.setText(greeting);
@@ -148,7 +129,6 @@ public class DashboardActivity extends AppCompatActivity implements LoaderManage
         moduleList.setLayoutManager(layoutManager);
         moduleList.addItemDecoration(divider);
         moduleList.setAdapter(adapter);
-
 
         setSupportActionBar(toolbar);
         getLoaderManager().initLoader(FETCH_MODULES_LOADER, null, this);

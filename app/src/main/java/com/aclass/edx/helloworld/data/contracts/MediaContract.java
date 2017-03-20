@@ -39,9 +39,8 @@ public final class MediaContract {
 
         // Content URL for this table
         public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME);
-        // MIME type of CONTENT_URI providing a directory of media data
+        // MIME types
         public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + APP_PACKAGE + "." + TABLE_NAME;
-        // MIME type of CONTENT_URI sub-directory of a single media instance
         public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE+ "/" + APP_PACKAGE + "." + TABLE_NAME;
         // URI types
         public static final int LIST = 100;
@@ -54,12 +53,29 @@ public final class MediaContract {
         public static final String COLUMN_NAME_TITLE = "title";
         // Content URL for this table
         public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME);
-        // MIME type of CONTENT_URI providing dir of module data
+        // MIME types
         public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + APP_PACKAGE + "." + TABLE_NAME;
-        // MIME type of CONTENT_URI sub-directory of a single media instance
         public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE+ "/" + APP_PACKAGE + "." + TABLE_NAME;
         // URI types
         public static final int LIST = 200;
         public static final int ITEM = 201;
+    }
+
+    public static class ContentEntry implements BaseColumns {
+        // Schema
+        public static final String TABLE_NAME = "content";
+        public static final String COLUMN_NAME_MODULE_ID = "module_id";
+        public static final String COLUMN_NAME_TYPE = "type";
+        public static final String COLUMN_NAME_CONTENT_ID = "content_id";
+        // Types
+        public static final int TYPE_LESSON_MEDIA = 1;
+        // Content URL for this table
+        public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME);
+        // MIME types
+        public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + APP_PACKAGE + "." + TABLE_NAME;
+        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + APP_PACKAGE + "." + TABLE_NAME;
+        // URI types
+        public static final int LIST = 300;
+        public static final int ITEM = 301;
     }
 }

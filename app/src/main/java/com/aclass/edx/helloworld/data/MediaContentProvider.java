@@ -14,6 +14,8 @@ import android.support.annotation.Nullable;
 import com.aclass.edx.helloworld.data.exceptions.UnsupportedURIException;
 import com.aclass.edx.helloworld.data.contracts.MediaContract;
 
+
+import static com.aclass.edx.helloworld.data.contracts.MediaContract.ContentEntry;
 import static com.aclass.edx.helloworld.data.contracts.MediaContract.MediaEntry;
 import static com.aclass.edx.helloworld.data.contracts.MediaContract.ModuleEntry;
 
@@ -27,6 +29,8 @@ public class MediaContentProvider extends ContentProvider {
         uriMatcher.addURI(MediaContract.AUTHORITY, MediaEntry.TABLE_NAME + "/#", MediaEntry.ITEM);
         uriMatcher.addURI(MediaContract.AUTHORITY, ModuleEntry.TABLE_NAME, ModuleEntry.LIST);
         uriMatcher.addURI(MediaContract.AUTHORITY, ModuleEntry.TABLE_NAME + "/#", ModuleEntry.ITEM);
+        uriMatcher.addURI(MediaContract.AUTHORITY, ContentEntry.TABLE_NAME, ContentEntry.LIST);
+        uriMatcher.addURI(MediaContract.AUTHORITY, ContentEntry.TABLE_NAME + "/#", ContentEntry.ITEM);
     }
 
     @Override
@@ -56,6 +60,13 @@ public class MediaContentProvider extends ContentProvider {
                 queryBuilder.setTables(ModuleEntry.TABLE_NAME);
                 queryBuilder.appendWhere(ModuleEntry._ID + " = " + uri.getLastPathSegment());
                 break;
+            case ContentEntry.LIST:
+                queryBuilder.setTables(ContentEntry.TABLE_NAME);
+                break;
+            case ContentEntry.ITEM:
+                queryBuilder.setTables(ContentEntry.TABLE_NAME);
+                queryBuilder.appendWhere(ContentEntry._ID + " = " + uri.getLastPathSegment());
+                break;
             default:
                 throw new UnsupportedURIException(uri);
         }
@@ -80,6 +91,10 @@ public class MediaContentProvider extends ContentProvider {
                 return ModuleEntry.CONTENT_TYPE;
             case ModuleEntry.ITEM:
                 return ModuleEntry.CONTENT_ITEM_TYPE;
+            case ContentEntry.LIST:
+                return ContentEntry.CONTENT_TYPE;
+            case ContentEntry.ITEM:
+                return ContentEntry.CONTENT_ITEM_TYPE;
             default:
                 throw new UnsupportedURIException(uri);
         }
@@ -98,6 +113,9 @@ public class MediaContentProvider extends ContentProvider {
                 break;
             case ModuleEntry.LIST:
                 id = db.insertOrThrow(ModuleEntry.TABLE_NAME, null, values);
+                break;
+            case ContentEntry.LIST:
+                id = db.insertOrThrow(ContentEntry.TABLE_NAME, null, values);
                 break;
             default:
                 throw new UnsupportedURIException(uri);
@@ -132,6 +150,13 @@ public class MediaContentProvider extends ContentProvider {
             case ModuleEntry.ITEM:
                 id = uri.getLastPathSegment();
                 rowsDeleted = db.delete(ModuleEntry.TABLE_NAME, ModuleEntry._ID + " = ? ", new String[]{id});
+                break;
+            case ContentEntry.LIST:
+                rowsDeleted = db.delete(ContentEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            case ContentEntry.ITEM:
+                id = uri.getLastPathSegment();
+                rowsDeleted = db.delete(ContentEntry.TABLE_NAME, ContentEntry._ID + " = ?", new String[]{id});
                 break;
             default:
                 throw new UnsupportedURIException(uri);

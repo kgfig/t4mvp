@@ -23,4 +23,9 @@
     <string name="prefs_skip_nickname">Prefs:Skip Nickname</string>
     <string name="all_hello">Hello!</string>
     <string name="all_hello_format">Hello %s,</string>
+    <string name="all_meetings">Meetings</string>
+    <string name="all_interviews">Interviews</string>
+    <string name="all_business_correspondence">Business Writing</string>
+    <string name="intent_extra_dashboard_selected_module">selected module</string>
+    <string name="intent_extra_video_list_selected_video">selected video</string>
 </resources>
