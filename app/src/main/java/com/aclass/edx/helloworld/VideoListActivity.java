@@ -1,6 +1,5 @@
 package com.aclass.edx.helloworld;
 
-import android.app.ListActivity;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -15,6 +14,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import com.aclass.edx.helloworld.data.models.Media;
 import com.aclass.edx.helloworld.data.asynctasks.AsyncInsertMedia;
 import com.aclass.edx.helloworld.viewgroup.utils.CursorRecyclerViewAdapter;
+import com.aclass.edx.helloworld.viewgroup.utils.MediaRecyclerAdapter;
 
 import java.util.List;
 

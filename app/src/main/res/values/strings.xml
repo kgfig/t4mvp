@@ -14,4 +14,12 @@
     </string-array>
     <string name="profile">Profile</string>
     <string name="practice">Practice</string>
+    <string name="get_name_question">What do I call you?</string>
+    <string name="all_skip">Skip</string>
+    <string name="all_submit">Submit</string>
+    <string name="all_name_placeholder">Juan</string>
+    <string name="all_prefs_file">com.aclass.edx.helloworld.app.preferences</string>
+    <string name="prefs_nickname">Prefs:Nickname</string>
+    <string name="prefs_skip_nickname">Prefs:Skip Nickname</string>
+    <string name="all_hello">Hello</string>
 </resources>

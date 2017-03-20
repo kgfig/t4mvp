@@ -1,4 +1,4 @@
-package com.aclass.edx.helloworld;
+package com.aclass.edx.helloworld.viewgroup.utils;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -8,8 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.aclass.edx.helloworld.R;
 import com.aclass.edx.helloworld.data.models.Media;
-import com.aclass.edx.helloworld.viewgroup.utils.CursorRecyclerViewAdapter;
 
 /**
  * Created by ertd on 3/9/2017.

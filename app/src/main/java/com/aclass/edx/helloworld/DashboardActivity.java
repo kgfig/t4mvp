@@ -1,20 +1,19 @@
 package com.aclass.edx.helloworld;
 
-import android.content.ContentResolver;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.app.LoaderManager;
 import android.content.Loader;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -22,12 +21,11 @@ import android.widget.Toast;
 import static com.aclass.edx.helloworld.data.contracts.MediaContract.ModuleEntry;
 
 import com.aclass.edx.helloworld.data.asynctasks.AsyncInsertModule;
-import com.aclass.edx.helloworld.data.contracts.MediaContract;
-import com.aclass.edx.helloworld.data.models.Media;
 import com.aclass.edx.helloworld.data.models.Module;
+import com.aclass.edx.helloworld.utils.AppUtils;
 import com.aclass.edx.helloworld.viewgroup.utils.CursorRecyclerViewAdapter;
+import com.aclass.edx.helloworld.viewgroup.utils.ModuleRecyclerAdapter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class DashboardActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, CursorRecyclerViewAdapter.ListItemClickListener {
@@ -45,29 +43,9 @@ public class DashboardActivity extends AppCompatActivity implements LoaderManage
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 
-        AsyncInsertModule asyncInsertTask = new AsyncInsertModule(getContentResolver()) {
-            @Override
-            protected void onPostExecute(List list) {
-                super.onPostExecute(list);
-                getLoaderManager().initLoader(FETCH_MODULES_LOADER, null, DashboardActivity.this);
-            }
-        };
-
-        asyncInsertTask.execute(new Module("Interview"), new Module("Meetings"), new Module("Grammar"));
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.dashboard_toolbar);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        DividerItemDecoration divider = new DividerItemDecoration(this, layoutManager.getOrientation());
-
-        adapter = new ModuleRecyclerAdapter(this, null, this);
-        moduleList = (RecyclerView) findViewById(R.id.module_list);
-
-        moduleList.setLayoutManager(layoutManager);
-        moduleList.addItemDecoration(divider);
-        moduleList.setAdapter(adapter);
-
-        setSupportActionBar(toolbar);
-        getLoaderManager().initLoader(FETCH_MODULES_LOADER, null, this);
+        if (AppUtils.resumeContext(this)) {
+            initDashboard();
+        }
     }
 
     @Override
@@ -137,4 +115,28 @@ public class DashboardActivity extends AppCompatActivity implements LoaderManage
         adapter.changeCursor(null);
     }
 
+    private void initDashboard() {
+        AsyncInsertModule asyncInsertTask = new AsyncInsertModule(getContentResolver()) {
+            @Override
+            protected void onPostExecute(List list) {
+                super.onPostExecute(list);
+                getLoaderManager().initLoader(FETCH_MODULES_LOADER, null, DashboardActivity.this);
+            }
+        };
+
+        asyncInsertTask.execute(new Module("Interview"), new Module("Meetings"), new Module("Business Writing"));
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.dashboard_toolbar);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        DividerItemDecoration divider = new DividerItemDecoration(this, layoutManager.getOrientation());
+
+        adapter = new ModuleRecyclerAdapter(this, null, this);
+        moduleList = (RecyclerView) findViewById(R.id.module_list);
+        moduleList.setLayoutManager(layoutManager);
+        moduleList.addItemDecoration(divider);
+        moduleList.setAdapter(adapter);
+
+        setSupportActionBar(toolbar);
+        getLoaderManager().initLoader(FETCH_MODULES_LOADER, null, this);
+    }
 }

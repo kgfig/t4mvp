@@ -29,9 +29,12 @@
         <activity android:name=".VideoListActivity" />
         <activity android:name=".AudioRecorderActivity" />
         <activity android:name=".DashboardActivity" />
+
         <provider
             android:name=".data.MediaContentProvider"
-            android:authorities="com.aclass.edx.helloworld.data.provider"></provider>
+            android:authorities="com.aclass.edx.helloworld.data.provider" />
+
+        <activity android:name=".GetNameActivity"></activity>
     </application>
 
 </manifest>
