@@ -33,7 +33,7 @@ public class ContentListActivity extends AppCompatActivity implements LoaderMana
         setContentView(R.layout.activity_content_list);
 
         // TODO add test for passing parcel
-        this.module = getIntent().getParcelableExtra(getString(R.string.intent_extra_dashboard_selected_module));
+        this.module = getIntent().getParcelableExtra(getString(R.string.intent_extra_dashboard_selected_module_key));
 
         TextView moduleName = (TextView) findViewById(R.id.content_list_module_name);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);

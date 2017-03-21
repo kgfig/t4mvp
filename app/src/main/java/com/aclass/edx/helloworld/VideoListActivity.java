@@ -44,17 +44,10 @@ public class VideoListActivity extends AppCompatActivity implements LoaderManage
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String[] projection = {
-                MediaEntry._ID,
-                MediaEntry.COLUMN_NAME_TITLE,
-                MediaEntry.COLUMN_NAME_FILENAME,
-                MediaEntry.COLUMN_NAME_TYPE
-        };
-
         CursorLoader cursorLoader = new CursorLoader(
                 this, // context
                 MediaEntry.CONTENT_URI,
-                projection,
+                MediaEntry.ALL_COLUMN_NAMES,
                 null, // select columns
                 null, //select args
                 null //sortOrder

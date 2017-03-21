@@ -25,10 +25,9 @@ public final class MediaContract {
     public static class MediaEntry implements BaseColumns {
         // Schema
         public static final String TABLE_NAME = "media";
-        public static final String COLUMN_NAME_TITLE = "title";
         public static final String COLUMN_NAME_FILENAME = "filename";
         public static final String COLUMN_NAME_TYPE = "type";
-        public static final String[] ALL_COLUMN_NAMES = {MediaEntry._ID, MediaEntry.COLUMN_NAME_TITLE, MediaEntry.COLUMN_NAME_FILENAME, MediaEntry.COLUMN_NAME_TYPE};
+        public static final String[] ALL_COLUMN_NAMES = {MediaEntry._ID, MediaEntry.COLUMN_NAME_FILENAME, MediaEntry.COLUMN_NAME_TYPE};
         // Types of media instances
         public static final int TYPE_AUDIO = 1;
         public static final int TYPE_VIDEO = 2;

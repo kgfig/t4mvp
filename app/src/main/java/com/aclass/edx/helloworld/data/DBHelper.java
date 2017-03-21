@@ -34,7 +34,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
         public static final String CREATE_TABLE_MEDIA = CREATE_TABLE + MediaEntry.TABLE_NAME + " (" +
                 MediaEntry._ID + INT_PK_AUTOINCREMENT + COMMA +
-                MediaEntry.COLUMN_NAME_TITLE + TEXT_NOT_NULL + COMMA +
                 MediaEntry.COLUMN_NAME_FILENAME + TEXT_NOT_NULL + COMMA +
                 MediaEntry.COLUMN_NAME_TYPE + INT_NOT_NULL + ");";
 

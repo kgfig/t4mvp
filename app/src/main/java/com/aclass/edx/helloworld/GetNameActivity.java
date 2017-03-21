@@ -59,6 +59,8 @@ public class GetNameActivity extends AppCompatActivity implements View.OnClickLi
 
     private void goToDashboardActivity() {
         Intent intent = new Intent(this, DashboardActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }
 }

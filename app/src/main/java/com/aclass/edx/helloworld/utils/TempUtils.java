@@ -23,11 +23,11 @@ import com.aclass.edx.helloworld.data.models.Module;
 public class TempUtils {
 
     // Object test data
-    public static Media COURTESY = new Media("Courtesy", "video1", MediaEntry.TYPE_VIDEO);
-    public static Media WARMTH = new Media("Warmth", "video2", MediaEntry.TYPE_VIDEO);
-    public static Media INITIATIVE = new Media("Initiative", "video3", MediaEntry.TYPE_VIDEO);
-    public static Media TEAMWORK = new Media("Teamwork", "video4", MediaEntry.TYPE_VIDEO);
-    public static Media KNOWLEDGE = new Media("Knowledge", "video5", MediaEntry.TYPE_VIDEO);
+    public static Media COURTESY = new Media("video1", MediaEntry.TYPE_VIDEO);
+    public static Media WARMTH = new Media("video2", MediaEntry.TYPE_VIDEO);
+    public static Media INITIATIVE = new Media("video3", MediaEntry.TYPE_VIDEO);
+    public static Media TEAMWORK = new Media("video4", MediaEntry.TYPE_VIDEO);
+    public static Media KNOWLEDGE = new Media("video5", MediaEntry.TYPE_VIDEO);
     public static Module INTERVIEW = new Module("Interview");
     public static Module MEETINGS = new Module("Meetings");
     public static Module BUSINESS_CORRESPONDENCE = new Module("Business Writing");
@@ -59,31 +59,31 @@ public class TempUtils {
         return new Media();
     }
 
-    public static long getMediaId(SQLiteDatabase db, String title) {
-        Cursor cursor = db.query(MediaEntry.TABLE_NAME, new String[]{MediaEntry._ID}, "title = ?", new String[]{title}, null, null, MediaEntry._ID, "1");
+    public static long getMediaId(SQLiteDatabase db, String filename) {
+        Cursor cursor = db.query(MediaEntry.TABLE_NAME, new String[]{MediaEntry._ID}, MediaEntry.COLUMN_NAME_FILENAME + " = ?", new String[]{filename}, null, null, MediaEntry._ID, "1");
         return cursor.moveToNext() ? cursor.getLong(cursor.getColumnIndex(MediaEntry._ID)) : 0;
     }
 
     public static long getModuleId(SQLiteDatabase db, String title) {
-        Cursor cursor = db.query(ModuleEntry.TABLE_NAME, new String[]{ModuleEntry._ID}, "title = ?", new String[]{title}, null, null, MediaEntry._ID, "1");
+        Cursor cursor = db.query(ModuleEntry.TABLE_NAME, new String[]{ModuleEntry._ID}, ModuleEntry.COLUMN_NAME_TITLE + " = ?", new String[]{title}, null, null, ModuleEntry._ID, "1");
         return cursor.moveToNext() ? cursor.getLong(cursor.getColumnIndex(ModuleEntry._ID)) : 0;
     }
 
     public static void insertContentTestData(SQLiteDatabase db) {
-        long courtesyId = getMediaId(db, COURTESY.getTitle());
-        long warmthId = getMediaId(db, WARMTH.getTitle());
-        long initiativeId = getMediaId(db, INITIATIVE.getTitle());
-        long teamworkId = getMediaId(db, TEAMWORK.getTitle());
-        long knowledgeId = getMediaId(db, KNOWLEDGE.getTitle());
+        long courtesyId = getMediaId(db, COURTESY.getFilename());
+        long warmthId = getMediaId(db, WARMTH.getFilename());
+        long initiativeId = getMediaId(db, INITIATIVE.getFilename());
+        long teamworkId = getMediaId(db, TEAMWORK.getFilename());
+        long knowledgeId = getMediaId(db, KNOWLEDGE.getFilename());
         long meetingsId = getModuleId(db, MEETINGS.getTitle());
         long interviewsId = getModuleId(db, INTERVIEW.getTitle());
         long businessId = getModuleId(db, BUSINESS_CORRESPONDENCE.getTitle());
 
-        String courtesyTitle = COURTESY.getTitle();
-        String warmthTitle = WARMTH.getTitle();
-        String initiativeTitle = INITIATIVE.getTitle();
-        String teamworkTitle = TEAMWORK.getTitle();
-        String knowledgeTitle = KNOWLEDGE.getTitle();
+        String courtesyTitle = "Courtesy";
+        String warmthTitle = "Warmth";
+        String initiativeTitle = "Initiative";
+        String teamworkTitle = "Teamwork";
+        String knowledgeTitle = "Knowledge";
 
         Content meetingContent1 = new Content(meetingsId, courtesyTitle, ContentEntry.TYPE_LESSON_MEDIA, courtesyId);
         Content meetingContent2 = new Content(meetingsId, warmthTitle, ContentEntry.TYPE_LESSON_MEDIA, warmthId);

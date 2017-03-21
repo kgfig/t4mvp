@@ -96,8 +96,8 @@ public class Content extends DataModel {
                 ContentEntry.TABLE_NAME,
                 ContentEntry._ID, id,
                 ContentEntry.COLUMN_NAME_MODULE_ID, moduleId,
-                ContentEntry.COLUMN_NAME_TYPE, type,
                 ContentEntry.COLUMN_NAME_TITLE, title,
+                ContentEntry.COLUMN_NAME_TYPE, type,
                 ContentEntry.COLUMN_NAME_CONTENT_ID, contentId);
     }
 
