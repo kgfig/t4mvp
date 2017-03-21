@@ -38,15 +38,7 @@ public class DashboardActivity extends AppCompatActivity implements LoaderManage
         setContentView(R.layout.activity_dashboard);
 
         if (PrefUtils.skippedOrSavedNickname(this)) {
-            String greeting;
-
-            if (PrefUtils.skippedNickname(this)) {
-                greeting = getString(R.string.all_hello);
-            } else {
-                greeting = String.format(getString(R.string.all_hello_format), PrefUtils.getNickname(this));
-            }
-
-            initViews(greeting);
+            initViews();
         } else {
             Intent intent = new Intent(this, GetNameActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -112,12 +104,24 @@ public class DashboardActivity extends AppCompatActivity implements LoaderManage
         adapter.changeCursor(null);
     }
 
-    private void initViews(String greeting) {
+    private String getGreeting() {
+        String greeting;
+
+        if (PrefUtils.skippedNickname(this)) {
+            greeting = getString(R.string.all_hello);
+        } else {
+            greeting = String.format(getString(R.string.all_hello_format), PrefUtils.getNickname(this));
+        }
+
+        return greeting;
+    }
+
+    private void initViews() {
         getLoaderManager().initLoader(FETCH_MODULES_LOADER, null, DashboardActivity.this);
 
         chooseATopic = (TextView) findViewById(R.id.dashboard_choose_a_topic);
         greetUser = (TextView) findViewById(R.id.dashboard_greet_user);
-        greetUser.setText(greeting);
+        greetUser.setText(getGreeting());
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.dashboard_toolbar);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
