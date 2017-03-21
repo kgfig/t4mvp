@@ -5,6 +5,9 @@ import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.aclass.edx.helloworld.R;
+import com.aclass.edx.helloworld.data.contracts.MediaContract;
+
 import static com.aclass.edx.helloworld.data.contracts.MediaContract.ModuleEntry;
 
 /**
@@ -76,6 +79,12 @@ public class Module extends DataModel {
                 ModuleEntry._ID, id,
                 ModuleEntry.COLUMN_NAME_TITLE, title);
     }
+
+    @Override
+    public int getImageId() {
+        return 0;
+    }
+
 
     @Override
     public String getText() {

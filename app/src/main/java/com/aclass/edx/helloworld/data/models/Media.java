@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.aclass.edx.helloworld.R;
 import com.aclass.edx.helloworld.data.contracts.MediaContract;
 
 import static com.aclass.edx.helloworld.data.contracts.MediaContract.MediaEntry;
@@ -104,6 +105,19 @@ public class Media extends DataModel {
     public String getText() {
         return title;
     }
+
+    @Override
+    public int getImageId() {
+        switch(type) {
+            case MediaEntry.TYPE_VIDEO:
+                return R.drawable.ic_account_circle_black_24dp;
+            case MediaEntry.TYPE_AUDIO:
+                return R.drawable.ic_create_black_24dp;
+            default:
+                return 0;
+        }
+    }
+
 
     public void setTitle(String title) {
         this.title = title;

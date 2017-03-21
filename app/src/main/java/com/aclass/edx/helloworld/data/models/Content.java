@@ -5,6 +5,8 @@ import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.aclass.edx.helloworld.R;
+
 import static com.aclass.edx.helloworld.data.contracts.MediaContract.ContentEntry;
 
 /**
@@ -96,10 +98,19 @@ public class Content extends DataModel {
                 ContentEntry.COLUMN_NAME_CONTENT_ID, contentId);
     }
 
-    // TODO Change this
     @Override
     public String getText() {
         return toString();
+    }
+
+    @Override
+    public int getImageId() {
+        switch(type) {
+            case ContentEntry.TYPE_LESSON_MEDIA:
+                return R.drawable.ic_account_circle_black_24dp;
+            default:
+                return 0;
+        }
     }
 
     public int getType() {

@@ -2,11 +2,11 @@ package com.aclass.edx.helloworld.viewgroup.utils;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.aclass.edx.helloworld.R;
 import com.aclass.edx.helloworld.data.models.DataModel;
-import com.aclass.edx.helloworld.data.models.Module;
 
 /**
  * Created by tictocproject on 13/03/2017.
@@ -14,13 +14,16 @@ import com.aclass.edx.helloworld.data.models.Module;
 
 public class ClickableViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-    protected TextView titleTextView;
+    protected ImageView icon;
+    protected TextView text;
     protected CursorRecyclerViewAdapter.ListItemClickListener clickListener;
 
     public ClickableViewHolder(View itemView, CursorRecyclerViewAdapter.ListItemClickListener listener) {
         super(itemView);
-        this.titleTextView = (TextView) itemView.findViewById(R.id.recycler_title_text_view);
+
         this.clickListener = listener;
+        this.icon = (ImageView) itemView.findViewById(R.id.recycler_row_icon);
+        this.text = (TextView) itemView.findViewById(R.id.recycler_row_text);
 
         itemView.setOnClickListener(this);
     }
@@ -31,6 +34,9 @@ public class ClickableViewHolder extends RecyclerView.ViewHolder implements View
     }
 
     public void bind(DataModel model) {
-        titleTextView.setText(model.getText());
+        int imageId = model.hasImageId() ? model.getImageId() : R.drawable.ic_create_black_24dp;
+
+        icon.setImageResource(imageId);
+        text.setText(model.getText());
     }
 }

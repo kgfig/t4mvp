@@ -27,6 +27,7 @@ public abstract class DataModel implements Parcelable {
     public abstract void setValues(Cursor cursor);
     public abstract ContentValues toContentValues();
     public abstract String getText();
+    public abstract int getImageId();
 
     public long getId() {
         return id;
@@ -34,5 +35,9 @@ public abstract class DataModel implements Parcelable {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public boolean hasImageId() {
+        return getImageId() > 0;
     }
 }
