@@ -2,6 +2,8 @@ package com.aclass.edx.helloworld.data.models;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.aclass.edx.helloworld.data.contracts.MediaContract;
 
@@ -11,9 +13,20 @@ import static com.aclass.edx.helloworld.data.contracts.MediaContract.MediaEntry;
  * Created by ertd on 3/9/2017.
  */
 
-public class Media {
+public class Media extends DataModel {
 
-    private long id;
+    static final Parcelable.Creator<Media> CREATOR = new Parcelable.Creator<Media>() {
+        @Override
+        public Media createFromParcel(Parcel source) {
+            return new Media(source);
+        }
+
+        @Override
+        public Media[] newArray(int size) {
+            return new Media[size];
+        }
+    };
+
     private String title;
     private String filename;
     private int type;
@@ -24,8 +37,12 @@ public class Media {
         this(0, title, filename, type);
     }
 
+    public Media(Parcel parcel) {
+        this(parcel.readLong(), parcel.readString(), parcel.readString(), parcel.readInt());
+    }
+
     public Media(long id, String title, String filename, int type) {
-        this.id = id;
+        super(id);
         this.title = title;
         this.filename = filename;
         this.type = type;
@@ -63,17 +80,33 @@ public class Media {
         return type;
     }
 
+    @Override
+    public int describeContents() {
+        return hashCode();
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int flags) {
+        parcel.writeLong(id);
+        parcel.writeString(title);
+        parcel.writeString(filename);
+        parcel.writeInt(type);
+    }
+
     /**
      * @param cursor
      * @return Media model instance with fields initialized from Cursor
      */
-    public static Media fromCursor(Cursor cursor) {
-        long id = cursor.getLong(cursor.getColumnIndex(MediaContract.MediaEntry._ID));
-        String title = cursor.getString(cursor.getColumnIndexOrThrow(MediaContract.MediaEntry.COLUMN_NAME_TITLE));
-        String filename = cursor.getString(cursor.getColumnIndexOrThrow(MediaContract.MediaEntry.COLUMN_NAME_FILENAME));
-        int type = cursor.getInt(cursor.getColumnIndexOrThrow(MediaContract.MediaEntry.COLUMN_NAME_TYPE));
+    public void setValues(Cursor cursor) {
+        long mId = cursor.getLong(cursor.getColumnIndex(MediaContract.MediaEntry._ID));
+        String mTitle = cursor.getString(cursor.getColumnIndexOrThrow(MediaContract.MediaEntry.COLUMN_NAME_TITLE));
+        String mFilename = cursor.getString(cursor.getColumnIndexOrThrow(MediaContract.MediaEntry.COLUMN_NAME_FILENAME));
+        int mType = cursor.getInt(cursor.getColumnIndexOrThrow(MediaContract.MediaEntry.COLUMN_NAME_TYPE));
 
-        return new Media(id, title, filename, type);
+        setId(mId);
+        setTitle(mTitle);
+        setFilename(mFilename);
+        setType(mType);
     }
 
     /**

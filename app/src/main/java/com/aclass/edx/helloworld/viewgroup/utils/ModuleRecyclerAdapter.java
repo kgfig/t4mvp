@@ -32,7 +32,8 @@ public class ModuleRecyclerAdapter extends CursorRecyclerViewAdapter<ModuleRecyc
 
     @Override
     public void onBindViewHolder(ModuleTitleViewHolder viewHolder, Cursor cursor) {
-        Module module = Module.from(cursor);
+        Module module = new Module();
+        module.setValues(cursor);
         viewHolder.bind(module);
     }
 

@@ -33,7 +33,8 @@ public class MediaRecyclerAdapter extends CursorRecyclerViewAdapter<MediaRecycle
 
     @Override
     public void onBindViewHolder(MediaTitleViewHolder holder, Cursor cursor) {
-        Media media = Media.fromCursor(cursor);
+        Media media = new Media();
+        media.setValues(cursor);
         holder.bind(media);
     }
 

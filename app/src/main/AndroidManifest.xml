@@ -34,7 +34,8 @@
             android:name=".data.MediaContentProvider"
             android:authorities="com.aclass.edx.helloworld.data.provider" />
 
-        <activity android:name=".GetNameActivity"></activity>
+        <activity android:name=".GetNameActivity" />
+        <activity android:name=".LessonListActivity"></activity>
     </application>
 
 </manifest>

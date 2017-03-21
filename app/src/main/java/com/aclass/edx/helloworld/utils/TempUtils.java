@@ -4,6 +4,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import static com.aclass.edx.helloworld.data.contracts.MediaContract.CONTENT_URI;
 import static com.aclass.edx.helloworld.data.contracts.MediaContract.ContentEntry;
 import static com.aclass.edx.helloworld.data.contracts.MediaContract.MediaEntry;
 import static com.aclass.edx.helloworld.data.contracts.MediaContract.ModuleEntry;
@@ -49,21 +50,33 @@ public class TempUtils {
 
     public static Media getMedia(SQLiteDatabase db) {
         Cursor cursor = db.query(MediaEntry.TABLE_NAME, null, null, null, null, null, MediaEntry._ID, "1");
+        Media sample = new Media();
+
         if (cursor.moveToNext()) {
-            return Media.fromCursor(cursor);
-        } else {
-            return new Media();
+            sample.setValues(cursor);
         }
+
+        return new Media();
     }
 
     public static long getMediaId(SQLiteDatabase db, String title) {
-        Cursor cursor = db.query(MediaEntry.TABLE_NAME, new String[]{ MediaEntry._ID}, "title = ?", new String[]{title}, null, null, MediaEntry._ID, "1");
+        Cursor cursor = db.query(MediaEntry.TABLE_NAME, new String[]{MediaEntry._ID}, "title = ?", new String[]{title}, null, null, MediaEntry._ID, "1");
         return cursor.moveToNext() ? cursor.getLong(cursor.getColumnIndex(MediaEntry._ID)) : 0;
     }
 
     public static long getModuleId(SQLiteDatabase db, String title) {
-        Cursor cursor = db.query(ModuleEntry.TABLE_NAME, new String[]{ ModuleEntry._ID}, "title = ?", new String[]{title}, null, null, MediaEntry._ID, "1");
+        Cursor cursor = db.query(ModuleEntry.TABLE_NAME, new String[]{ModuleEntry._ID}, "title = ?", new String[]{title}, null, null, MediaEntry._ID, "1");
         return cursor.moveToNext() ? cursor.getLong(cursor.getColumnIndex(ModuleEntry._ID)) : 0;
+    }
+
+    public static long[] getContent(SQLiteDatabase db, long moduleId) {
+        Cursor cursor = db.query(ContentEntry.TABLE_NAME, new String[]{ContentEntry._ID, ContentEntry.COLUMN_NAME_MODULE_ID}, "module_id = ?", new String[]{moduleId+""}, null, null, MediaEntry._ID, "1");
+        long[] ids=  new long[2];
+        int count = 0;
+        while(cursor.moveToNext()) {
+            ids[count++] = cursor.getLong(cursor.getColumnIndex(ContentEntry._ID));
+        }
+        return ids;
     }
 
     public static void insertContentTestData(SQLiteDatabase db) {
@@ -86,5 +99,20 @@ public class TempUtils {
         for (Content content : contents) {
             db.insert(ContentEntry.TABLE_NAME, null, content.toContentValues());
         }
+
+        Cursor cursor = db.query(
+                ContentEntry.TABLE_NAME,
+                new String[]{ContentEntry._ID, ContentEntry.COLUMN_NAME_TYPE, ContentEntry.COLUMN_NAME_MODULE_ID, ContentEntry.COLUMN_NAME_CONTENT_ID},
+                ContentEntry.COLUMN_NAME_MODULE_ID + " = ?",
+                new String[]{meetingsId + ""},
+                null, null, null);
+
+        while (cursor.moveToNext()) {
+            long id = cursor.getLong(cursor.getColumnIndex(ContentEntry._ID));
+            long cid = cursor.getLong(cursor.getColumnIndex(ContentEntry.COLUMN_NAME_CONTENT_ID));
+            long mid = cursor.getLong(cursor.getColumnIndex(ContentEntry.COLUMN_NAME_MODULE_ID));
+            Log.d("TEST", "fetched stuff " + id + " and content=" + cid + " and module=" + mid);
+        }
+
     }
 }

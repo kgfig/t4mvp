@@ -78,9 +78,10 @@ public class DashboardActivity extends AppCompatActivity implements LoaderManage
     @Override
     public void onListItemClick(int clickedItemPosition) {
         Cursor cursor = adapter.getItem(clickedItemPosition);
-        Module module = Module.from(cursor);
+        Module module = new Module();
+        module.setValues(cursor);
 
-        Intent intent = new Intent(this, VideoListActivity.class);
+        Intent intent = new Intent(this, LessonListActivity.class);
         intent.putExtra(getString(R.string.intent_extra_dashboard_selected_module), module);
         startActivity(intent);
     }
