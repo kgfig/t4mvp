@@ -26,7 +26,7 @@ public class ModuleRecyclerAdapter extends CursorRecyclerViewAdapter<ModuleRecyc
     @Override
     public ModuleTitleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.module_list_item, parent, false);
+        View view = inflater.inflate(R.layout.recycler_list_item, parent, false);
         return new ModuleTitleViewHolder(view);
     }
 
@@ -43,7 +43,7 @@ public class ModuleRecyclerAdapter extends CursorRecyclerViewAdapter<ModuleRecyc
 
         public ModuleTitleViewHolder(View itemView) {
             super(itemView);
-            moduleTitle = (TextView) itemView.findViewById(R.id.module_title_view);
+            moduleTitle = (TextView) itemView.findViewById(R.id.recycler_title_text_view);
         }
 
         @Override

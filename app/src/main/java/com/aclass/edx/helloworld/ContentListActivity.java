@@ -9,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.widget.TextView;
 
 import static com.aclass.edx.helloworld.data.contracts.MediaContract.ContentEntry;
@@ -18,9 +17,9 @@ import com.aclass.edx.helloworld.data.models.Module;
 import com.aclass.edx.helloworld.viewgroup.utils.ContentRecyclerAdapter;
 import com.aclass.edx.helloworld.viewgroup.utils.CursorRecyclerViewAdapter;
 
-public class LessonListActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, CursorRecyclerViewAdapter.ListItemClickListener {
+public class ContentListActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, CursorRecyclerViewAdapter.ListItemClickListener {
 
-    private static final String TAG = LessonListActivity.class.getSimpleName();
+    private static final String TAG = ContentListActivity.class.getSimpleName();
 
     private static final int FETCH_CONTENT_LOADER = 2;
 
@@ -31,16 +30,16 @@ public class LessonListActivity extends AppCompatActivity implements LoaderManag
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_lesson_list);
+        setContentView(R.layout.activity_content_list);
 
         // TODO add test for passing parcel
         this.module = getIntent().getParcelableExtra(getString(R.string.intent_extra_dashboard_selected_module));
 
-        TextView moduleName = (TextView) findViewById(R.id.lesson_list_module_name);
+        TextView moduleName = (TextView) findViewById(R.id.content_list_module_name);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         DividerItemDecoration divider = new DividerItemDecoration(this, layoutManager.getOrientation());
         adapter = new ContentRecyclerAdapter(this, null, this);
-        lessonList = (RecyclerView) findViewById(R.id.lesson_list_recycler_view);
+        lessonList = (RecyclerView) findViewById(R.id.content_list_recycler_view);
 
         moduleName.setText(module.getTitle());
         lessonList.setLayoutManager(layoutManager);

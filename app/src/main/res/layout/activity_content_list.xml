@@ -5,12 +5,12 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/lesson_list_module_name"
+        android:id="@+id/content_list_module_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/lesson_list_recycler_view"
+        android:id="@+id/content_list_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 </LinearLayout>

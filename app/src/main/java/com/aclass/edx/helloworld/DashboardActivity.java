@@ -81,7 +81,7 @@ public class DashboardActivity extends AppCompatActivity implements LoaderManage
         Module module = new Module();
         module.setValues(cursor);
 
-        Intent intent = new Intent(this, LessonListActivity.class);
+        Intent intent = new Intent(this, ContentListActivity.class);
         intent.putExtra(getString(R.string.intent_extra_dashboard_selected_module), module);
         startActivity(intent);
     }

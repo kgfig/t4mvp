@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.aclass.edx.helloworld.R;
 import com.aclass.edx.helloworld.data.models.Media;
+import com.aclass.edx.helloworld.data.models.Module;
 
 /**
  * Created by ertd on 3/9/2017.
@@ -27,7 +28,7 @@ public class MediaRecyclerAdapter extends CursorRecyclerViewAdapter<MediaRecycle
     @Override
     public MediaTitleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.video_list_item, parent, false);
+        View view = inflater.inflate(R.layout.recycler_list_item, parent, false);
         return new MediaTitleViewHolder(view);
     }
 
@@ -38,12 +39,12 @@ public class MediaRecyclerAdapter extends CursorRecyclerViewAdapter<MediaRecycle
         holder.bind(media);
     }
 
-    public class MediaTitleViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class MediaTitleViewHolder extends ClickableViewHolder<Media> {
         TextView titleView;
 
         public MediaTitleViewHolder(View itemView) {
             super(itemView);
-            titleView = (TextView) itemView.findViewById(R.id.video_title);
+            titleView = (TextView) itemView.findViewById(R.id.recycler_title_text_view);
             itemView.setOnClickListener(this);
         }
 
@@ -52,7 +53,8 @@ public class MediaRecyclerAdapter extends CursorRecyclerViewAdapter<MediaRecycle
             clickListener.onListItemClick(getAdapterPosition());
         }
 
-        void bind(Media newMedia) {
+        @Override
+        public void bind(Media newMedia) {
             titleView.setText(newMedia.getTitle());
         }
     }

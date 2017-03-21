@@ -35,7 +35,7 @@
             android:authorities="com.aclass.edx.helloworld.data.provider" />
 
         <activity android:name=".GetNameActivity" />
-        <activity android:name=".LessonListActivity"></activity>
+        <activity android:name=".ContentListActivity"></activity>
     </application>
 
 </manifest>
