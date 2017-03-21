@@ -5,11 +5,14 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,20 +40,26 @@ public class ContentListActivity extends AppCompatActivity implements LoaderMana
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_content_list);
 
-        // TODO add test for passing parcel
+        // Get selected module
         this.module = getIntent().getParcelableExtra(getString(R.string.dashboard_selected_module_key));
 
-        TextView moduleName = (TextView) findViewById(R.id.content_list_module_name);
+        // Init toolbar
+        Toolbar toolbar = (Toolbar) findViewById(R.id.content_list_toolbar);
+        toolbar.setTitle(module.getTitle());
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        // Init content
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         DividerItemDecoration divider = new DividerItemDecoration(this, layoutManager.getOrientation());
         adapter = new ContentRecyclerAdapter(this, null, this);
         lessonList = (RecyclerView) findViewById(R.id.content_list_recycler_view);
 
-        moduleName.setText(module.getTitle());
         lessonList.setLayoutManager(layoutManager);
         lessonList.addItemDecoration(divider);
         lessonList.setAdapter(adapter);
 
+        // Load data
         getLoaderManager().initLoader(FETCH_CONTENT_LOADER, null, this);
     }
 
@@ -61,7 +70,7 @@ public class ContentListActivity extends AppCompatActivity implements LoaderMana
                 ContentEntry.CONTENT_URI,
                 ContentEntry.ALL_COLUMN_NAMES,
                 ContentEntry.COLUMN_NAME_MODULE_ID + " = ?",
-                new String[]{ module.getId() + "" },
+                new String[]{module.getId() + ""},
                 null
         );
 
@@ -84,9 +93,9 @@ public class ContentListActivity extends AppCompatActivity implements LoaderMana
         Content content = new Content();
         content.setValues(contentCursor);
 
-        switch(content.getType()) {
+        switch (content.getType()) {
             case ContentEntry.TYPE_LESSON_MEDIA:
-                goToMediaActivity(content.getContentId());
+                goToMediaActivity(content);
                 break;
             default:
                 Toast.makeText(this, "Content type " + content.getType() +
@@ -94,12 +103,24 @@ public class ContentListActivity extends AppCompatActivity implements LoaderMana
         }
     }
 
-    private void goToMediaActivity(long contentId) {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int menuItemId = item.getItemId();
+
+        switch (menuItemId) {
+            case android.R.id.home:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    private void goToMediaActivity(Content content) {
         Cursor mediaCursor = getContentResolver().query(
-                MediaEntry.CONTENT_URI,
+                Uri.parse(MediaEntry.CONTENT_URI + "/" + content.getContentId()),
                 MediaEntry.ALL_COLUMN_NAMES,
-                MediaEntry._ID + "= ?",
-                new String[]{contentId +""},
+                null,
+                null,
                 null
         );
 
@@ -109,6 +130,7 @@ public class ContentListActivity extends AppCompatActivity implements LoaderMana
 
             Intent intent = new Intent(this, VideoActivity.class);
             intent.putExtra(getString(R.string.content_list_selected_video_key), media);
+            intent.putExtra(getString(R.string.content_list_selected_content), content);
             startActivity(intent);
         } else {
             throw new RuntimeException(getString(R.string.all_error_no_media_found_by_id));

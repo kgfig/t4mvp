@@ -40,10 +40,9 @@ public class DashboardActivity extends AppCompatActivity implements LoaderManage
         if (PrefUtils.skippedOrSavedNickname(this)) {
             initViews();
         } else {
-            Intent intent = new Intent(this, GetNameActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            Intent intent = new Intent(getApplicationContext(), GetNameActivity.class);
             startActivity(intent);
+            finish();
         }
     }
 

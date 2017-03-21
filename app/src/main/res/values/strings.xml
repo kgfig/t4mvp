@@ -12,11 +12,9 @@
         <item>Audio Recorder and Player</item>
         <item>Dashboard</item>
     </string-array>
+    <!-- Common -->
     <string name="all_profile">Profile</string>
-    <string name="practice">Practice</string>
-    <string name="get_name_question">What do I call you?</string>
-    <string name="prefs_nickname">Prefs:Nickname</string>
-    <string name="prefs_skip_nickname">Prefs:Skip Nickname</string>
+    <string name="all_practice">Practice</string>
     <string name="all_skip">Skip</string>
     <string name="all_submit">Submit</string>
     <string name="all_name_placeholder">Juan</string>
@@ -26,11 +24,26 @@
     <string name="all_meetings">Meetings</string>
     <string name="all_interviews">Interviews</string>
     <string name="all_business_correspondence">Business Writing</string>
+    <string name="video_position">position</string>
+
+    <!-- Prefs -->
+    <string name="prefs_nickname">Prefs:Nickname</string>
+    <string name="prefs_skip_nickname">Prefs:Skip Nickname</string>
+
+    <!-- in GetNameActivity -->
+    <string name="get_name_question">Welcome to Tic Toc!\nWhat\'s your name?</string>
+
+    <!-- in DashboardActivity -->
     <string name="dashboard_selected_module_key">selected module</string>
-    <string name="content_list_selected_video_key">selected video</string>
-    <string name="title_activity_lesson_list">LessonListActivity</string>
     <string name="dashboard_choose_a_topic">Choose a topic</string>
+
+    <!-- Content list -->
+    <string name="content_list_selected_video_key">selected video</string>
+    <string name="content_list_selected_content">selected content</string>
+
+    <!-- error messages -->
     <string name="all_error_no_media_found_by_id">No media with id %s in database</string>
+    <string name="all_error_enter_name">Please enter your name or skip for now.</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"
 

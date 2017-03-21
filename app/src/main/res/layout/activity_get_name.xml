@@ -7,9 +7,10 @@
     <TextView
         android:id="@+id/ask_nickname"
         android:text="@string/get_name_question"
-        android:textSize="@dimen/text_size"
+        android:textSize="@dimen/header_size"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
         android:padding="@dimen/text_margin"/>
 
     <EditText
