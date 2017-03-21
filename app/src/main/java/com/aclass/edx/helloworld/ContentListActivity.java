@@ -2,6 +2,7 @@ package com.aclass.edx.helloworld;
 
 import android.app.LoaderManager;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -10,9 +11,13 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import static com.aclass.edx.helloworld.data.contracts.MediaContract.ContentEntry;
+import static com.aclass.edx.helloworld.data.contracts.MediaContract.MediaEntry;
 
+import com.aclass.edx.helloworld.data.models.Content;
+import com.aclass.edx.helloworld.data.models.Media;
 import com.aclass.edx.helloworld.data.models.Module;
 import com.aclass.edx.helloworld.viewgroup.utils.ContentRecyclerAdapter;
 import com.aclass.edx.helloworld.viewgroup.utils.CursorRecyclerViewAdapter;
@@ -33,7 +38,7 @@ public class ContentListActivity extends AppCompatActivity implements LoaderMana
         setContentView(R.layout.activity_content_list);
 
         // TODO add test for passing parcel
-        this.module = getIntent().getParcelableExtra(getString(R.string.intent_extra_dashboard_selected_module_key));
+        this.module = getIntent().getParcelableExtra(getString(R.string.dashboard_selected_module_key));
 
         TextView moduleName = (TextView) findViewById(R.id.content_list_module_name);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
@@ -75,6 +80,38 @@ public class ContentListActivity extends AppCompatActivity implements LoaderMana
 
     @Override
     public void onListItemClick(int clickedItemPosition) {
+        Cursor contentCursor = adapter.getItem(clickedItemPosition);
+        Content content = new Content();
+        content.setValues(contentCursor);
 
+        switch(content.getType()) {
+            case ContentEntry.TYPE_LESSON_MEDIA:
+                goToMediaActivity(content.getContentId());
+                break;
+            default:
+                Toast.makeText(this, "Content type " + content.getType() +
+                        " not supported", Toast.LENGTH_SHORT);
+        }
+    }
+
+    private void goToMediaActivity(long contentId) {
+        Cursor mediaCursor = getContentResolver().query(
+                MediaEntry.CONTENT_URI,
+                MediaEntry.ALL_COLUMN_NAMES,
+                MediaEntry._ID + "= ?",
+                new String[]{contentId +""},
+                null
+        );
+
+        if (mediaCursor.moveToNext()) {
+            Media media = new Media();
+            media.setValues(mediaCursor);
+
+            Intent intent = new Intent(this, VideoActivity.class);
+            intent.putExtra(getString(R.string.content_list_selected_video_key), media);
+            startActivity(intent);
+        } else {
+            throw new RuntimeException(getString(R.string.all_error_no_media_found_by_id));
+        }
     }
 }

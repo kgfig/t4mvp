@@ -26,10 +26,11 @@
     <string name="all_meetings">Meetings</string>
     <string name="all_interviews">Interviews</string>
     <string name="all_business_correspondence">Business Writing</string>
-    <string name="intent_extra_dashboard_selected_module_key">selected module</string>
-    <string name="intent_extra_video_list_selected_video_key">selected video</string>
+    <string name="dashboard_selected_module_key">selected module</string>
+    <string name="content_list_selected_video_key">selected video</string>
     <string name="title_activity_lesson_list">LessonListActivity</string>
     <string name="dashboard_choose_a_topic">Choose a topic</string>
+    <string name="all_error_no_media_found_by_id">No media with id %s in database</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"
 

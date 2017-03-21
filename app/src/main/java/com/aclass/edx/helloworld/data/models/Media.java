@@ -6,7 +6,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.aclass.edx.helloworld.R;
-import com.aclass.edx.helloworld.data.contracts.MediaContract;
 
 import static com.aclass.edx.helloworld.data.contracts.MediaContract.MediaEntry;
 
@@ -65,9 +64,9 @@ public class Media extends DataModel {
      */
     @Override
     public void setValues(Cursor cursor) {
-        setId(cursor.getLong(cursor.getColumnIndex(MediaContract.MediaEntry._ID)));
-        setFilename(cursor.getString(cursor.getColumnIndexOrThrow(MediaContract.MediaEntry.COLUMN_NAME_FILENAME)));
-        setType(cursor.getInt(cursor.getColumnIndexOrThrow(MediaContract.MediaEntry.COLUMN_NAME_TYPE)));
+        setId(cursor.getLong(cursor.getColumnIndex(MediaEntry._ID)));
+        setFilename(cursor.getString(cursor.getColumnIndexOrThrow(MediaEntry.COLUMN_NAME_FILENAME)));
+        setType(cursor.getInt(cursor.getColumnIndexOrThrow(MediaEntry.COLUMN_NAME_TYPE)));
     }
 
     /**

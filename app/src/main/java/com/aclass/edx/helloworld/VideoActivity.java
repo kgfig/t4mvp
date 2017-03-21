@@ -10,6 +10,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.VideoView;
 
+import com.aclass.edx.helloworld.data.models.Media;
+
 public class VideoActivity extends AppCompatActivity {
 
     private int position;
@@ -23,7 +25,8 @@ public class VideoActivity extends AppCompatActivity {
 
         // Get selected file
         Intent intent = getIntent();
-        String filename = intent.getStringExtra(VideoListActivity.SELECTED);
+        Media videoObj = intent.getParcelableExtra(getString(R.string.content_list_selected_video_key));
+        String filename = videoObj.getFilename();
         Uri videoUri = Uri.parse("android.resource://"+getPackageName() + "/" + getResources().getIdentifier(filename, "raw", getPackageName()));
         Log.d("VIDEO ACTIVITY", "intent string extra is " + filename);
 
