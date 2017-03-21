@@ -72,7 +72,14 @@ public class Module extends DataModel {
 
     @Override
     public String toString() {
-        return String.format("%s(%s=%d, %s=%s)", ModuleEntry.TABLE_NAME, ModuleEntry._ID, id, ModuleEntry.COLUMN_NAME_TITLE, title);
+        return String.format("%s(%s=%d, %s=%s)", ModuleEntry.TABLE_NAME,
+                ModuleEntry._ID, id,
+                ModuleEntry.COLUMN_NAME_TITLE, title);
+    }
+
+    @Override
+    public String getText() {
+        return title;
     }
 
     public String getTitle() {

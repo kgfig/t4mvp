@@ -29,6 +29,7 @@
     <string name="intent_extra_dashboard_selected_module">selected module</string>
     <string name="intent_extra_video_list_selected_video">selected video</string>
     <string name="title_activity_lesson_list">LessonListActivity</string>
+    <string name="dashboard_choose_a_topic">Choose a topic</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"
 

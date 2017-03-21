@@ -96,6 +96,12 @@ public class Content extends DataModel {
                 ContentEntry.COLUMN_NAME_CONTENT_ID, contentId);
     }
 
+    // TODO Change this
+    @Override
+    public String getText() {
+        return toString();
+    }
+
     public int getType() {
         return type;
     }

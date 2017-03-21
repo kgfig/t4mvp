@@ -16,7 +16,7 @@ import com.aclass.edx.helloworld.data.models.Module;
  * Created by ertd on 3/9/2017.
  */
 
-public class MediaRecyclerAdapter extends CursorRecyclerViewAdapter<MediaRecyclerAdapter.MediaTitleViewHolder> {
+public class MediaRecyclerAdapter extends CursorRecyclerViewAdapter<ClickableViewHolder> {
 
     private ListItemClickListener clickListener;
 
@@ -26,36 +26,16 @@ public class MediaRecyclerAdapter extends CursorRecyclerViewAdapter<MediaRecycle
     }
 
     @Override
-    public MediaTitleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ClickableViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.recycler_list_item, parent, false);
-        return new MediaTitleViewHolder(view);
+        return new ClickableViewHolder(view, clickListener);
     }
 
     @Override
-    public void onBindViewHolder(MediaTitleViewHolder holder, Cursor cursor) {
+    public void onBindViewHolder(ClickableViewHolder holder, Cursor cursor) {
         Media media = new Media();
         media.setValues(cursor);
         holder.bind(media);
-    }
-
-    public class MediaTitleViewHolder extends ClickableViewHolder<Media> {
-        TextView titleView;
-
-        public MediaTitleViewHolder(View itemView) {
-            super(itemView);
-            titleView = (TextView) itemView.findViewById(R.id.recycler_title_text_view);
-            itemView.setOnClickListener(this);
-        }
-
-        @Override
-        public void onClick(View v) {
-            clickListener.onListItemClick(getAdapterPosition());
-        }
-
-        @Override
-        public void bind(Media newMedia) {
-            titleView.setText(newMedia.getTitle());
-        }
     }
 }

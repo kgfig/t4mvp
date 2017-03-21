@@ -48,12 +48,61 @@ public class Media extends DataModel {
         this.type = type;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    @Override
+    public int describeContents() {
+        return hashCode();
     }
 
-    public long getId() {
-        return id;
+    @Override
+    public void writeToParcel(Parcel parcel, int flags) {
+        parcel.writeLong(id);
+        parcel.writeString(title);
+        parcel.writeString(filename);
+        parcel.writeInt(type);
+    }
+
+    /**
+     * @param cursor
+     * @return Media model instance with fields initialized from Cursor
+     */
+    @Override
+    public void setValues(Cursor cursor) {
+        setId(cursor.getLong(cursor.getColumnIndex(MediaContract.MediaEntry._ID)));
+        setTitle(cursor.getString(cursor.getColumnIndexOrThrow(MediaContract.MediaEntry.COLUMN_NAME_TITLE)));
+        setFilename(cursor.getString(cursor.getColumnIndexOrThrow(MediaContract.MediaEntry.COLUMN_NAME_FILENAME)));
+        setType(cursor.getInt(cursor.getColumnIndexOrThrow(MediaContract.MediaEntry.COLUMN_NAME_TYPE)));
+    }
+
+    /**
+     * @return ContentValues from attributes in this Media model instance
+     */
+    @Override
+    public ContentValues toContentValues() {
+        ContentValues values = new ContentValues();
+
+        if (id > 0) {
+            values.put(MediaEntry._ID, getId());
+        }
+
+        values.put(MediaEntry.COLUMN_NAME_TITLE, getTitle());
+        values.put(MediaEntry.COLUMN_NAME_FILENAME, getFilename());
+        values.put(MediaEntry.COLUMN_NAME_TYPE, getType());
+
+        return values;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s(%s=%d, %s=%s, %s=%s, %s=%d)", MediaEntry.TABLE_NAME,
+                MediaEntry._ID, id,
+                MediaEntry.COLUMN_NAME_TITLE, title,
+                MediaEntry.COLUMN_NAME_FILENAME, filename,
+                MediaEntry.COLUMN_NAME_TYPE, type);
+    }
+
+    @Override
+    public String getText() {
+        return title;
     }
 
     public void setTitle(String title) {
@@ -80,51 +129,7 @@ public class Media extends DataModel {
         return type;
     }
 
-    @Override
-    public int describeContents() {
-        return hashCode();
-    }
 
-    @Override
-    public void writeToParcel(Parcel parcel, int flags) {
-        parcel.writeLong(id);
-        parcel.writeString(title);
-        parcel.writeString(filename);
-        parcel.writeInt(type);
-    }
-
-    /**
-     * @param cursor
-     * @return Media model instance with fields initialized from Cursor
-     */
-    public void setValues(Cursor cursor) {
-        long mId = cursor.getLong(cursor.getColumnIndex(MediaContract.MediaEntry._ID));
-        String mTitle = cursor.getString(cursor.getColumnIndexOrThrow(MediaContract.MediaEntry.COLUMN_NAME_TITLE));
-        String mFilename = cursor.getString(cursor.getColumnIndexOrThrow(MediaContract.MediaEntry.COLUMN_NAME_FILENAME));
-        int mType = cursor.getInt(cursor.getColumnIndexOrThrow(MediaContract.MediaEntry.COLUMN_NAME_TYPE));
-
-        setId(mId);
-        setTitle(mTitle);
-        setFilename(mFilename);
-        setType(mType);
-    }
-
-    /**
-     * @return ContentValues from attributes in this Media model instance
-     */
-    public ContentValues toContentValues() {
-        ContentValues values = new ContentValues();
-
-        if (id > 0) {
-            values.put(MediaEntry._ID, getId());
-        }
-
-        values.put(MediaEntry.COLUMN_NAME_TITLE, getTitle());
-        values.put(MediaEntry.COLUMN_NAME_FILENAME, getFilename());
-        values.put(MediaEntry.COLUMN_NAME_TYPE, getType());
-
-        return values;
-    }
 }
 
 

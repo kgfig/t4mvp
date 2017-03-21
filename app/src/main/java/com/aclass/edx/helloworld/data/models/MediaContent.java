@@ -4,16 +4,15 @@ package com.aclass.edx.helloworld.data.models;
  * Created by tictocproject on 20/03/2017.
  */
 
-public class MediaLesson {
+public class MediaContent {
 
     private Media media;
     private Content content;
 
-    public MediaLesson() {
-
+    public MediaContent() {
     }
 
-    public MediaLesson(Media media, Content content) {
+    public MediaContent(Media media, Content content) {
         this.media = media;
         this.content = content;
     }

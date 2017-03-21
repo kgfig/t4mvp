@@ -30,7 +30,7 @@ public class DashboardActivity extends AppCompatActivity implements LoaderManage
 
     private RecyclerView moduleList;
     private ModuleRecyclerAdapter adapter;
-    private TextView greetUser;
+    private TextView greetUser, chooseATopic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,15 +88,10 @@ public class DashboardActivity extends AppCompatActivity implements LoaderManage
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String[] projection = {
-                ModuleEntry._ID,
-                ModuleEntry.COLUMN_NAME_TITLE
-        };
-
         CursorLoader cursorLoader = new CursorLoader(
                 this, //context
                 ModuleEntry.CONTENT_URI,
-                projection,
+                ModuleEntry.ALL_COLUMN_NAMES,
                 null, // select
                 null, // select args
                 null // sortorder
@@ -107,7 +102,7 @@ public class DashboardActivity extends AppCompatActivity implements LoaderManage
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        adapter.swapCursor(data);
+        adapter.changeCursor(data);
     }
 
     @Override
@@ -118,6 +113,7 @@ public class DashboardActivity extends AppCompatActivity implements LoaderManage
     private void initViews(String greeting) {
         getLoaderManager().initLoader(FETCH_MODULES_LOADER, null, DashboardActivity.this);
 
+        chooseATopic = (TextView) findViewById(R.id.dashboard_choose_a_topic);
         greetUser = (TextView) findViewById(R.id.dashboard_greet_user);
         greetUser.setText(greeting);
 

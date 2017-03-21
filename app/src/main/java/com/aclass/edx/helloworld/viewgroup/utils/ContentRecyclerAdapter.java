@@ -20,7 +20,7 @@ import com.aclass.edx.helloworld.data.models.Content;
  * Created by ertd on 3/9/2017.
  */
 
-public class ContentRecyclerAdapter extends CursorRecyclerViewAdapter<ContentRecyclerAdapter.ContentViewHolder> {
+public class ContentRecyclerAdapter extends CursorRecyclerViewAdapter<ClickableViewHolder> {
 
     private static final String TAG  = ContentRecyclerAdapter.class.getSimpleName();
 
@@ -32,36 +32,16 @@ public class ContentRecyclerAdapter extends CursorRecyclerViewAdapter<ContentRec
     }
 
     @Override
-    public ContentViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ClickableViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.recycler_list_item, parent, false);
-        return new ContentViewHolder(view);
+        return new ClickableViewHolder(view, clickListener);
     }
 
     @Override
-    public void onBindViewHolder(ContentViewHolder holder, Cursor cursor) {
+    public void onBindViewHolder(ClickableViewHolder holder, Cursor cursor) {
         Content content = new Content();
         content.setValues(cursor);
         holder.bind(content);
-    }
-
-    public class ContentViewHolder extends ClickableViewHolder<Content> {
-
-        TextView title;
-
-        public ContentViewHolder(View itemView) {
-            super(itemView);
-            title = (TextView) itemView.findViewById(R.id.recycler_title_text_view);
-        }
-
-        @Override
-        public void onClick(View v) {
-            clickListener.onListItemClick(getAdapterPosition());
-        }
-
-        @Override
-        public void bind(Content content) {
-            title.setText(content.getId() + "-" + content.getModuleId() + "-" + content.getContentId());
-        }
     }
 }
