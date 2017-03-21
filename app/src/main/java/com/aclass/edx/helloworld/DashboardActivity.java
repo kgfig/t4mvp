@@ -49,6 +49,8 @@ public class DashboardActivity extends AppCompatActivity implements LoaderManage
             initViews(greeting);
         } else {
             Intent intent = new Intent(this, GetNameActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         }
     }
