@@ -4,7 +4,11 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import static com.aclass.edx.helloworld.data.contracts.MediaContract.ContentEntry;
 import static com.aclass.edx.helloworld.data.contracts.MediaContract.MediaEntry;
+import static com.aclass.edx.helloworld.data.contracts.MediaContract.ModuleEntry;
+
+import com.aclass.edx.helloworld.utils.TempUtils;
 
 /**
  * Created by ertd on 2/21/2017.
@@ -12,22 +16,45 @@ import static com.aclass.edx.helloworld.data.contracts.MediaContract.MediaEntry;
 
 public class DBHelper extends SQLiteOpenHelper {
 
+    private static final String TAG = DBHelper.class.getSimpleName();
+
     public static final String DATABASE_NAME = "t4.db";
     public static final int DATABASE_VERSION = 1;
 
-    private static final String INT_PK_AUTOINCREMENT = " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL";
-    private static final String TEXT_NOT_NULL = " TEXT NOT NULL";
-    private static final String INT_NOT_NULL = " INTEGER NOT NULL";
-    private static final String SQL_CREATE_DB =
-            "CREATE TABLE " + MediaEntry.TABLE_NAME + " (" +
-                    MediaEntry._ID + INT_PK_AUTOINCREMENT + ", " +
-                    MediaEntry.COLUMN_NAME_TITLE + TEXT_NOT_NULL + ", " +
-                    MediaEntry.COLUMN_NAME_FILENAME + TEXT_NOT_NULL + ", " +
-                    MediaEntry.COLUMN_NAME_TYPE + INT_NOT_NULL + ");";
+    private class DBQueries {
 
-    private static final String SQL_DROP_TABLES =
-            "DROP TABLE IF EXISTS " + MediaEntry.TABLE_NAME + ";";
+        private static final String INT_PK_AUTOINCREMENT = " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL";
+        private static final String TEXT_NOT_NULL = " TEXT NOT NULL";
+        private static final String INT_NOT_NULL = " INTEGER NOT NULL";
+        private static final String CREATE_TABLE = "CREATE TABLE ";
+        private static final String FK_START = "FOREIGN KEY (";
+        private static final String FK_REFERENCES = ") REFERENCES ";
+        private static final String FK_END = ")";
+        private static final String COMMA = ",";
 
+        public static final String CREATE_TABLE_MEDIA = CREATE_TABLE + MediaEntry.TABLE_NAME + " (" +
+                MediaEntry._ID + INT_PK_AUTOINCREMENT + COMMA +
+                MediaEntry.COLUMN_NAME_TITLE + TEXT_NOT_NULL + COMMA +
+                MediaEntry.COLUMN_NAME_FILENAME + TEXT_NOT_NULL + COMMA +
+                MediaEntry.COLUMN_NAME_TYPE + INT_NOT_NULL + ");";
+
+        public static final String CREATE_TABLE_MODULE = CREATE_TABLE + ModuleEntry.TABLE_NAME + " (" +
+                ModuleEntry._ID + INT_PK_AUTOINCREMENT + COMMA +
+                ModuleEntry.COLUMN_NAME_TITLE + TEXT_NOT_NULL + ");";
+
+        public static final String CREATE_TABLE_CONTENT = CREATE_TABLE + ContentEntry.TABLE_NAME + " (" +
+                ContentEntry._ID + INT_PK_AUTOINCREMENT + COMMA +
+                ContentEntry.COLUMN_NAME_MODULE_ID + INT_NOT_NULL + COMMA +
+                ContentEntry.COLUMN_NAME_TYPE + INT_NOT_NULL + COMMA +
+                ContentEntry.COLUMN_NAME_CONTENT_ID + INT_NOT_NULL + COMMA +
+                FK_START + ContentEntry.COLUMN_NAME_MODULE_ID + FK_REFERENCES +
+                ModuleEntry.TABLE_NAME + "(" + ModuleEntry._ID + FK_END +");";
+
+        private static final String DROP_TABLE_IF_EXISTS = "DROP TABLE IF EXISTS %s;\n";
+
+    }
+
+    // Singleton
     private static DBHelper instance;
 
     private DBHelper(Context context) {
@@ -43,18 +70,37 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     @Override
-    public void onCreate(SQLiteDatabase db) { db.execSQL(SQL_CREATE_DB); }
+    public void onCreate(SQLiteDatabase db) {
+        db.execSQL(DBQueries.CREATE_TABLE_MEDIA);
+        db.execSQL(DBQueries.CREATE_TABLE_MODULE);
+        db.execSQL(DBQueries.CREATE_TABLE_CONTENT);
+        TempUtils.insertMediaTestData(db);
+        TempUtils.insertModuleTestData(db);
+        TempUtils.insertContentTestData(db);
+    }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // If data is replicated somewhere else
-        db.execSQL(SQL_DROP_TABLES);
+        db.execSQL(getDropTablesQuery());
         onCreate(db);
     }
 
     @Override
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         onUpgrade(db, oldVersion, newVersion);
+    }
+
+    private static String getDropTablesQuery() {
+        String[] tableNames = {MediaEntry.TABLE_NAME, ModuleEntry.TABLE_NAME, ContentEntry.TABLE_NAME};
+        StringBuilder query = new StringBuilder();
+
+        for (String tableName : tableNames) {
+            String deleteTableQuery = String.format(DBQueries.DROP_TABLE_IF_EXISTS, tableName);
+            query.append(deleteTableQuery);
+        }
+
+        return query.toString();
     }
 
 }

@@ -1,6 +1,5 @@
 package com.aclass.edx.helloworld;
 
-import android.app.ListActivity;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -11,17 +10,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.DividerItemDecoration;
-import android.view.View;
-import android.widget.ListView;
 
-import com.aclass.edx.helloworld.data.models.Media;
-import com.aclass.edx.helloworld.data.asynctasks.AsyncInsertMedia;
-
-import java.util.List;
+import com.aclass.edx.helloworld.viewgroup.utils.CursorRecyclerViewAdapter;
+import com.aclass.edx.helloworld.viewgroup.utils.MediaRecyclerAdapter;
 
 import static com.aclass.edx.helloworld.data.contracts.MediaContract.MediaEntry;
 
-public class VideoListActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, MediaRecyclerAdapter.ListItemClickListener{
+public class VideoListActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, CursorRecyclerViewAdapter.ListItemClickListener {
 
     private static final int VIDEO_LIST_LOADER = 0;
     public static final String SELECTED = "VideoListActivity.SELECTED";
@@ -34,33 +29,17 @@ public class VideoListActivity extends AppCompatActivity implements LoaderManage
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_list);
 
-        // TODO: learn and apply best practices in populating db
-        // Populate media table asynchronously and load data when it's done
-        Media courtesy = new Media("Courtesy", "video1", MediaEntry.TYPE_VIDEO);
-        Media warmth = new Media("Warmth", "video2", MediaEntry.TYPE_VIDEO);
-        AsyncInsertMedia asyncInsertMedia = new AsyncInsertMedia(getContentResolver()){
-            @Override
-            protected void onPostExecute(List list) {
-                initLoaderAndAdapter();
-            }
-        };
-
-        asyncInsertMedia.execute(courtesy, warmth);
-
-        // Assemble RecyclerView
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         DividerItemDecoration divider = new DividerItemDecoration(this, layoutManager.getOrientation());
 
+        adapter = new MediaRecyclerAdapter(this, null, this);
         videoList = (RecyclerView) findViewById(R.id.video_list);
+
         videoList.setLayoutManager(layoutManager);
         videoList.addItemDecoration(divider);
-    }
+        videoList.setAdapter(adapter);
 
-    @Override
-    protected void onDestroy() {
-        // Cleanup data
-        this.getContentResolver().delete(MediaEntry.CONTENT_URI, null, null);
-        super.onDestroy();
+        getLoaderManager().initLoader(VIDEO_LIST_LOADER, null, VideoListActivity.this);
     }
 
     @Override
@@ -85,7 +64,7 @@ public class VideoListActivity extends AppCompatActivity implements LoaderManage
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        adapter.swapCursor(data);
+        adapter.changeCursor(data);
     }
 
     @Override
@@ -103,12 +82,4 @@ public class VideoListActivity extends AppCompatActivity implements LoaderManage
 
         startActivity(intent);
     }
-
-    // Create loader for fetching rows in media table and pass results to adapter
-    private void initLoaderAndAdapter() {
-        getLoaderManager().initLoader(VIDEO_LIST_LOADER, null, VideoListActivity.this);
-        adapter = new MediaRecyclerAdapter(this, null, this);
-        videoList.setAdapter(adapter);
-    }
-
 }

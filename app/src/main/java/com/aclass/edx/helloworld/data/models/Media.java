@@ -2,6 +2,8 @@ package com.aclass.edx.helloworld.data.models;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.aclass.edx.helloworld.data.contracts.MediaContract;
 
@@ -11,9 +13,20 @@ import static com.aclass.edx.helloworld.data.contracts.MediaContract.MediaEntry;
  * Created by ertd on 3/9/2017.
  */
 
-public class Media {
+public class Media extends DataModel {
 
-    private long id;
+    static final Parcelable.Creator<Media> CREATOR = new Parcelable.Creator<Media>() {
+        @Override
+        public Media createFromParcel(Parcel source) {
+            return new Media(source);
+        }
+
+        @Override
+        public Media[] newArray(int size) {
+            return new Media[size];
+        }
+    };
+
     private String title;
     private String filename;
     private int type;
@@ -24,61 +37,46 @@ public class Media {
         this(0, title, filename, type);
     }
 
+    public Media(Parcel parcel) {
+        this(parcel.readLong(), parcel.readString(), parcel.readString(), parcel.readInt());
+    }
+
     public Media(long id, String title, String filename, int type) {
-        this.id = id;
+        super(id);
         this.title = title;
         this.filename = filename;
         this.type = type;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    @Override
+    public int describeContents() {
+        return hashCode();
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setFilename(String filename) {
-        this.filename = filename;
-    }
-
-    public void setType(int type) {
-        this.type = type;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getFilename() {
-        return filename;
-    }
-
-    public int getType() {
-        return type;
+    @Override
+    public void writeToParcel(Parcel parcel, int flags) {
+        parcel.writeLong(id);
+        parcel.writeString(title);
+        parcel.writeString(filename);
+        parcel.writeInt(type);
     }
 
     /**
      * @param cursor
      * @return Media model instance with fields initialized from Cursor
      */
-    public static Media fromCursor(Cursor cursor) {
-        long id = cursor.getLong(cursor.getColumnIndex(MediaContract.MediaEntry._ID));
-        String title = cursor.getString(cursor.getColumnIndexOrThrow(MediaContract.MediaEntry.COLUMN_NAME_TITLE));
-        String filename = cursor.getString(cursor.getColumnIndexOrThrow(MediaContract.MediaEntry.COLUMN_NAME_FILENAME));
-        int type = cursor.getInt(cursor.getColumnIndexOrThrow(MediaContract.MediaEntry.COLUMN_NAME_TYPE));
-
-        return new Media(id, title, filename, type);
+    @Override
+    public void setValues(Cursor cursor) {
+        setId(cursor.getLong(cursor.getColumnIndex(MediaContract.MediaEntry._ID)));
+        setTitle(cursor.getString(cursor.getColumnIndexOrThrow(MediaContract.MediaEntry.COLUMN_NAME_TITLE)));
+        setFilename(cursor.getString(cursor.getColumnIndexOrThrow(MediaContract.MediaEntry.COLUMN_NAME_FILENAME)));
+        setType(cursor.getInt(cursor.getColumnIndexOrThrow(MediaContract.MediaEntry.COLUMN_NAME_TYPE)));
     }
 
     /**
      * @return ContentValues from attributes in this Media model instance
      */
+    @Override
     public ContentValues toContentValues() {
         ContentValues values = new ContentValues();
 
@@ -92,6 +90,46 @@ public class Media {
 
         return values;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s(%s=%d, %s=%s, %s=%s, %s=%d)", MediaEntry.TABLE_NAME,
+                MediaEntry._ID, id,
+                MediaEntry.COLUMN_NAME_TITLE, title,
+                MediaEntry.COLUMN_NAME_FILENAME, filename,
+                MediaEntry.COLUMN_NAME_TYPE, type);
+    }
+
+    @Override
+    public String getText() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
+
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+
 }
 
 

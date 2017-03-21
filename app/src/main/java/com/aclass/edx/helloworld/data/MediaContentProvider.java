@@ -10,12 +10,14 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 
 import com.aclass.edx.helloworld.data.exceptions.UnsupportedURIException;
 import com.aclass.edx.helloworld.data.contracts.MediaContract;
 
+
+import static com.aclass.edx.helloworld.data.contracts.MediaContract.ContentEntry;
 import static com.aclass.edx.helloworld.data.contracts.MediaContract.MediaEntry;
+import static com.aclass.edx.helloworld.data.contracts.MediaContract.ModuleEntry;
 
 public class MediaContentProvider extends ContentProvider {
 
@@ -25,6 +27,10 @@ public class MediaContentProvider extends ContentProvider {
         uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         uriMatcher.addURI(MediaContract.AUTHORITY, MediaEntry.TABLE_NAME, MediaEntry.LIST);
         uriMatcher.addURI(MediaContract.AUTHORITY, MediaEntry.TABLE_NAME + "/#", MediaEntry.ITEM);
+        uriMatcher.addURI(MediaContract.AUTHORITY, ModuleEntry.TABLE_NAME, ModuleEntry.LIST);
+        uriMatcher.addURI(MediaContract.AUTHORITY, ModuleEntry.TABLE_NAME + "/#", ModuleEntry.ITEM);
+        uriMatcher.addURI(MediaContract.AUTHORITY, ContentEntry.TABLE_NAME, ContentEntry.LIST);
+        uriMatcher.addURI(MediaContract.AUTHORITY, ContentEntry.TABLE_NAME + "/#", ContentEntry.ITEM);
     }
 
     @Override
@@ -37,14 +43,29 @@ public class MediaContentProvider extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
-        queryBuilder.setTables(MediaEntry.TABLE_NAME);
 
         int uriType = uriMatcher.match(uri);
         switch(uriType) {
             case MediaEntry.LIST:
+                queryBuilder.setTables(MediaEntry.TABLE_NAME);
                 break;
             case MediaEntry.ITEM:
+                queryBuilder.setTables(MediaEntry.TABLE_NAME);
                 queryBuilder.appendWhere(MediaEntry._ID + " = " + uri.getLastPathSegment());
+                break;
+            case ModuleEntry.LIST:
+                queryBuilder.setTables(ModuleEntry.TABLE_NAME);
+                break;
+            case ModuleEntry.ITEM:
+                queryBuilder.setTables(ModuleEntry.TABLE_NAME);
+                queryBuilder.appendWhere(ModuleEntry._ID + " = " + uri.getLastPathSegment());
+                break;
+            case ContentEntry.LIST:
+                queryBuilder.setTables(ContentEntry.TABLE_NAME);
+                break;
+            case ContentEntry.ITEM:
+                queryBuilder.setTables(ContentEntry.TABLE_NAME);
+                queryBuilder.appendWhere(ContentEntry._ID + " = " + uri.getLastPathSegment());
                 break;
             default:
                 throw new UnsupportedURIException(uri);
@@ -66,6 +87,14 @@ public class MediaContentProvider extends ContentProvider {
                 return MediaEntry.CONTENT_TYPE;
             case MediaEntry.ITEM:
                 return MediaEntry.CONTENT_ITEM_TYPE;
+            case ModuleEntry.LIST:
+                return ModuleEntry.CONTENT_TYPE;
+            case ModuleEntry.ITEM:
+                return ModuleEntry.CONTENT_ITEM_TYPE;
+            case ContentEntry.LIST:
+                return ContentEntry.CONTENT_TYPE;
+            case ContentEntry.ITEM:
+                return ContentEntry.CONTENT_ITEM_TYPE;
             default:
                 throw new UnsupportedURIException(uri);
         }
@@ -81,6 +110,12 @@ public class MediaContentProvider extends ContentProvider {
         switch(uriType) {
             case MediaEntry.LIST:
                 id = db.insertOrThrow(MediaEntry.TABLE_NAME, null, values);
+                break;
+            case ModuleEntry.LIST:
+                id = db.insertOrThrow(ModuleEntry.TABLE_NAME, null, values);
+                break;
+            case ContentEntry.LIST:
+                id = db.insertOrThrow(ContentEntry.TABLE_NAME, null, values);
                 break;
             default:
                 throw new UnsupportedURIException(uri);
@@ -99,18 +134,29 @@ public class MediaContentProvider extends ContentProvider {
         SQLiteDatabase db = DBHelper.getInstance(getContext()).getWritableDatabase();
         int uriType = uriMatcher.match(uri);
         int rowsDeleted = 0;
+        String id = "";
 
         switch(uriType) {
             case MediaEntry.LIST:
                 rowsDeleted = db.delete(MediaEntry.TABLE_NAME, selection, selectionArgs);
                 break;
             case MediaEntry.ITEM:
-                String id = uri.getLastPathSegment();
-                if (TextUtils.isEmpty(selection)) {
-                    rowsDeleted = db.delete(MediaEntry.TABLE_NAME, MediaEntry._ID + " = ? ", new String[]{id});
-                } else {
-                    rowsDeleted = db.delete(MediaEntry.TABLE_NAME, MediaEntry._ID + " = " + id + " and " + selection, selectionArgs);
-                }
+                id = uri.getLastPathSegment();
+                rowsDeleted = db.delete(MediaEntry.TABLE_NAME, MediaEntry._ID + " = ? ", new String[]{id});
+                break;
+            case ModuleEntry.LIST:
+                rowsDeleted = db.delete(ModuleEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            case ModuleEntry.ITEM:
+                id = uri.getLastPathSegment();
+                rowsDeleted = db.delete(ModuleEntry.TABLE_NAME, ModuleEntry._ID + " = ? ", new String[]{id});
+                break;
+            case ContentEntry.LIST:
+                rowsDeleted = db.delete(ContentEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            case ContentEntry.ITEM:
+                id = uri.getLastPathSegment();
+                rowsDeleted = db.delete(ContentEntry.TABLE_NAME, ContentEntry._ID + " = ?", new String[]{id});
                 break;
             default:
                 throw new UnsupportedURIException(uri);
