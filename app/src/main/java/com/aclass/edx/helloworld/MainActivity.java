@@ -10,7 +10,6 @@ import android.widget.ListView;
 
 public class MainActivity extends ListActivity {
 
-    private final static String MENU_ITEM_VIDEO = "Video List + Player";
     private final static String MENU_ITEM_AUDIO = "Audio Recorder and Player";
     private final static String MENU_ITEM_DASHBOARD = "Dashboard";
 
@@ -31,9 +30,6 @@ public class MainActivity extends ListActivity {
         Intent intent = null;
 
         switch(menuItem) {
-            case MENU_ITEM_VIDEO:
-                intent = new Intent(this, VideoListActivity.class);
-                break;
             case MENU_ITEM_AUDIO:
                 intent = new Intent(this, AudioRecorderActivity.class);
                 break;

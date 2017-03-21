@@ -8,14 +8,13 @@
         <item>Knowledge</item>
     </string-array>
     <string-array name="menu_items">
-        <item>Video List + Player</item>
         <item>Audio Recorder and Player</item>
         <item>Dashboard</item>
     </string-array>
     <!-- Common -->
     <string name="all_profile">Profile</string>
     <string name="all_practice">Practice</string>
-    <string name="all_skip">Skip</string>
+    <string name="all_skip">Skip for now</string>
     <string name="all_submit">Submit</string>
     <string name="all_name_placeholder">Juan</string>
     <string name="all_prefs_file">com.aclass.edx.helloworld.app.preferences</string>

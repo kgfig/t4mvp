@@ -7,13 +7,14 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.aclass.edx.helloworld.utils.PrefUtils;
 
 public class GetNameActivity extends AppCompatActivity implements View.OnClickListener{
 
     private EditText nicknameField;
-    private Button submit, skip;
+    private TextView submit, skip;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,7 +23,7 @@ public class GetNameActivity extends AppCompatActivity implements View.OnClickLi
 
         nicknameField = (EditText) findViewById(R.id.enter_nickname_field);
         submit = (Button) findViewById(R.id.submit_nickname);
-        skip = (Button) findViewById(R.id.skip_nickname);
+        skip = (TextView) findViewById(R.id.skip_nickname);
 
         submit.setOnClickListener(this);
         skip.setOnClickListener(this);

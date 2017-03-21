@@ -13,7 +13,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import static com.aclass.edx.helloworld.data.contracts.MediaContract.ContentEntry;
@@ -44,9 +43,7 @@ public class ContentListActivity extends AppCompatActivity implements LoaderMana
         this.module = getIntent().getParcelableExtra(getString(R.string.dashboard_selected_module_key));
 
         // Init toolbar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.content_list_toolbar);
-        toolbar.setTitle(module.getTitle());
-        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(module.getTitle());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Init content
@@ -100,18 +97,6 @@ public class ContentListActivity extends AppCompatActivity implements LoaderMana
             default:
                 Toast.makeText(this, "Content type " + content.getType() +
                         " not supported", Toast.LENGTH_SHORT);
-        }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int menuItemId = item.getItemId();
-
-        switch (menuItemId) {
-            case android.R.id.home:
-                return true;
-            default:
-                return false;
         }
     }
 

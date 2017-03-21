@@ -4,8 +4,10 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.support.v4.app.NavUtils;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.MediaController;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -35,9 +37,7 @@ public class VideoActivity extends AppCompatActivity {
                 getResources().getIdentifier(videoModel.getFilename(), "raw", getPackageName()));
 
         // Init toolbar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.video_toolbar);
-        toolbar.setTitle(content.getTitle());
-        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(content.getTitle());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Init video player and controls

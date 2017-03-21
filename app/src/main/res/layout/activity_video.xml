@@ -7,16 +7,6 @@
     android:layout_height="match_parent"
     tools:context=".VideoActivity">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/video_toolbar"
-        android:layout_gravity="top"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:elevation="@dimen/toolbar_elevation"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
-
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">

@@ -8,7 +8,7 @@
     <dimen name="activity_horizontal_margin">20dp</dimen>
     <dimen name="activity_vertical_margin">20dp</dimen>
     <dimen name="text_size">16sp</dimen>
-    <dimen name="header_size">20sp</dimen>
+    <dimen name="header_size">24sp</dimen>
 
     <!-- Toolbar -->
     <dimen name="toolbar_elevation">4dp</dimen>
@@ -17,4 +17,10 @@
     <!-- List item/row -->
     <dimen name="list_icon_size">24dp</dimen>
     <dimen name="list_icon_padding">8dp</dimen>
+
+    <!-- Get name -->
+    <dimen name="welcome_padding_top">64dp</dimen>
+    <dimen name="field_vertical_padding">32dp</dimen>
+    <dimen name="action_bar_margin">10dp</dimen>
+
 </resources>
