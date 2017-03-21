@@ -1,6 +1,7 @@
 package com.aclass.edx.helloworld.data.models;
 
 import android.content.ContentValues;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -80,6 +81,7 @@ public class Module extends DataModel {
                 ModuleEntry.COLUMN_NAME_TITLE, title);
     }
 
+    // TODO store icon per module
     @Override
     public int getImageId() {
         return 0;

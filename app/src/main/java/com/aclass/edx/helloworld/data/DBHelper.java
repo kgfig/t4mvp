@@ -45,6 +45,7 @@ public class DBHelper extends SQLiteOpenHelper {
         public static final String CREATE_TABLE_CONTENT = CREATE_TABLE + ContentEntry.TABLE_NAME + " (" +
                 ContentEntry._ID + INT_PK_AUTOINCREMENT + COMMA +
                 ContentEntry.COLUMN_NAME_MODULE_ID + INT_NOT_NULL + COMMA +
+                ContentEntry.COLUMN_NAME_TITLE + TEXT_NOT_NULL + COMMA +
                 ContentEntry.COLUMN_NAME_TYPE + INT_NOT_NULL + COMMA +
                 ContentEntry.COLUMN_NAME_CONTENT_ID + INT_NOT_NULL + COMMA +
                 FK_START + ContentEntry.COLUMN_NAME_MODULE_ID + FK_REFERENCES +

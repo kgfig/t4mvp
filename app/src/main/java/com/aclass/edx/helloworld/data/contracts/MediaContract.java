@@ -61,9 +61,10 @@ public final class MediaContract {
         // Schema
         public static final String TABLE_NAME = "content";
         public static final String COLUMN_NAME_MODULE_ID = "module_id";
+        public static final String COLUMN_NAME_TITLE = "title";
         public static final String COLUMN_NAME_TYPE = "type";
         public static final String COLUMN_NAME_CONTENT_ID = "content_id";
-        public static final String[] ALL_COLUMN_NAMES = {ContentEntry._ID, ContentEntry.COLUMN_NAME_MODULE_ID, ContentEntry.COLUMN_NAME_TYPE, ContentEntry.COLUMN_NAME_CONTENT_ID};
+        public static final String[] ALL_COLUMN_NAMES = {ContentEntry._ID, ContentEntry.COLUMN_NAME_MODULE_ID, ContentEntry.COLUMN_NAME_TITLE, ContentEntry.COLUMN_NAME_TYPE, ContentEntry.COLUMN_NAME_CONTENT_ID};
         // Types
         public static final int TYPE_LESSON_MEDIA = 1;
         // Content URL for this table

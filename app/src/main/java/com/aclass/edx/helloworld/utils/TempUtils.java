@@ -69,16 +69,6 @@ public class TempUtils {
         return cursor.moveToNext() ? cursor.getLong(cursor.getColumnIndex(ModuleEntry._ID)) : 0;
     }
 
-    public static long[] getContent(SQLiteDatabase db, long moduleId) {
-        Cursor cursor = db.query(ContentEntry.TABLE_NAME, new String[]{ContentEntry._ID, ContentEntry.COLUMN_NAME_MODULE_ID}, "module_id = ?", new String[]{moduleId+""}, null, null, MediaEntry._ID, "1");
-        long[] ids=  new long[2];
-        int count = 0;
-        while(cursor.moveToNext()) {
-            ids[count++] = cursor.getLong(cursor.getColumnIndex(ContentEntry._ID));
-        }
-        return ids;
-    }
-
     public static void insertContentTestData(SQLiteDatabase db) {
         long courtesyId = getMediaId(db, COURTESY.getTitle());
         long warmthId = getMediaId(db, WARMTH.getTitle());
@@ -89,11 +79,17 @@ public class TempUtils {
         long interviewsId = getModuleId(db, INTERVIEW.getTitle());
         long businessId = getModuleId(db, BUSINESS_CORRESPONDENCE.getTitle());
 
-        Content meetingContent1 = new Content(ContentEntry.TYPE_LESSON_MEDIA, meetingsId, courtesyId);
-        Content meetingContent2 = new Content(ContentEntry.TYPE_LESSON_MEDIA, meetingsId, warmthId);
-        Content interviewContent1 = new Content(ContentEntry.TYPE_LESSON_MEDIA, interviewsId, initiativeId);
-        Content interviewContent2 = new Content(ContentEntry.TYPE_LESSON_MEDIA, interviewsId, teamworkId);
-        Content businessContent = new Content(ContentEntry.TYPE_LESSON_MEDIA, businessId, knowledgeId);
+        String courtesyTitle = COURTESY.getTitle();
+        String warmthTitle = WARMTH.getTitle();
+        String initiativeTitle = INITIATIVE.getTitle();
+        String teamworkTitle = TEAMWORK.getTitle();
+        String knowledgeTitle = KNOWLEDGE.getTitle();
+
+        Content meetingContent1 = new Content(meetingsId, courtesyTitle, ContentEntry.TYPE_LESSON_MEDIA, courtesyId);
+        Content meetingContent2 = new Content(meetingsId, warmthTitle, ContentEntry.TYPE_LESSON_MEDIA, warmthId);
+        Content interviewContent1 = new Content(interviewsId, initiativeTitle, ContentEntry.TYPE_LESSON_MEDIA, initiativeId);
+        Content interviewContent2 = new Content(interviewsId, teamworkTitle, ContentEntry.TYPE_LESSON_MEDIA, teamworkId);
+        Content businessContent = new Content(businessId, knowledgeTitle, ContentEntry.TYPE_LESSON_MEDIA, knowledgeId);
         Content[] contents = new Content[]{meetingContent1, meetingContent2, interviewContent1, interviewContent2, businessContent};
 
         for (Content content : contents) {
@@ -102,16 +98,15 @@ public class TempUtils {
 
         Cursor cursor = db.query(
                 ContentEntry.TABLE_NAME,
-                new String[]{ContentEntry._ID, ContentEntry.COLUMN_NAME_TYPE, ContentEntry.COLUMN_NAME_MODULE_ID, ContentEntry.COLUMN_NAME_CONTENT_ID},
+                ContentEntry.ALL_COLUMN_NAMES,
                 ContentEntry.COLUMN_NAME_MODULE_ID + " = ?",
                 new String[]{meetingsId + ""},
                 null, null, null);
 
         while (cursor.moveToNext()) {
-            long id = cursor.getLong(cursor.getColumnIndex(ContentEntry._ID));
-            long cid = cursor.getLong(cursor.getColumnIndex(ContentEntry.COLUMN_NAME_CONTENT_ID));
-            long mid = cursor.getLong(cursor.getColumnIndex(ContentEntry.COLUMN_NAME_MODULE_ID));
-            Log.d("TEST", "fetched stuff " + id + " and content=" + cid + " and module=" + mid);
+            Content content = new Content();
+            content.setValues(cursor);
+            Log.d("TEST", "fetched stuff " + content);
         }
 
     }

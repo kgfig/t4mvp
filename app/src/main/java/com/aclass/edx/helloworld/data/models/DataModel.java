@@ -11,17 +11,11 @@ import android.os.Parcelable;
 public abstract class DataModel implements Parcelable {
 
     protected long id;
-    protected String text;
 
-    public DataModel() { this(0, ""); }
+    public DataModel() { this(0); }
 
     public DataModel(long id) {
-        this(id, "");
-    }
-
-    public DataModel(long id, String text) {
         this.id = id;
-        this.text = text;
     }
 
     public abstract void setValues(Cursor cursor);

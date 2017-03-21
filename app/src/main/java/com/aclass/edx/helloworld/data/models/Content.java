@@ -27,29 +27,28 @@ public class Content extends DataModel {
         }
     };
 
-    private int type;
     private long moduleId;
+    private String title;
+    private int type;
     private long contentId;
 
     public Content() {
         super();
     }
 
-    public Content(int type, long moduleId, long contentId) {
-        super();
-        this.type = type;
-        this.moduleId = moduleId;
-        this.contentId = contentId;
+    public Content(long moduleId, String title, int type, long contentId) {
+        this(0, moduleId, title, type, contentId);
     }
 
     public Content(Parcel parcel) {
-        this(parcel.readLong(), parcel.readInt(), parcel.readLong(), parcel.readLong());
+        this(parcel.readLong(), parcel.readLong(), parcel.readString(), parcel.readInt(), parcel.readLong());
     }
 
-    public Content(long id, int type, long moduleId, long contentId) {
+    public Content(long id, long moduleId, String title, int type, long contentId) {
         super(id);
-        this.type = type;
         this.moduleId = moduleId;
+        this.title = title;
+        this.type = type;
         this.contentId = contentId;
     }
 
@@ -61,16 +60,18 @@ public class Content extends DataModel {
     @Override
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeLong(id);
-        parcel.writeInt(type);
         parcel.writeLong(moduleId);
+        parcel.writeString(title);
+        parcel.writeInt(type);
         parcel.writeLong(contentId);
     }
 
     @Override
     public void setValues(Cursor cursor) {
         setId(cursor.getLong(cursor.getColumnIndex(ContentEntry._ID)));
-        setType(cursor.getInt(cursor.getColumnIndex(ContentEntry.COLUMN_NAME_TYPE)));
         setModuleId(cursor.getLong(cursor.getColumnIndex(ContentEntry.COLUMN_NAME_MODULE_ID)));
+        setTitle(cursor.getString(cursor.getColumnIndex(ContentEntry.COLUMN_NAME_TITLE)));
+        setType(cursor.getInt(cursor.getColumnIndex(ContentEntry.COLUMN_NAME_TYPE)));
         setContentId(cursor.getLong(cursor.getColumnIndex(ContentEntry.COLUMN_NAME_CONTENT_ID)));
     }
 
@@ -82,25 +83,27 @@ public class Content extends DataModel {
             values.put(ContentEntry._ID, getId());
         }
 
-        values.put(ContentEntry.COLUMN_NAME_TYPE, getType());
         values.put(ContentEntry.COLUMN_NAME_MODULE_ID, getModuleId());
+        values.put(ContentEntry.COLUMN_NAME_TITLE, getTitle());
+        values.put(ContentEntry.COLUMN_NAME_TYPE, getType());
         values.put(ContentEntry.COLUMN_NAME_CONTENT_ID, getContentId());
         return values;
     }
 
     @Override
     public String toString() {
-        return String.format("%s(%s=%d, %s=%d, %s=%d, %s=%d)",
+        return String.format("%s(%s=%d, %s=%d, %s=%s, %s=%d, %s=%d)",
                 ContentEntry.TABLE_NAME,
                 ContentEntry._ID, id,
-                ContentEntry.COLUMN_NAME_TYPE, type,
                 ContentEntry.COLUMN_NAME_MODULE_ID, moduleId,
+                ContentEntry.COLUMN_NAME_TYPE, type,
+                ContentEntry.COLUMN_NAME_TITLE, title,
                 ContentEntry.COLUMN_NAME_CONTENT_ID, contentId);
     }
 
     @Override
     public String getText() {
-        return toString();
+        return title;
     }
 
     @Override
@@ -137,5 +140,11 @@ public class Content extends DataModel {
         this.contentId = contentId;
     }
 
+    public String getTitle() {
+        return title;
+    }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
 }
