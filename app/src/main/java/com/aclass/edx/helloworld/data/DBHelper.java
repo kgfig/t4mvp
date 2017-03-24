@@ -4,9 +4,9 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import static com.aclass.edx.helloworld.data.contracts.MediaContract.ContentEntry;
-import static com.aclass.edx.helloworld.data.contracts.MediaContract.MediaEntry;
-import static com.aclass.edx.helloworld.data.contracts.MediaContract.ModuleEntry;
+import static com.aclass.edx.helloworld.data.contracts.AppContract.ContentEntry;
+import static com.aclass.edx.helloworld.data.contracts.AppContract.MediaEntry;
+import static com.aclass.edx.helloworld.data.contracts.AppContract.ModuleEntry;
 
 import com.aclass.edx.helloworld.utils.TempUtils;
 
@@ -34,6 +34,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         public static final String CREATE_TABLE_MEDIA = CREATE_TABLE + MediaEntry.TABLE_NAME + " (" +
                 MediaEntry._ID + INT_PK_AUTOINCREMENT + COMMA +
+                MediaEntry.COLUMN_NAME_TITLE + TEXT_NOT_NULL + COMMA +
                 MediaEntry.COLUMN_NAME_FILENAME + TEXT_NOT_NULL + COMMA +
                 MediaEntry.COLUMN_NAME_TYPE + INT_NOT_NULL + ");";
 
@@ -47,11 +48,11 @@ public class DBHelper extends SQLiteOpenHelper {
                 ContentEntry.COLUMN_NAME_TITLE + TEXT_NOT_NULL + COMMA +
                 ContentEntry.COLUMN_NAME_TYPE + INT_NOT_NULL + COMMA +
                 ContentEntry.COLUMN_NAME_CONTENT_ID + INT_NOT_NULL + COMMA +
+                ContentEntry.COLUMN_NAME_SEQ_NUM + INT_NOT_NULL + COMMA +
                 FK_START + ContentEntry.COLUMN_NAME_MODULE_ID + FK_REFERENCES +
                 ModuleEntry.TABLE_NAME + "(" + ModuleEntry._ID + FK_END +");";
 
         private static final String DROP_TABLE_IF_EXISTS = "DROP TABLE IF EXISTS %s;\n";
-
     }
 
     // Singleton

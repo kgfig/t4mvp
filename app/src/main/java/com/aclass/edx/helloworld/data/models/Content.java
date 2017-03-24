@@ -7,7 +7,7 @@ import android.os.Parcelable;
 
 import com.aclass.edx.helloworld.R;
 
-import static com.aclass.edx.helloworld.data.contracts.MediaContract.ContentEntry;
+import static com.aclass.edx.helloworld.data.contracts.AppContract.ContentEntry;
 
 /**
  * Created by tictocproject on 20/03/2017.
@@ -28,28 +28,30 @@ public class Content extends DataModel {
     };
 
     private long moduleId;
-    private String title;
     private int type;
+    private String title;
     private long contentId;
+    private int seqNum;
 
     public Content() {
         super();
     }
 
-    public Content(long moduleId, String title, int type, long contentId) {
-        this(0, moduleId, title, type, contentId);
+    public Content(long moduleId, int type, String title, long contentId, int seqNum) {
+        this(0, moduleId, type, title, contentId, seqNum);
     }
 
     public Content(Parcel parcel) {
-        this(parcel.readLong(), parcel.readLong(), parcel.readString(), parcel.readInt(), parcel.readLong());
+        this(parcel.readLong(), parcel.readLong(), parcel.readInt(), parcel.readString(), parcel.readLong(), parcel.readInt());
     }
 
-    public Content(long id, long moduleId, String title, int type, long contentId) {
+    public Content(long id, long moduleId, int type, String title, long contentId, int seqNum) {
         super(id);
         this.moduleId = moduleId;
-        this.title = title;
         this.type = type;
+        this.title = title;
         this.contentId = contentId;
+        this.seqNum = seqNum;
     }
 
     @Override
@@ -61,18 +63,20 @@ public class Content extends DataModel {
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeLong(id);
         parcel.writeLong(moduleId);
-        parcel.writeString(title);
         parcel.writeInt(type);
+        parcel.writeString(title);
         parcel.writeLong(contentId);
+        parcel.writeInt(seqNum);
     }
 
     @Override
     public void setValues(Cursor cursor) {
         setId(cursor.getLong(cursor.getColumnIndex(ContentEntry._ID)));
         setModuleId(cursor.getLong(cursor.getColumnIndex(ContentEntry.COLUMN_NAME_MODULE_ID)));
-        setTitle(cursor.getString(cursor.getColumnIndex(ContentEntry.COLUMN_NAME_TITLE)));
         setType(cursor.getInt(cursor.getColumnIndex(ContentEntry.COLUMN_NAME_TYPE)));
+        setTitle(cursor.getString(cursor.getColumnIndex(ContentEntry.COLUMN_NAME_TITLE)));
         setContentId(cursor.getLong(cursor.getColumnIndex(ContentEntry.COLUMN_NAME_CONTENT_ID)));
+        setSeqNum(cursor.getInt(cursor.getColumnIndex(ContentEntry.COLUMN_NAME_SEQ_NUM)));
     }
 
     @Override
@@ -87,18 +91,20 @@ public class Content extends DataModel {
         values.put(ContentEntry.COLUMN_NAME_TITLE, getTitle());
         values.put(ContentEntry.COLUMN_NAME_TYPE, getType());
         values.put(ContentEntry.COLUMN_NAME_CONTENT_ID, getContentId());
+        values.put(ContentEntry.COLUMN_NAME_SEQ_NUM, getSeqNum());
         return values;
     }
 
     @Override
     public String toString() {
-        return String.format("%s(%s=%d, %s=%d, %s=%s, %s=%d, %s=%d)",
+        return String.format("%s(%s=%d, %s=%d, %s=%d, %s=%s, %s=%d, %s=%d)",
                 ContentEntry.TABLE_NAME,
                 ContentEntry._ID, id,
                 ContentEntry.COLUMN_NAME_MODULE_ID, moduleId,
-                ContentEntry.COLUMN_NAME_TITLE, title,
                 ContentEntry.COLUMN_NAME_TYPE, type,
-                ContentEntry.COLUMN_NAME_CONTENT_ID, contentId);
+                ContentEntry.COLUMN_NAME_TITLE, title,
+                ContentEntry.COLUMN_NAME_CONTENT_ID, contentId,
+                ContentEntry.COLUMN_NAME_SEQ_NUM, seqNum);
     }
 
     @Override
@@ -116,6 +122,14 @@ public class Content extends DataModel {
         }
     }
 
+    public long getModuleId() {
+        return moduleId;
+    }
+
+    public void setModuleId(long moduleId) {
+        this.moduleId = moduleId;
+    }
+
     public int getType() {
         return type;
     }
@@ -124,12 +138,12 @@ public class Content extends DataModel {
         this.type = type;
     }
 
-    public long getModuleId() {
-        return moduleId;
+    public String getTitle() {
+        return title;
     }
 
-    public void setModuleId(long moduleId) {
-        this.moduleId = moduleId;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public long getContentId() {
@@ -140,11 +154,11 @@ public class Content extends DataModel {
         this.contentId = contentId;
     }
 
-    public String getTitle() {
-        return title;
+    public int getSeqNum() {
+        return seqNum;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setSeqNum(int seqNum) {
+        this.seqNum = seqNum;
     }
 }

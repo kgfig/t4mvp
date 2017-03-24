@@ -12,25 +12,25 @@ import android.net.Uri;
 import android.support.annotation.Nullable;
 
 import com.aclass.edx.helloworld.data.exceptions.UnsupportedURIException;
-import com.aclass.edx.helloworld.data.contracts.MediaContract;
+import com.aclass.edx.helloworld.data.contracts.AppContract;
 
 
-import static com.aclass.edx.helloworld.data.contracts.MediaContract.ContentEntry;
-import static com.aclass.edx.helloworld.data.contracts.MediaContract.MediaEntry;
-import static com.aclass.edx.helloworld.data.contracts.MediaContract.ModuleEntry;
+import static com.aclass.edx.helloworld.data.contracts.AppContract.ContentEntry;
+import static com.aclass.edx.helloworld.data.contracts.AppContract.MediaEntry;
+import static com.aclass.edx.helloworld.data.contracts.AppContract.ModuleEntry;
 
-public class MediaContentProvider extends ContentProvider {
+public class AppContentProvider extends ContentProvider {
 
     private static final UriMatcher uriMatcher;
 
     static {
         uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        uriMatcher.addURI(MediaContract.AUTHORITY, MediaEntry.TABLE_NAME, MediaEntry.LIST);
-        uriMatcher.addURI(MediaContract.AUTHORITY, MediaEntry.TABLE_NAME + "/#", MediaEntry.ITEM);
-        uriMatcher.addURI(MediaContract.AUTHORITY, ModuleEntry.TABLE_NAME, ModuleEntry.LIST);
-        uriMatcher.addURI(MediaContract.AUTHORITY, ModuleEntry.TABLE_NAME + "/#", ModuleEntry.ITEM);
-        uriMatcher.addURI(MediaContract.AUTHORITY, ContentEntry.TABLE_NAME, ContentEntry.LIST);
-        uriMatcher.addURI(MediaContract.AUTHORITY, ContentEntry.TABLE_NAME + "/#", ContentEntry.ITEM);
+        uriMatcher.addURI(AppContract.AUTHORITY, MediaEntry.TABLE_NAME, MediaEntry.LIST);
+        uriMatcher.addURI(AppContract.AUTHORITY, MediaEntry.TABLE_NAME + "/#", MediaEntry.ITEM);
+        uriMatcher.addURI(AppContract.AUTHORITY, ModuleEntry.TABLE_NAME, ModuleEntry.LIST);
+        uriMatcher.addURI(AppContract.AUTHORITY, ModuleEntry.TABLE_NAME + "/#", ModuleEntry.ITEM);
+        uriMatcher.addURI(AppContract.AUTHORITY, ContentEntry.TABLE_NAME, ContentEntry.LIST);
+        uriMatcher.addURI(AppContract.AUTHORITY, ContentEntry.TABLE_NAME + "/#", ContentEntry.ITEM);
     }
 
     @Override
@@ -45,7 +45,7 @@ public class MediaContentProvider extends ContentProvider {
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
 
         int uriType = uriMatcher.match(uri);
-        switch(uriType) {
+        switch (uriType) {
             case MediaEntry.LIST:
                 queryBuilder.setTables(MediaEntry.TABLE_NAME);
                 break;
@@ -82,7 +82,7 @@ public class MediaContentProvider extends ContentProvider {
     @Override
     public String getType(Uri uri) {
         int uriType = uriMatcher.match(uri);
-        switch(uriType) {
+        switch (uriType) {
             case MediaEntry.LIST:
                 return MediaEntry.CONTENT_TYPE;
             case MediaEntry.ITEM:
@@ -107,7 +107,7 @@ public class MediaContentProvider extends ContentProvider {
         int uriType = uriMatcher.match(uri);
         long id = 0;
 
-        switch(uriType) {
+        switch (uriType) {
             case MediaEntry.LIST:
                 id = db.insertOrThrow(MediaEntry.TABLE_NAME, null, values);
                 break;
@@ -126,7 +126,7 @@ public class MediaContentProvider extends ContentProvider {
             return ContentUris.withAppendedId(uri, id);
         }
 
-        throw new SQLException("Error inserting into table " + MediaEntry.TABLE_NAME);
+        throw new SQLException("Error inserting values into database");
     }
 
     @Override
@@ -136,7 +136,7 @@ public class MediaContentProvider extends ContentProvider {
         int rowsDeleted = 0;
         String id = "";
 
-        switch(uriType) {
+        switch (uriType) {
             case MediaEntry.LIST:
                 rowsDeleted = db.delete(MediaEntry.TABLE_NAME, selection, selectionArgs);
                 break;

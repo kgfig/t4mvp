@@ -11,12 +11,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
 import android.widget.Toast;
 
-import static com.aclass.edx.helloworld.data.contracts.MediaContract.ContentEntry;
-import static com.aclass.edx.helloworld.data.contracts.MediaContract.MediaEntry;
+import static com.aclass.edx.helloworld.data.contracts.AppContract.ContentEntry;
+import static com.aclass.edx.helloworld.data.contracts.AppContract.MediaEntry;
 
 import com.aclass.edx.helloworld.data.models.Content;
 import com.aclass.edx.helloworld.data.models.Media;
@@ -115,7 +113,6 @@ public class ContentListActivity extends AppCompatActivity implements LoaderMana
 
             Intent intent = new Intent(this, VideoActivity.class);
             intent.putExtra(getString(R.string.content_list_selected_video_key), media);
-            intent.putExtra(getString(R.string.content_list_selected_content), content);
             startActivity(intent);
         } else {
             throw new RuntimeException(getString(R.string.all_error_no_media_found_by_id));

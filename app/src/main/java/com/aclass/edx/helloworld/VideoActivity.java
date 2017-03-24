@@ -21,8 +21,7 @@ public class VideoActivity extends AppCompatActivity {
     private int position;
     private VideoView videoView;
     private MediaController mediaController;
-    private Media videoModel;
-    private Content content;
+    private Media video;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,13 +30,12 @@ public class VideoActivity extends AppCompatActivity {
 
         // Get selected content and video
         Intent intent = getIntent();
-        content = intent.getParcelableExtra(getString(R.string.content_list_selected_content));
-        videoModel = intent.getParcelableExtra(getString(R.string.content_list_selected_video_key));
+        video = intent.getParcelableExtra(getString(R.string.content_list_selected_video_key));
         Uri videoUri = Uri.parse("android.resource://" + getPackageName() + "/" +
-                getResources().getIdentifier(videoModel.getFilename(), "raw", getPackageName()));
+                getResources().getIdentifier(video.getFilename(), "raw", getPackageName()));
 
         // Init toolbar
-        getSupportActionBar().setTitle(content.getTitle());
+        getSupportActionBar().setTitle(video.getTitle());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Init video player and controls

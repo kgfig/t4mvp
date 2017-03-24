@@ -40,8 +40,8 @@
         <activity android:name=".AudioRecorderActivity" />
 
         <provider
-            android:name=".data.MediaContentProvider"
-            android:authorities="com.aclass.edx.helloworld.data.provider" />
+            android:name=".data.AppContentProvider"
+            android:authorities="com.aclass.edx.helloworld" />
 
     </application>
 

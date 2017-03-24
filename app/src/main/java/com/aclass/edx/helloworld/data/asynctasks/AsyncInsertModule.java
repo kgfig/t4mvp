@@ -3,9 +3,8 @@ package com.aclass.edx.helloworld.data.asynctasks;
 import android.content.ContentResolver;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.util.Log;
 
-import com.aclass.edx.helloworld.data.contracts.MediaContract;
+import com.aclass.edx.helloworld.data.contracts.AppContract;
 import com.aclass.edx.helloworld.data.models.Module;
 
 import java.util.ArrayList;
@@ -29,7 +28,7 @@ public abstract class AsyncInsertModule extends AsyncTask<Module, Void, List> {
 
         for (Module param : params) {
             Uri resultUri = contentResolver.insert(
-                    MediaContract.ModuleEntry.CONTENT_URI,
+                    AppContract.ModuleEntry.CONTENT_URI,
                     param.toContentValues()
             );
 

@@ -5,7 +5,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 
 import com.aclass.edx.helloworld.data.models.Media;
-import com.aclass.edx.helloworld.data.contracts.MediaContract;
+import com.aclass.edx.helloworld.data.contracts.AppContract;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +28,7 @@ public abstract class AsyncInsertMedia extends AsyncTask<Media, Void, List> {
 
         for (Media param : params) {
             Uri resultUri = contentResolver.insert(
-                    MediaContract.MediaEntry.CONTENT_URI,
+                    AppContract.MediaEntry.CONTENT_URI,
                     param.toContentValues()
             );
 

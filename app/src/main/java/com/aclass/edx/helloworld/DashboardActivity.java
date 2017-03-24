@@ -16,7 +16,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import static com.aclass.edx.helloworld.data.contracts.MediaContract.ModuleEntry;
+import static com.aclass.edx.helloworld.data.contracts.AppContract.ModuleEntry;
 
 import com.aclass.edx.helloworld.data.models.Module;
 import com.aclass.edx.helloworld.utils.PrefUtils;

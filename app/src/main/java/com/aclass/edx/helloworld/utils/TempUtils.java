@@ -4,10 +4,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import static com.aclass.edx.helloworld.data.contracts.MediaContract.CONTENT_URI;
-import static com.aclass.edx.helloworld.data.contracts.MediaContract.ContentEntry;
-import static com.aclass.edx.helloworld.data.contracts.MediaContract.MediaEntry;
-import static com.aclass.edx.helloworld.data.contracts.MediaContract.ModuleEntry;
+import static com.aclass.edx.helloworld.data.contracts.AppContract.ContentEntry;
+import static com.aclass.edx.helloworld.data.contracts.AppContract.MediaEntry;
+import static com.aclass.edx.helloworld.data.contracts.AppContract.ModuleEntry;
 
 import com.aclass.edx.helloworld.data.models.Content;
 import com.aclass.edx.helloworld.data.models.Media;
@@ -16,18 +15,18 @@ import com.aclass.edx.helloworld.data.models.Module;
 /**
  * Created by tictocproject on 20/03/2017.
  */
-
+// TODO remove this class in production code
 // IMPORTANT NOTE:
 // Most of the code here are placeholders and are to be deleted.
 
 public class TempUtils {
 
     // Object test data
-    public static Media COURTESY = new Media("video1", MediaEntry.TYPE_VIDEO);
-    public static Media WARMTH = new Media("video2", MediaEntry.TYPE_VIDEO);
-    public static Media INITIATIVE = new Media("video3", MediaEntry.TYPE_VIDEO);
-    public static Media TEAMWORK = new Media("video4", MediaEntry.TYPE_VIDEO);
-    public static Media KNOWLEDGE = new Media("video5", MediaEntry.TYPE_VIDEO);
+    public static Media COURTESY = new Media("Courtesy", "video1", MediaEntry.TYPE_VIDEO);
+    public static Media WARMTH = new Media("Warmth", "video2", MediaEntry.TYPE_VIDEO);
+    public static Media INITIATIVE = new Media("Initiative", "video3", MediaEntry.TYPE_VIDEO);
+    public static Media TEAMWORK = new Media("Teamwork", "video4", MediaEntry.TYPE_VIDEO);
+    public static Media KNOWLEDGE = new Media("Knowledge", "video5", MediaEntry.TYPE_VIDEO);
     public static Module INTERVIEW = new Module("Interview");
     public static Module MEETINGS = new Module("Meetings");
     public static Module BUSINESS_CORRESPONDENCE = new Module("Business Writing");
@@ -79,17 +78,17 @@ public class TempUtils {
         long interviewsId = getModuleId(db, INTERVIEW.getTitle());
         long businessId = getModuleId(db, BUSINESS_CORRESPONDENCE.getTitle());
 
-        String courtesyTitle = "Courtesy";
-        String warmthTitle = "Warmth";
-        String initiativeTitle = "Initiative";
-        String teamworkTitle = "Teamwork";
-        String knowledgeTitle = "Knowledge";
+        String courtesyTitle = "Lesson on courtesy and respect";
+        String warmthTitle = "Lesson on warmth";
+        String initiativeTitle = "To do or not to do - A lesson on taking initiative";
+        String teamworkTitle = "TEAM stands for Together Everyone Achieves More";
+        String knowledgeTitle = "Brush up your knowledge of products and services";
 
-        Content meetingContent1 = new Content(meetingsId, courtesyTitle, ContentEntry.TYPE_LESSON_MEDIA, courtesyId);
-        Content meetingContent2 = new Content(meetingsId, warmthTitle, ContentEntry.TYPE_LESSON_MEDIA, warmthId);
-        Content interviewContent1 = new Content(interviewsId, initiativeTitle, ContentEntry.TYPE_LESSON_MEDIA, initiativeId);
-        Content interviewContent2 = new Content(interviewsId, teamworkTitle, ContentEntry.TYPE_LESSON_MEDIA, teamworkId);
-        Content businessContent = new Content(businessId, knowledgeTitle, ContentEntry.TYPE_LESSON_MEDIA, knowledgeId);
+        Content meetingContent1 = new Content(meetingsId, ContentEntry.TYPE_LESSON_MEDIA, courtesyTitle, courtesyId, 1);
+        Content meetingContent2 = new Content(meetingsId, ContentEntry.TYPE_LESSON_MEDIA, warmthTitle, warmthId, 2);
+        Content interviewContent1 = new Content(interviewsId, ContentEntry.TYPE_LESSON_MEDIA, initiativeTitle, initiativeId, 1);
+        Content interviewContent2 = new Content(interviewsId, ContentEntry.TYPE_LESSON_MEDIA, teamworkTitle, teamworkId, 2);
+        Content businessContent = new Content(businessId, ContentEntry.TYPE_LESSON_MEDIA, knowledgeTitle, knowledgeId, 1);
         Content[] contents = new Content[]{meetingContent1, meetingContent2, interviewContent1, interviewContent2, businessContent};
 
         for (Content content : contents) {

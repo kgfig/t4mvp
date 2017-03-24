@@ -34,4 +34,8 @@ public abstract class DataModel implements Parcelable {
     public boolean hasImageId() {
         return getImageId() > 0;
     }
+
+    public boolean hasValidId() {
+        return id > 0;
+    }
 }

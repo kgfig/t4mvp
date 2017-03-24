@@ -1,15 +1,13 @@
 package com.aclass.edx.helloworld.data.models;
 
 import android.content.ContentValues;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.aclass.edx.helloworld.R;
-import com.aclass.edx.helloworld.data.contracts.MediaContract;
 
-import static com.aclass.edx.helloworld.data.contracts.MediaContract.ModuleEntry;
+import static com.aclass.edx.helloworld.data.contracts.AppContract.ModuleEntry;
 
 /**
  * Created by tictocproject on 13/03/2017.

@@ -7,9 +7,10 @@ import android.os.Parcelable;
 
 import com.aclass.edx.helloworld.R;
 
-import static com.aclass.edx.helloworld.data.contracts.MediaContract.MediaEntry;
+import static com.aclass.edx.helloworld.data.contracts.AppContract.MediaEntry;
 
 /**
+ * TODO create tests for these inserting and querying from db with this model
  * Created by ertd on 3/9/2017.
  */
 
@@ -27,21 +28,23 @@ public class Media extends DataModel {
         }
     };
 
+    private String title;
     private String filename;
     private int type;
 
     public Media() {}
 
-    public Media(String filename, int type) {
-        this(0, filename, type);
+    public Media(String title, String filename, int type) {
+        this(0, title, filename, type);
     }
 
     public Media(Parcel parcel) {
-        this(parcel.readLong(), parcel.readString(), parcel.readInt());
+        this(parcel.readLong(), parcel.readString(), parcel.readString(), parcel.readInt());
     }
 
-    public Media(long id, String filename, int type) {
+    public Media(long id, String title, String filename, int type) {
         super(id);
+        this.title = title;
         this.filename = filename;
         this.type = type;
     }
@@ -54,6 +57,7 @@ public class Media extends DataModel {
     @Override
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeLong(id);
+        parcel.writeString(title);
         parcel.writeString(filename);
         parcel.writeInt(type);
     }
@@ -65,6 +69,7 @@ public class Media extends DataModel {
     @Override
     public void setValues(Cursor cursor) {
         setId(cursor.getLong(cursor.getColumnIndex(MediaEntry._ID)));
+        setTitle(cursor.getString(cursor.getColumnIndex(MediaEntry.COLUMN_NAME_TITLE)));
         setFilename(cursor.getString(cursor.getColumnIndexOrThrow(MediaEntry.COLUMN_NAME_FILENAME)));
         setType(cursor.getInt(cursor.getColumnIndexOrThrow(MediaEntry.COLUMN_NAME_TYPE)));
     }
@@ -76,10 +81,11 @@ public class Media extends DataModel {
     public ContentValues toContentValues() {
         ContentValues values = new ContentValues();
 
-        if (id > 0) {
+        if (hasValidId()) {
             values.put(MediaEntry._ID, getId());
         }
 
+        values.put(MediaEntry.COLUMN_NAME_TITLE, getTitle());
         values.put(MediaEntry.COLUMN_NAME_FILENAME, getFilename());
         values.put(MediaEntry.COLUMN_NAME_TYPE, getType());
 
@@ -88,8 +94,9 @@ public class Media extends DataModel {
 
     @Override
     public String toString() {
-        return String.format("%s(%s=%d, %s=%s, %s=%d)", MediaEntry.TABLE_NAME,
+        return String.format("%s(%s=%d, %s=%s, %s=%s, %s=%d)", MediaEntry.TABLE_NAME,
                 MediaEntry._ID, id,
+                MediaEntry.COLUMN_NAME_TITLE, title,
                 MediaEntry.COLUMN_NAME_FILENAME, filename,
                 MediaEntry.COLUMN_NAME_TYPE, type);
     }
@@ -109,6 +116,14 @@ public class Media extends DataModel {
             default:
                 return 0;
         }
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public void setFilename(String filename) {

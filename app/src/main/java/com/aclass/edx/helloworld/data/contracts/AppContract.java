@@ -10,24 +10,30 @@ import android.provider.BaseColumns;
  * http://grepcode.com/file/repository.grepcode.com/java/ext/com.google.android/android/4.0.1_r1/android/provider/UserDictionary.java
  */
 
-public final class MediaContract {
+public final class AppContract {
 
-    // Authority identifier for MediaContentProvider
-    public static final String AUTHORITY = "com.aclass.edx.helloworld.data.provider";
-    // Content URL for MediaContentProvider
+    // Authority identifier for AppContentProvider
+    public static final String AUTHORITY = "com.aclass.edx.helloworld";
+    // Content URL for AppContentProvider
     public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY);
     // App identifier for mime type
     private static final String APP_PACKAGE = "vnd.helloworld";
 
-    private MediaContract() {
+    private AppContract() {
     }
 
     public static class MediaEntry implements BaseColumns {
         // Schema
         public static final String TABLE_NAME = "media";
+        public static final String COLUMN_NAME_TITLE = "title";
         public static final String COLUMN_NAME_FILENAME = "filename";
         public static final String COLUMN_NAME_TYPE = "type";
-        public static final String[] ALL_COLUMN_NAMES = {MediaEntry._ID, MediaEntry.COLUMN_NAME_FILENAME, MediaEntry.COLUMN_NAME_TYPE};
+        public static final String[] ALL_COLUMN_NAMES = {
+                MediaEntry._ID,
+                MediaEntry.COLUMN_NAME_TITLE,
+                MediaEntry.COLUMN_NAME_FILENAME,
+                MediaEntry.COLUMN_NAME_TYPE
+        };
         // Types of media instances
         public static final int TYPE_AUDIO = 1;
         public static final int TYPE_VIDEO = 2;
@@ -45,7 +51,10 @@ public final class MediaContract {
         // Schema
         public static final String TABLE_NAME = "module";
         public static final String COLUMN_NAME_TITLE = "title";
-        public static final String[] ALL_COLUMN_NAMES = {ModuleEntry._ID, ModuleEntry.COLUMN_NAME_TITLE};
+        public static final String[] ALL_COLUMN_NAMES = {
+                ModuleEntry._ID,
+                ModuleEntry.COLUMN_NAME_TITLE
+        };
         // Content URL for this table
         public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME);
         // MIME types
@@ -59,11 +68,19 @@ public final class MediaContract {
     public static class ContentEntry implements BaseColumns {
         // Schema
         public static final String TABLE_NAME = "content";
-        public static final String COLUMN_NAME_MODULE_ID = "module_id";
+        public static final String COLUMN_NAME_MODULE_ID = "moduleId";
         public static final String COLUMN_NAME_TITLE = "title";
         public static final String COLUMN_NAME_TYPE = "type";
-        public static final String COLUMN_NAME_CONTENT_ID = "content_id";
-        public static final String[] ALL_COLUMN_NAMES = {ContentEntry._ID, ContentEntry.COLUMN_NAME_MODULE_ID, ContentEntry.COLUMN_NAME_TITLE, ContentEntry.COLUMN_NAME_TYPE, ContentEntry.COLUMN_NAME_CONTENT_ID};
+        public static final String COLUMN_NAME_CONTENT_ID = "contentId";
+        public static final String COLUMN_NAME_SEQ_NUM = "seqNum";
+        public static final String[] ALL_COLUMN_NAMES = {
+                ContentEntry._ID,
+                ContentEntry.COLUMN_NAME_MODULE_ID,
+                ContentEntry.COLUMN_NAME_TITLE,
+                ContentEntry.COLUMN_NAME_TYPE,
+                ContentEntry.COLUMN_NAME_CONTENT_ID,
+                ContentEntry.COLUMN_NAME_SEQ_NUM
+        };
         // Types
         public static final int TYPE_LESSON_MEDIA = 1;
         // Content URL for this table
