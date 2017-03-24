@@ -19,6 +19,9 @@ public final class AppContract {
     // App identifier for mime type
     private static final String APP_PACKAGE = "vnd.helloworld";
 
+    private static final String SQL_CONSTRAINT_FOREIGN_KEY = "FOREIGN KEY (%s) REFERENCES %s(%s)";
+    private static final String SQL_CONSTRAINT_UNIQUE = "UNIQUE(%s)";
+
     private AppContract() {
     }
 
@@ -81,6 +84,11 @@ public final class AppContract {
                 ContentEntry.COLUMN_NAME_CONTENT_ID,
                 ContentEntry.COLUMN_NAME_SEQ_NUM
         };
+        public static final String FOREIGN_KEY_MODULE_ID = "FOREIGN KEY (" +
+                ContentEntry.COLUMN_NAME_MODULE_ID + ") REFERENCES " +
+                ModuleEntry.TABLE_NAME + " (" + ModuleEntry._ID + ")";
+        public static final String UNIQUE_MODULE_ID_CONTENT_ID = "UNIQUE (" +
+                ContentEntry.COLUMN_NAME_MODULE_ID + "," + ContentEntry.COLUMN_NAME_CONTENT_ID + ")";
         // Types
         public static final int TYPE_LESSON_MEDIA = 1;
         // Content URL for this table

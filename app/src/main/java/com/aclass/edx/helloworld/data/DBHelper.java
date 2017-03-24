@@ -3,6 +3,7 @@ package com.aclass.edx.helloworld.data;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import static com.aclass.edx.helloworld.data.contracts.AppContract.ContentEntry;
 import static com.aclass.edx.helloworld.data.contracts.AppContract.MediaEntry;
@@ -27,9 +28,6 @@ public class DBHelper extends SQLiteOpenHelper {
         private static final String TEXT_NOT_NULL = " TEXT NOT NULL";
         private static final String INT_NOT_NULL = " INTEGER NOT NULL";
         private static final String CREATE_TABLE = "CREATE TABLE ";
-        private static final String FK_START = "FOREIGN KEY (";
-        private static final String FK_REFERENCES = ") REFERENCES ";
-        private static final String FK_END = ")";
         private static final String COMMA = ",";
 
         public static final String CREATE_TABLE_MEDIA = CREATE_TABLE + MediaEntry.TABLE_NAME + " (" +
@@ -49,8 +47,8 @@ public class DBHelper extends SQLiteOpenHelper {
                 ContentEntry.COLUMN_NAME_TYPE + INT_NOT_NULL + COMMA +
                 ContentEntry.COLUMN_NAME_CONTENT_ID + INT_NOT_NULL + COMMA +
                 ContentEntry.COLUMN_NAME_SEQ_NUM + INT_NOT_NULL + COMMA +
-                FK_START + ContentEntry.COLUMN_NAME_MODULE_ID + FK_REFERENCES +
-                ModuleEntry.TABLE_NAME + "(" + ModuleEntry._ID + FK_END +");";
+                ContentEntry.FOREIGN_KEY_MODULE_ID + COMMA +
+                ContentEntry.UNIQUE_MODULE_ID_CONTENT_ID + ");";
 
         private static final String DROP_TABLE_IF_EXISTS = "DROP TABLE IF EXISTS %s;\n";
     }
@@ -72,6 +70,8 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        Log.d(TAG, DBQueries.CREATE_TABLE_CONTENT);
+
         db.execSQL(DBQueries.CREATE_TABLE_MEDIA);
         db.execSQL(DBQueries.CREATE_TABLE_MODULE);
         db.execSQL(DBQueries.CREATE_TABLE_CONTENT);
