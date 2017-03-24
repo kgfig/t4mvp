@@ -24,7 +24,7 @@
     <string name="all_interviews">Interviews</string>
     <string name="all_business_correspondence">Business Writing</string>
     <string name="video_position">position</string>
-
+    <string name="all_fullscreen">Fullscreen</string>
     <!-- Prefs -->
     <string name="prefs_nickname">Prefs:Nickname</string>
     <string name="prefs_skip_nickname">Prefs:Skip Nickname</string>
@@ -133,4 +133,10 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="action_settings">Settings</string>
+
+    <string name="title_activity_fullscreen">FullscreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+
+    <string name="title_activity_another_fullscreen">AnotherFullscreenActivity</string>
 </resources>

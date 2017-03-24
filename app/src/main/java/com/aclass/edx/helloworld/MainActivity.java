@@ -31,7 +31,7 @@ public class MainActivity extends ListActivity {
 
         switch(menuItem) {
             case MENU_ITEM_AUDIO:
-                intent = new Intent(this, AudioRecorderActivity.class);
+                intent = new Intent(this, FullscreenActivity.class);
                 break;
             case MENU_ITEM_DASHBOARD:
                 intent = new Intent(this, DashboardActivity.class);
