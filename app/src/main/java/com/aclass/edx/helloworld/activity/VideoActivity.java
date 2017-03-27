@@ -61,14 +61,14 @@ public class VideoActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(getString(R.string.video_position), videoView.getCurrentPosition());
+        outState.putInt(getString(R.string.media_player_position), videoView.getCurrentPosition());
         videoView.pause();
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        position = savedInstanceState.getInt(getString(R.string.video_position));
+        position = savedInstanceState.getInt(getString(R.string.media_player_position));
         videoView.seekTo(position);
     }
 

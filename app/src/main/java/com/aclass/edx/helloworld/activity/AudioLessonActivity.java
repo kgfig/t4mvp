@@ -1,16 +1,17 @@
 package com.aclass.edx.helloworld.activity;
 
-import android.animation.ObjectAnimator;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.animation.LinearInterpolator;
-import android.widget.ProgressBar;
-import android.widget.TextView;
+import android.view.MotionEvent;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
+import android.view.View;
+import android.widget.MediaController;
 
 import com.aclass.edx.helloworld.R;
 
@@ -20,7 +21,7 @@ import com.aclass.edx.helloworld.data.models.Media;
 
 import java.io.IOException;
 
-public class AudioLessonActivity extends AppCompatActivity implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener {
+public class AudioLessonActivity extends AppCompatActivity implements SurfaceHolder.Callback, MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MediaController.MediaPlayerControl {
 
     private static final String TAG = AudioLessonActivity.class.getSimpleName();
     private static final int MIN_PROGRESS = 0;
@@ -28,11 +29,15 @@ public class AudioLessonActivity extends AppCompatActivity implements MediaPlaye
     private static final int MILLIS_PER_SEC = 1000;
     private static final int SEC_PER_MIN = 60;
 
-    private Media audio;
     private MediaPlayer audioPlayer;
-    private ProgressBar progressBar;
-    private TextView time;
-    private int minutes, seconds; // TODO move to a separate class?
+    private SurfaceView surfaceView;
+    private SurfaceHolder surfaceHolder;
+
+    private MediaController mediaController;
+    private Handler handler = new Handler();
+
+    private Media audio;
+    private int currentPosition = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,28 +48,32 @@ public class AudioLessonActivity extends AppCompatActivity implements MediaPlaye
         Intent intent = getIntent();
         String paramName = getString(R.string.content_list_selected_content_key);
         audio = intent.hasExtra(paramName) ? (Media) intent.getParcelableExtra(paramName) : new Media("Sample audio", "audio1", MediaEntry.TYPE_AUDIO);
-        Uri audioUri = Uri.parse("android.resource://" + getPackageName() + "/" + getResources().getIdentifier(audio.getFilename(), "raw", getPackageName()));
-
-        // Prepare MediaPlayer
-        try {
-            audioPlayer = new MediaPlayer();
-            audioPlayer.setDataSource(this, audioUri);
-            audioPlayer.setOnPreparedListener(this);
-            audioPlayer.setOnErrorListener(this);
-            audioPlayer.prepareAsync();
-        } catch (IOException e) {
-            Log.e(TAG, "Unable to prepare audio with uri " + audioUri);
-        }
 
         // Init views
-        progressBar = (ProgressBar) findViewById(R.id.audio_lesson_progress_bar);
-        time = (TextView) findViewById(R.id.audio_lesson_tv_time);
+        surfaceView = (SurfaceView) findViewById(R.id.audio_lesson_surface_view);
+        surfaceHolder = surfaceView.getHolder();
+        surfaceHolder.addCallback(this);
 
+        surfaceView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                toggleController();
+                return false;
+            }
+        });
         // Simulate progress bar update
+        /*
         ObjectAnimator animation = ObjectAnimator.ofInt(progressBar, "progress", MIN_PROGRESS, MAX_PROGRESS); // see this max value coming back here, we animale towards that value
         animation.setDuration(10000); //in milliseconds
         animation.setInterpolator(new LinearInterpolator());
         animation.start();
+        */
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        currentPosition = audioPlayer.getCurrentPosition();
     }
 
     @Override
@@ -77,9 +86,61 @@ public class AudioLessonActivity extends AppCompatActivity implements MediaPlaye
     }
 
     @Override
-    public void onPrepared(MediaPlayer mp) {
-        setTimeInfo(audioPlayer.getDuration());
+    protected void onSaveInstanceState(Bundle outState) {
+        currentPosition = audioPlayer.getCurrentPosition();
+        audioPlayer.pause();
+        outState.putInt(getString(R.string.media_player_position), currentPosition);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        currentPosition = savedInstanceState.getInt(getString(R.string.media_player_position));
+        audioPlayer.seekTo(currentPosition);
         audioPlayer.start();
+    }
+
+    @Override
+    public void surfaceCreated(SurfaceHolder holder) {
+        Uri audioUri = Uri.parse("android.resource://" + getPackageName() + "/" + getResources().getIdentifier(audio.getFilename(), "raw", getPackageName()));
+
+        // Prepare MediaPlayer
+        try {
+            audioPlayer = new MediaPlayer();
+            audioPlayer.setDisplay(surfaceHolder);
+            audioPlayer.setOnPreparedListener(this);
+            audioPlayer.setOnErrorListener(this);
+            audioPlayer.setDataSource(this, audioUri);
+            audioPlayer.prepareAsync();
+            mediaController = new MediaController(this);
+        } catch (IOException e) {
+            Log.e(TAG, "Unable to prepare audio with uri " + audioUri);
+        }
+    }
+
+    @Override
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
+    }
+
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder) {
+
+    }
+
+    @Override
+    public void onPrepared(MediaPlayer mp) {
+        audioPlayer.start();
+        mediaController.setMediaPlayer(this);
+        mediaController.setAnchorView(surfaceView);
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                mediaController.setEnabled(true);
+                mediaController.show();
+            }
+        });
     }
 
     @Override
@@ -87,9 +148,68 @@ public class AudioLessonActivity extends AppCompatActivity implements MediaPlaye
         return false;
     }
 
-    private void setTimeInfo(long millis) {
-        int totalSeconds = (int) (millis / MILLIS_PER_SEC);
-        this.minutes = totalSeconds / SEC_PER_MIN;
-        this.seconds = totalSeconds % SEC_PER_MIN;
+    @Override
+    public void start() {
+        audioPlayer.start();
+    }
+
+    @Override
+    public void pause() {
+        audioPlayer.pause();
+    }
+
+    @Override
+    public int getDuration() {
+        return audioPlayer.getDuration();
+    }
+
+    @Override
+    public int getCurrentPosition() {
+        return audioPlayer.getCurrentPosition();
+    }
+
+    @Override
+    public void seekTo(int pos) {
+        audioPlayer.seekTo(pos);
+    }
+
+    @Override
+    public boolean isPlaying() {
+        return audioPlayer.isPlaying();
+    }
+
+    @Override
+    public int getBufferPercentage() {
+        return 0;
+    }
+
+    @Override
+    public boolean canPause() {
+        return true;
+    }
+
+    @Override
+    public boolean canSeekBackward() {
+        return true;
+    }
+
+    @Override
+    public boolean canSeekForward() {
+        return true;
+    }
+
+    @Override
+    public int getAudioSessionId() {
+        return audioPlayer.getAudioSessionId();
+    }
+
+    private void toggleController() {
+        if (mediaController != null) {
+            if (mediaController.isShown()) {
+                mediaController.hide();
+            } else {
+                mediaController.show();
+            }
+        }
     }
 }

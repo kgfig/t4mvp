@@ -23,7 +23,6 @@
     <string name="all_meetings">Meetings</string>
     <string name="all_interviews">Interviews</string>
     <string name="all_business_correspondence">Business Writing</string>
-    <string name="video_position">position</string>
     <string name="all_fullscreen">Fullscreen</string>
     <!-- Prefs -->
     <string name="prefs_nickname">Prefs:Nickname</string>
@@ -38,6 +37,9 @@
 
     <!-- Content list -->
     <string name="content_list_selected_content_key">selected content</string>
+
+    <!-- Video Player and Audio Player -->
+    <string name="media_player_position">position</string>
 
     <!-- error messages -->
     <string name="all_error_no_media_found_by_id">No media with id %s in database</string>
