@@ -50,10 +50,12 @@ public class AudioLessonActivity extends AppCompatActivity implements SurfaceHol
         audio = intent.hasExtra(paramName) ? (Media) intent.getParcelableExtra(paramName) : new Media("Sample audio", "audio1", MediaEntry.TYPE_AUDIO);
 
         // Init views
+        getSupportActionBar().setTitle(audio.getTitle());
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         surfaceView = (SurfaceView) findViewById(R.id.audio_lesson_surface_view);
         surfaceHolder = surfaceView.getHolder();
         surfaceHolder.addCallback(this);
-
         surfaceView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -61,6 +63,7 @@ public class AudioLessonActivity extends AppCompatActivity implements SurfaceHol
                 return false;
             }
         });
+
         // Simulate progress bar update
         /*
         ObjectAnimator animation = ObjectAnimator.ofInt(progressBar, "progress", MIN_PROGRESS, MAX_PROGRESS); // see this max value coming back here, we animale towards that value
@@ -79,7 +82,6 @@ public class AudioLessonActivity extends AppCompatActivity implements SurfaceHol
     @Override
     protected void onDestroy() {
         if (audioPlayer != null) {
-            audioPlayer.stop();
             audioPlayer.release();
         }
         super.onDestroy();
@@ -87,18 +89,22 @@ public class AudioLessonActivity extends AppCompatActivity implements SurfaceHol
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        currentPosition = audioPlayer.getCurrentPosition();
-        audioPlayer.pause();
-        outState.putInt(getString(R.string.media_player_position), currentPosition);
+        if (audioPlayer!=null) {
+            currentPosition = audioPlayer.getCurrentPosition();
+            audioPlayer.pause();
+            outState.putInt(getString(R.string.media_player_position), currentPosition);
+        }
         super.onSaveInstanceState(outState);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        currentPosition = savedInstanceState.getInt(getString(R.string.media_player_position));
-        audioPlayer.seekTo(currentPosition);
-        audioPlayer.start();
+        if (audioPlayer != null) {
+            currentPosition = savedInstanceState.getInt(getString(R.string.media_player_position));
+            audioPlayer.seekTo(currentPosition);
+            audioPlayer.start();
+        }
     }
 
     @Override
@@ -138,7 +144,6 @@ public class AudioLessonActivity extends AppCompatActivity implements SurfaceHol
             @Override
             public void run() {
                 mediaController.setEnabled(true);
-                mediaController.show();
             }
         });
     }
@@ -150,32 +155,47 @@ public class AudioLessonActivity extends AppCompatActivity implements SurfaceHol
 
     @Override
     public void start() {
-        audioPlayer.start();
+        if (audioPlayer != null) {
+            audioPlayer.start();
+        }
     }
 
     @Override
     public void pause() {
-        audioPlayer.pause();
+        if (audioPlayer != null) {
+            audioPlayer.pause();
+        }
     }
 
     @Override
     public int getDuration() {
-        return audioPlayer.getDuration();
+        if (audioPlayer != null) {
+            return audioPlayer.getDuration();
+        }
+        return 0;
     }
 
     @Override
     public int getCurrentPosition() {
-        return audioPlayer.getCurrentPosition();
+        if (audioPlayer != null) {
+            return audioPlayer.getCurrentPosition();
+        }
+        return 0;
     }
 
     @Override
     public void seekTo(int pos) {
-        audioPlayer.seekTo(pos);
+        if (audioPlayer != null) {
+            audioPlayer.seekTo(pos);
+        }
     }
 
     @Override
     public boolean isPlaying() {
-        return audioPlayer.isPlaying();
+        if (audioPlayer != null) {
+            return audioPlayer.isPlaying();
+        }
+        return false;
     }
 
     @Override
@@ -200,7 +220,10 @@ public class AudioLessonActivity extends AppCompatActivity implements SurfaceHol
 
     @Override
     public int getAudioSessionId() {
-        return audioPlayer.getAudioSessionId();
+        if (audioPlayer != null) {
+            return audioPlayer.getAudioSessionId();
+        }
+        return 0;
     }
 
     private void toggleController() {

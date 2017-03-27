@@ -27,12 +27,13 @@ public class TempUtils {
     public static Media INITIATIVE = new Media("Initiative", "video3", MediaEntry.TYPE_VIDEO);
     public static Media TEAMWORK = new Media("Teamwork", "video4", MediaEntry.TYPE_VIDEO);
     public static Media KNOWLEDGE = new Media("Knowledge", "video5", MediaEntry.TYPE_VIDEO);
+    public static Media AUDIO = new Media("Audio Lesson Title", "audio1", MediaEntry.TYPE_AUDIO);
     public static Module INTERVIEW = new Module("Interview");
     public static Module MEETINGS = new Module("Meetings");
     public static Module BUSINESS_CORRESPONDENCE = new Module("Business Writing");
 
     // List test data
-    public static Media[] TEST_DATA_MEDIA = new Media[]{COURTESY, WARMTH, INITIATIVE, TEAMWORK, KNOWLEDGE};
+    public static Media[] TEST_DATA_MEDIA = new Media[]{COURTESY, WARMTH, INITIATIVE, TEAMWORK, KNOWLEDGE, AUDIO};
     public static Module[] TEST_DATA_MODULES = new Module[]{INTERVIEW, MEETINGS, BUSINESS_CORRESPONDENCE};
 
     public static void insertMediaTestData(SQLiteDatabase db) {
@@ -74,6 +75,7 @@ public class TempUtils {
         long initiativeId = getMediaId(db, INITIATIVE.getFilename());
         long teamworkId = getMediaId(db, TEAMWORK.getFilename());
         long knowledgeId = getMediaId(db, KNOWLEDGE.getFilename());
+        long audioId = getMediaId(db, AUDIO.getFilename());
         long meetingsId = getModuleId(db, MEETINGS.getTitle());
         long interviewsId = getModuleId(db, INTERVIEW.getTitle());
         long businessId = getModuleId(db, BUSINESS_CORRESPONDENCE.getTitle());
@@ -89,7 +91,8 @@ public class TempUtils {
         Content interviewContent1 = new Content(interviewsId, ContentEntry.TYPE_LESSON_MEDIA, initiativeTitle, initiativeId, 1);
         Content interviewContent2 = new Content(interviewsId, ContentEntry.TYPE_LESSON_MEDIA, teamworkTitle, teamworkId, 2);
         Content businessContent = new Content(businessId, ContentEntry.TYPE_LESSON_MEDIA, knowledgeTitle, knowledgeId, 1);
-        Content[] contents = new Content[]{meetingContent1, meetingContent2, interviewContent1, interviewContent2, businessContent};
+        Content audioContent = new Content(businessId, ContentEntry.TYPE_LESSON_MEDIA, "Sample audio lesson", audioId, 2);
+        Content[] contents = new Content[]{meetingContent1, meetingContent2, interviewContent1, interviewContent2, businessContent, audioContent};
 
         for (Content content : contents) {
             db.insert(ContentEntry.TABLE_NAME, null, content.toContentValues());

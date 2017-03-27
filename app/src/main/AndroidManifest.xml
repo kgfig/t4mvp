@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:adnroid="http://schemas.android.com/apk/res-auto"
     package="com.aclass.edx.helloworld">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -64,7 +65,12 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_another_fullscreen"
             android:theme="@style/FullscreenTheme" />
-        <activity android:name=".activity.AudioLessonActivity"></activity>
+        <activity android:name=".activity.AudioLessonActivity"
+            android:parentActivityName=".activity.ContentListActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activity.ContentListActivity" />
+        </activity>
     </application>
 
 </manifest>

@@ -112,11 +112,27 @@ public class ContentListActivity extends AppCompatActivity implements LoaderMana
             Media media = new Media();
             media.setValues(mediaCursor);
 
-            Intent intent = new Intent(this, VideoActivity.class);
-            intent.putExtra(getString(R.string.content_list_selected_content_key), media);
-            startActivity(intent);
+            goToMediaActivity(media);
         } else {
             throw new RuntimeException(getString(R.string.all_error_no_media_found_by_id));
         }
+    }
+
+    private void goToMediaActivity(Media media) {
+        Intent intent;
+
+        switch (media.getType()) {
+            case MediaEntry.TYPE_VIDEO:
+                intent = new Intent(this, VideoActivity.class);
+                break;
+            case MediaEntry.TYPE_AUDIO:
+                intent = new Intent(this, AudioLessonActivity.class);
+                break;
+            default:
+                throw new RuntimeException("Invalid media type " + media.getType());
+        }
+
+        intent.putExtra(getString(R.string.content_list_selected_content_key), media);
+        startActivity(intent);
     }
 }
