@@ -8,6 +8,9 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.aclass.edx.helloworld.activity.AudioLessonActivity;
+import com.aclass.edx.helloworld.activity.DashboardActivity;
+
 public class MainActivity extends ListActivity {
 
     private final static String MENU_ITEM_AUDIO = "Audio Recorder and Player";
@@ -31,7 +34,7 @@ public class MainActivity extends ListActivity {
 
         switch(menuItem) {
             case MENU_ITEM_AUDIO:
-                intent = new Intent(this, FullscreenActivity.class);
+                intent = new Intent(this, AudioLessonActivity.class);
                 break;
             case MENU_ITEM_DASHBOARD:
                 intent = new Intent(this, DashboardActivity.class);

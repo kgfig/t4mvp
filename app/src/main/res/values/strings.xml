@@ -37,8 +37,7 @@
     <string name="dashboard_choose_a_topic">Choose a topic</string>
 
     <!-- Content list -->
-    <string name="content_list_selected_video_key">selected video</string>
-    <string name="content_list_selected_content">selected content</string>
+    <string name="content_list_selected_content_key">selected content</string>
 
     <!-- error messages -->
     <string name="all_error_no_media_found_by_id">No media with id %s in database</string>

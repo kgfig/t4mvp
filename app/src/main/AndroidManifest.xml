@@ -23,25 +23,25 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".GetNameActivity" />
+        <activity android:name=".activity.GetNameActivity" />
         <activity
-            android:name=".DashboardActivity"
+            android:name=".activity.DashboardActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name=".ContentListActivity"
+            android:name=".activity.ContentListActivity"
             android:launchMode="singleTop"
-            android:parentActivityName=".DashboardActivity">
+            android:parentActivityName=".activity.DashboardActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".DashboardActivity" />
+                android:value=".activity.DashboardActivity" />
         </activity>
         <activity
-            android:name=".VideoActivity"
+            android:name=".activity.VideoActivity"
             android:configChanges="orientation"
-            android:parentActivityName=".ContentListActivity">
+            android:parentActivityName=".activity.ContentListActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ContentListActivity" />
+                android:value=".activity.ContentListActivity" />
         </activity>
         <activity android:name=".AudioRecorderActivity" />
         <activity
@@ -63,7 +63,8 @@
             android:name=".AnotherFullscreenActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_another_fullscreen"
-            android:theme="@style/FullscreenTheme"></activity>
+            android:theme="@style/FullscreenTheme" />
+        <activity android:name=".activity.AudioLessonActivity"></activity>
     </application>
 
 </manifest>
