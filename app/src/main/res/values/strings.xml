@@ -1,4 +1,5 @@
 <resources>
+    <string name="full_screen">full screen mode</string>
     <string name="app_name">T4 MVP</string>
     <string-array name="filenames">
         <item>Courtesy</item>
@@ -8,8 +9,9 @@
         <item>Knowledge</item>
     </string-array>
     <string-array name="menu_items">
-        <item>Audio Recorder and Player</item>
+        <item>Test Activity</item>
         <item>Dashboard</item>
+        <item> Custom Audio Player Controls</item>
     </string-array>
     <!-- Common -->
     <string name="all_profile">Profile</string>
@@ -24,6 +26,7 @@
     <string name="all_interviews">Interviews</string>
     <string name="all_business_correspondence">Business Writing</string>
     <string name="all_fullscreen">Fullscreen</string>
+    <string name="all_suffix_transcript">_transcript</string>
     <!-- Prefs -->
     <string name="prefs_nickname">Prefs:Nickname</string>
     <string name="prefs_skip_nickname">Prefs:Skip Nickname</string>

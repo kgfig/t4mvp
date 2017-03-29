@@ -1,5 +1,6 @@
 package com.aclass.edx.helloworld.activity;
 
+import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -7,70 +8,58 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.View;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.LinearInterpolator;
+import android.widget.FrameLayout;
 import android.widget.MediaController;
+import android.widget.ProgressBar;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.aclass.edx.helloworld.R;
-
-import static com.aclass.edx.helloworld.data.contracts.AppContract.MediaEntry;
-
+import com.aclass.edx.helloworld.data.contracts.AppContract;
 import com.aclass.edx.helloworld.data.models.Media;
+import com.aclass.edx.helloworld.views.AudioControllerView;
 
 import java.io.IOException;
 
-public class AudioLessonActivity extends AppCompatActivity implements SurfaceHolder.Callback, MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MediaController.MediaPlayerControl {
+public class AudioPlayerActivity extends AppCompatActivity implements SurfaceHolder.Callback, MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, AudioControllerView.AudioPlayer {
 
-    private static final String TAG = AudioLessonActivity.class.getSimpleName();
-    private static final int MIN_PROGRESS = 0;
-    private static final int MAX_PROGRESS = 100;
-    private static final int MILLIS_PER_SEC = 1000;
-    private static final int SEC_PER_MIN = 60;
+    private static final String TAG = AudioPlayerActivity.class.getSimpleName();
 
     private MediaPlayer audioPlayer;
-    private SurfaceView surfaceView;
-    private SurfaceHolder surfaceHolder;
-
-    private MediaController mediaController;
-    private Handler handler = new Handler();
-
+    private AudioControllerView controller;
     private Media audio;
     private int currentPosition = 0;
+
+    private TextView textViewTranscript;
+    private FrameLayout surfaceViewContainer;
+    private SurfaceView surfaceView;
+    private SurfaceHolder surfaceHolder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_audio_lesson);
+        setContentView(R.layout.activity_audio_player);
 
         // Get or init Media object to be played
         Intent intent = getIntent();
         String paramName = getString(R.string.content_list_selected_content_key);
-        audio = intent.hasExtra(paramName) ? (Media) intent.getParcelableExtra(paramName) : new Media("Sample audio", "audio1", MediaEntry.TYPE_AUDIO);
+        audio = intent.hasExtra(paramName) ? (Media) intent.getParcelableExtra(paramName) : new Media("Sample audio", "audio1", AppContract.MediaEntry.TYPE_AUDIO);
 
         // Init views
         getSupportActionBar().setTitle(audio.getTitle());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        surfaceView = (SurfaceView) findViewById(R.id.audio_lesson_surface_view);
+        textViewTranscript = (TextView) findViewById(R.id.audio_player_textview_transcript);
+        surfaceViewContainer = (FrameLayout) findViewById(R.id.audio_player_surfaceview_container);
+        surfaceView = (SurfaceView) findViewById(R.id.audio_player_surfaceview);
+
+        textViewTranscript.setText(R.string.large_text);
         surfaceHolder = surfaceView.getHolder();
         surfaceHolder.addCallback(this);
-        surfaceView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                toggleController();
-                return false;
-            }
-        });
-
-        // Simulate progress bar update
-        /*
-        ObjectAnimator animation = ObjectAnimator.ofInt(progressBar, "progress", MIN_PROGRESS, MAX_PROGRESS); // see this max value coming back here, we animale towards that value
-        animation.setDuration(10000); //in milliseconds
-        animation.setInterpolator(new LinearInterpolator());
-        animation.start();
-        */
     }
 
     @Override
@@ -82,6 +71,8 @@ public class AudioLessonActivity extends AppCompatActivity implements SurfaceHol
     @Override
     protected void onDestroy() {
         if (audioPlayer != null) {
+            audioPlayer.stop();
+            controller.stopTracking();
             audioPlayer.release();
         }
         super.onDestroy();
@@ -89,7 +80,7 @@ public class AudioLessonActivity extends AppCompatActivity implements SurfaceHol
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        if (audioPlayer!=null) {
+        if (audioPlayer != null) {
             currentPosition = audioPlayer.getCurrentPosition();
             audioPlayer.pause();
             outState.putInt(getString(R.string.media_player_position), currentPosition);
@@ -109,20 +100,7 @@ public class AudioLessonActivity extends AppCompatActivity implements SurfaceHol
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        Uri audioUri = Uri.parse("android.resource://" + getPackageName() + "/" + getResources().getIdentifier(audio.getFilename(), "raw", getPackageName()));
-
-        // Prepare MediaPlayer
-        try {
-            audioPlayer = new MediaPlayer();
-            audioPlayer.setDisplay(surfaceHolder);
-            audioPlayer.setOnPreparedListener(this);
-            audioPlayer.setOnErrorListener(this);
-            audioPlayer.setDataSource(this, audioUri);
-            audioPlayer.prepareAsync();
-            mediaController = new MediaController(this);
-        } catch (IOException e) {
-            Log.e(TAG, "Unable to prepare audio with uri " + audioUri);
-        }
+        initAudioPlayer();
     }
 
     @Override
@@ -137,15 +115,11 @@ public class AudioLessonActivity extends AppCompatActivity implements SurfaceHol
 
     @Override
     public void onPrepared(MediaPlayer mp) {
+        controller.setPlayer(this);
+        controller.setAnchorView(surfaceViewContainer);
+        controller.show();
         audioPlayer.start();
-        mediaController.setMediaPlayer(this);
-        mediaController.setAnchorView(surfaceView);
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                mediaController.setEnabled(true);
-            }
-        });
+        controller.updatePausePlay();
     }
 
     @Override
@@ -203,36 +177,18 @@ public class AudioLessonActivity extends AppCompatActivity implements SurfaceHol
         return 0;
     }
 
-    @Override
-    public boolean canPause() {
-        return true;
-    }
-
-    @Override
-    public boolean canSeekBackward() {
-        return true;
-    }
-
-    @Override
-    public boolean canSeekForward() {
-        return true;
-    }
-
-    @Override
-    public int getAudioSessionId() {
-        if (audioPlayer != null) {
-            return audioPlayer.getAudioSessionId();
-        }
-        return 0;
-    }
-
-    private void toggleController() {
-        if (mediaController != null) {
-            if (mediaController.isShown()) {
-                mediaController.hide();
-            } else {
-                mediaController.show();
-            }
+    private void initAudioPlayer() {
+        Uri audioUri = Uri.parse("android.resource://" + getPackageName() + "/" + getResources().getIdentifier(audio.getFilename(), "raw", getPackageName()));
+        try {
+            audioPlayer = new MediaPlayer();
+            audioPlayer.setDisplay(surfaceHolder);
+            audioPlayer.setOnPreparedListener(this);
+            audioPlayer.setOnErrorListener(this);
+            audioPlayer.setDataSource(this, audioUri);
+            audioPlayer.prepareAsync();
+            controller = new AudioControllerView(this);
+        } catch (IOException e) {
+            Log.e(TAG, "Unable to prepare audio with uri " + audioUri);
         }
     }
 }

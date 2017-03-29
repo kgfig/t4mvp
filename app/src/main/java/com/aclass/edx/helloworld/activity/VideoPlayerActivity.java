@@ -11,7 +11,7 @@ import android.widget.VideoView;
 import com.aclass.edx.helloworld.R;
 import com.aclass.edx.helloworld.data.models.Media;
 
-public class VideoActivity extends AppCompatActivity {
+public class VideoPlayerActivity extends AppCompatActivity {
 
     private int position;
     private VideoView videoView;
@@ -34,7 +34,7 @@ public class VideoActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Init video player and controls
-        mediaController = new MediaController(VideoActivity.this);
+        mediaController = new MediaController(VideoPlayerActivity.this);
         videoView = (VideoView) findViewById(R.id.videoView);
         videoView.setMediaController(mediaController);
         videoView.setVideoURI(videoUri);

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/black_overlay">
+    <RelativeLayout
+        android:padding="@dimen/text_margin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/audio_controller_textview_currenttime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:textSize="@dimen/text_size"/>
+        <TextView
+            android:id="@+id/audio_controller_textview_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:textSize="@dimen/text_size"/>
+    </RelativeLayout>
+    <SeekBar
+        android:id="@+id/audio_controller_seekbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/controller_buttons_vertical_margin"
+        android:paddingBottom="@dimen/controller_buttons_vertical_margin">
+        <ImageButton
+            android:id="@+id/audio_controller_button_pause"
+            android:scaleType="fitCenter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@android:color/transparent"/>
+    </RelativeLayout>
+</LinearLayout>

@@ -123,10 +123,10 @@ public class ContentListActivity extends AppCompatActivity implements LoaderMana
 
         switch (media.getType()) {
             case MediaEntry.TYPE_VIDEO:
-                intent = new Intent(this, VideoActivity.class);
+                intent = new Intent(this, VideoPlayerActivity.class);
                 break;
             case MediaEntry.TYPE_AUDIO:
-                intent = new Intent(this, AudioLessonActivity.class);
+                intent = new Intent(this, AudioPlayerActivity.class);
                 break;
             default:
                 throw new RuntimeException("Invalid media type " + media.getType());

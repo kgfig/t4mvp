@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:adnroid="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.aclass.edx.helloworld">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -37,7 +37,7 @@
                 android:value=".activity.DashboardActivity" />
         </activity>
         <activity
-            android:name=".activity.VideoActivity"
+            android:name=".activity.VideoPlayerActivity"
             android:configChanges="orientation"
             android:parentActivityName=".activity.ContentListActivity">
             <meta-data
@@ -45,31 +45,17 @@
                 android:value=".activity.ContentListActivity" />
         </activity>
         <activity android:name=".AudioRecorderActivity" />
-        <activity
-            android:name=".FullscreenActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_fullscreen"
-            android:parentActivityName=".MainActivity"
-            android:theme="@style/TestFullScreenTheme">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
-        </activity>
 
         <provider
             android:name=".data.AppContentProvider"
             android:authorities="com.aclass.edx.helloworld" />
 
         <activity
-            android:name=".AnotherFullscreenActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_another_fullscreen"
-            android:theme="@style/FullscreenTheme" />
-        <activity android:name=".activity.AudioLessonActivity"
+            android:name=".activity.AudioPlayerActivity"
             android:parentActivityName=".activity.ContentListActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.ContentListActivity" />
+                android:value=".activity.AudioPlayerActivity" />
         </activity>
     </application>
 

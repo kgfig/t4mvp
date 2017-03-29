@@ -23,4 +23,6 @@
     <dimen name="field_vertical_padding">32dp</dimen>
     <dimen name="action_bar_margin">10dp</dimen>
 
+    <!-- MediaControllerView -->
+    <dimen name="controller_buttons_vertical_margin">10dp</dimen>
 </resources>
