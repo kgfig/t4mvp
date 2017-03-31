@@ -1,21 +1,14 @@
-package com.aclass.edx.helloworld.activity;
+package com.aclass.edx.helloworld.activities;
 
-import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.animation.DecelerateInterpolator;
-import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
-import android.widget.MediaController;
-import android.widget.ProgressBar;
-import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.aclass.edx.helloworld.R;
@@ -117,9 +110,8 @@ public class AudioPlayerActivity extends AppCompatActivity implements SurfaceHol
     public void onPrepared(MediaPlayer mp) {
         controller.setPlayer(this);
         controller.setAnchorView(surfaceViewContainer);
-        controller.show();
         audioPlayer.start();
-        controller.updatePausePlay();
+        controller.show();
     }
 
     @Override

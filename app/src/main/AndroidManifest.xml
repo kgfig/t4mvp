@@ -24,33 +24,33 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.GetNameActivity" />
+        <activity android:name=".activities.GetNameActivity" />
         <activity
-            android:name=".activity.DashboardActivity"
+            android:name=".activities.DashboardActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name=".activity.ContentListActivity"
+            android:name=".activities.ContentListActivity"
             android:launchMode="singleTop"
-            android:parentActivityName=".activity.DashboardActivity">
+            android:parentActivityName=".activities.DashboardActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.DashboardActivity" />
+                android:value=".activities.DashboardActivity" />
         </activity>
         <activity
-            android:name=".activity.VideoPlayerActivity"
+            android:name=".activities.VideoPlayerActivity"
             android:configChanges="orientation"
-            android:parentActivityName=".activity.ContentListActivity">
+            android:parentActivityName=".activities.ContentListActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.ContentListActivity" />
+                android:value=".activities.ContentListActivity" />
         </activity>
         <activity android:name=".AudioRecorderActivity" />
         <activity
-            android:name=".activity.AudioPlayerActivity"
-            android:parentActivityName=".activity.ContentListActivity">
+            android:name=".activities.AudioPlayerActivity"
+            android:parentActivityName=".activities.ContentListActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.AudioPlayerActivity" />
+                android:value=".activities.AudioPlayerActivity" />
         </activity>
         <provider
             android:name=".data.provider.AppContentProvider"

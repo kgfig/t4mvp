@@ -8,8 +8,8 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.aclass.edx.helloworld.activity.AudioPlayerActivity;
-import com.aclass.edx.helloworld.activity.DashboardActivity;
+import com.aclass.edx.helloworld.activities.AudioPlayerActivity;
+import com.aclass.edx.helloworld.activities.DashboardActivity;
 
 public class MainActivity extends ListActivity {
 

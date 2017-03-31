@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:weightSum="1"
-    tools:context="com.aclass.edx.helloworld.activity.AudioPlayerActivity">
+    tools:context="com.aclass.edx.helloworld.activities.AudioPlayerActivity">
    <FrameLayout
         android:id="@+id/audio_player_surfaceview_container"
         android:layout_width="match_parent"

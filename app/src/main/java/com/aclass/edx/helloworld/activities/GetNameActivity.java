@@ -1,4 +1,4 @@
-package com.aclass.edx.helloworld.activity;
+package com.aclass.edx.helloworld.activities;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;

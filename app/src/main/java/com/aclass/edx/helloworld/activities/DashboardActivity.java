@@ -1,4 +1,4 @@
-package com.aclass.edx.helloworld.activity;
+package com.aclass.edx.helloworld.activities;
 
 import android.content.CursorLoader;
 import android.content.Intent;

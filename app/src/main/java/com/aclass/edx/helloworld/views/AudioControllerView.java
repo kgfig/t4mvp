@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -45,7 +46,7 @@ public class AudioControllerView extends FrameLayout {
     private ViewGroup anchor;
     private View root;
     private AudioPlayer player;
-    private SeekBar seekBar;
+    private ProgressBar seekBar;
     private TextView textViewCurrentTime, textViewDuration;
     private boolean dragging;
     StringBuilder timeFormatBuilder;
@@ -107,16 +108,28 @@ public class AudioControllerView extends FrameLayout {
     protected View makeControllerView() {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         root = inflater.inflate(R.layout.view_audio_controller, null);
-        pauseButton = (ImageButton) root.findViewById(R.id.audio_controller_button_pause);
-        seekBar = (SeekBar) root.findViewById(R.id.audio_controller_seekbar);
-        textViewCurrentTime = (TextView) root.findViewById(R.id.audio_controller_textview_currenttime);
-        textViewDuration = (TextView) root.findViewById(R.id.audio_controller_textview_duration);
+        initControllerView(
+                root,
+                R.id.audio_controller_button_pause,
+                R.id.audio_controller_seekbar,
+                R.id.audio_controller_textview_currenttime,
+                R.id.audio_controller_textview_duration
+        );
+        return root;
+    }
+
+    private void initControllerView(View rootView, int pauseBtnId, int seekBarId, int currentTimeId, int durationId) {
+        pauseButton = (ImageButton) rootView.findViewById(pauseBtnId);
+        seekBar = (SeekBar) rootView.findViewById(seekBarId);
+        textViewCurrentTime = (TextView) rootView.findViewById(currentTimeId);
+        textViewDuration = (TextView) rootView.findViewById(durationId);
 
         pauseButton.requestFocus();
         pauseButton.setOnClickListener(pauseListener);
-        seekBar.setOnSeekBarChangeListener(seekListener);
+        if (seekBar instanceof SeekBar) {
+            ((SeekBar) seekBar).setOnSeekBarChangeListener(seekListener);
+        }
         seekBar.setMax(1000);
-        return root;
     }
 
     private final Runnable showProgress = new Runnable() {
