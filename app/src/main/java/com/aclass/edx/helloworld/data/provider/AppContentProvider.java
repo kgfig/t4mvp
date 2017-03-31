@@ -1,4 +1,4 @@
-package com.aclass.edx.helloworld.data;
+package com.aclass.edx.helloworld.data.provider;
 
 import android.content.ContentProvider;
 import android.content.ContentUris;
@@ -11,8 +11,10 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 
+import com.aclass.edx.helloworld.data.DBHelper;
 import com.aclass.edx.helloworld.data.exceptions.UnsupportedURIException;
 import com.aclass.edx.helloworld.data.contracts.AppContract;
+import com.aclass.edx.helloworld.data.models.Module;
 
 
 import static com.aclass.edx.helloworld.data.contracts.AppContract.ContentEntry;
@@ -25,12 +27,12 @@ public class AppContentProvider extends ContentProvider {
 
     static {
         uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        uriMatcher.addURI(AppContract.AUTHORITY, MediaEntry.TABLE_NAME, MediaEntry.LIST);
-        uriMatcher.addURI(AppContract.AUTHORITY, MediaEntry.TABLE_NAME + "/#", MediaEntry.ITEM);
-        uriMatcher.addURI(AppContract.AUTHORITY, ModuleEntry.TABLE_NAME, ModuleEntry.LIST);
-        uriMatcher.addURI(AppContract.AUTHORITY, ModuleEntry.TABLE_NAME + "/#", ModuleEntry.ITEM);
-        uriMatcher.addURI(AppContract.AUTHORITY, ContentEntry.TABLE_NAME, ContentEntry.LIST);
-        uriMatcher.addURI(AppContract.AUTHORITY, ContentEntry.TABLE_NAME + "/#", ContentEntry.ITEM);
+        uriMatcher.addURI(AppContract.AUTHORITY, MediaEntry.TABLE_NAME, ProviderConstants.LIST_MEDIA);
+        uriMatcher.addURI(AppContract.AUTHORITY, MediaEntry.TABLE_NAME + "/#", ProviderConstants.ITEM_MEDIA);
+        uriMatcher.addURI(AppContract.AUTHORITY, ModuleEntry.TABLE_NAME, ProviderConstants.LIST_MODULE);
+        uriMatcher.addURI(AppContract.AUTHORITY, ModuleEntry.TABLE_NAME + "/#", ProviderConstants.ITEM_MODULE);
+        uriMatcher.addURI(AppContract.AUTHORITY, ContentEntry.TABLE_NAME, ProviderConstants.LIST_CONTENT);
+        uriMatcher.addURI(AppContract.AUTHORITY, ContentEntry.TABLE_NAME + "/#", ProviderConstants.ITEM_CONTENT);
     }
 
     @Override
@@ -46,24 +48,24 @@ public class AppContentProvider extends ContentProvider {
 
         int uriType = uriMatcher.match(uri);
         switch (uriType) {
-            case MediaEntry.LIST:
+            case ProviderConstants.LIST_MEDIA:
                 queryBuilder.setTables(MediaEntry.TABLE_NAME);
                 break;
-            case MediaEntry.ITEM:
+            case ProviderConstants.LIST_MODULE:
+                queryBuilder.setTables(ModuleEntry.TABLE_NAME);
+                break;
+            case ProviderConstants.LIST_CONTENT:
+                queryBuilder.setTables(ContentEntry.TABLE_NAME);
+                break;
+            case ProviderConstants.ITEM_MEDIA:
                 queryBuilder.setTables(MediaEntry.TABLE_NAME);
                 queryBuilder.appendWhere(MediaEntry._ID + " = " + uri.getLastPathSegment());
                 break;
-            case ModuleEntry.LIST:
-                queryBuilder.setTables(ModuleEntry.TABLE_NAME);
-                break;
-            case ModuleEntry.ITEM:
+            case ProviderConstants.ITEM_MODULE:
                 queryBuilder.setTables(ModuleEntry.TABLE_NAME);
                 queryBuilder.appendWhere(ModuleEntry._ID + " = " + uri.getLastPathSegment());
                 break;
-            case ContentEntry.LIST:
-                queryBuilder.setTables(ContentEntry.TABLE_NAME);
-                break;
-            case ContentEntry.ITEM:
+            case ProviderConstants.ITEM_CONTENT:
                 queryBuilder.setTables(ContentEntry.TABLE_NAME);
                 queryBuilder.appendWhere(ContentEntry._ID + " = " + uri.getLastPathSegment());
                 break;
@@ -83,18 +85,18 @@ public class AppContentProvider extends ContentProvider {
     public String getType(Uri uri) {
         int uriType = uriMatcher.match(uri);
         switch (uriType) {
-            case MediaEntry.LIST:
-                return MediaEntry.CONTENT_TYPE;
-            case MediaEntry.ITEM:
-                return MediaEntry.CONTENT_ITEM_TYPE;
-            case ModuleEntry.LIST:
-                return ModuleEntry.CONTENT_TYPE;
-            case ModuleEntry.ITEM:
-                return ModuleEntry.CONTENT_ITEM_TYPE;
-            case ContentEntry.LIST:
-                return ContentEntry.CONTENT_TYPE;
-            case ContentEntry.ITEM:
-                return ContentEntry.CONTENT_ITEM_TYPE;
+            case ProviderConstants.LIST_CONTENT:
+                return ProviderConstants.CONTENT_TYPE_CONTENT;
+            case ProviderConstants.LIST_MEDIA:
+                return ProviderConstants.CONTENT_TYPE_MEDIA;
+            case ProviderConstants.LIST_MODULE:
+                return ProviderConstants.CONTENT_TYPE_MODULE;
+            case ProviderConstants.ITEM_CONTENT:
+                return ProviderConstants.CONTENT_ITEM_TYPE_CONTENT;
+            case ProviderConstants.ITEM_MEDIA:
+                return ProviderConstants.CONTENT_ITEM_TYPE_MEDIA;
+            case ProviderConstants.ITEM_MODULE:
+                return ProviderConstants.CONTENT_ITEM_TYPE_MODULE;
             default:
                 throw new UnsupportedURIException(uri);
         }
@@ -108,13 +110,13 @@ public class AppContentProvider extends ContentProvider {
         long id = 0;
 
         switch (uriType) {
-            case MediaEntry.LIST:
+            case ProviderConstants.LIST_MEDIA:
                 id = db.insertOrThrow(MediaEntry.TABLE_NAME, null, values);
                 break;
-            case ModuleEntry.LIST:
+            case ProviderConstants.LIST_MODULE:
                 id = db.insertOrThrow(ModuleEntry.TABLE_NAME, null, values);
                 break;
-            case ContentEntry.LIST:
+            case ProviderConstants.LIST_CONTENT:
                 id = db.insertOrThrow(ContentEntry.TABLE_NAME, null, values);
                 break;
             default:
@@ -137,26 +139,26 @@ public class AppContentProvider extends ContentProvider {
         String id = "";
 
         switch (uriType) {
-            case MediaEntry.LIST:
+            case ProviderConstants.LIST_CONTENT:
+                rowsDeleted = db.delete(ContentEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            case ProviderConstants.LIST_MEDIA:
                 rowsDeleted = db.delete(MediaEntry.TABLE_NAME, selection, selectionArgs);
                 break;
-            case MediaEntry.ITEM:
+            case ProviderConstants.LIST_MODULE:
+                rowsDeleted = db.delete(ModuleEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            case ProviderConstants.ITEM_CONTENT:
+                id = uri.getLastPathSegment();
+                rowsDeleted = db.delete(ContentEntry.TABLE_NAME, ContentEntry._ID + " = ? ", new String[]{id});
+                break;
+            case ProviderConstants.ITEM_MEDIA:
                 id = uri.getLastPathSegment();
                 rowsDeleted = db.delete(MediaEntry.TABLE_NAME, MediaEntry._ID + " = ? ", new String[]{id});
                 break;
-            case ModuleEntry.LIST:
-                rowsDeleted = db.delete(ModuleEntry.TABLE_NAME, selection, selectionArgs);
-                break;
-            case ModuleEntry.ITEM:
+            case ProviderConstants.ITEM_MODULE:
                 id = uri.getLastPathSegment();
                 rowsDeleted = db.delete(ModuleEntry.TABLE_NAME, ModuleEntry._ID + " = ? ", new String[]{id});
-                break;
-            case ContentEntry.LIST:
-                rowsDeleted = db.delete(ContentEntry.TABLE_NAME, selection, selectionArgs);
-                break;
-            case ContentEntry.ITEM:
-                id = uri.getLastPathSegment();
-                rowsDeleted = db.delete(ContentEntry.TABLE_NAME, ContentEntry._ID + " = ?", new String[]{id});
                 break;
             default:
                 throw new UnsupportedURIException(uri);
@@ -170,4 +172,5 @@ public class AppContentProvider extends ContentProvider {
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         return 0;
     }
+
 }

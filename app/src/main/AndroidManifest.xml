@@ -45,11 +45,6 @@
                 android:value=".activity.ContentListActivity" />
         </activity>
         <activity android:name=".AudioRecorderActivity" />
-
-        <provider
-            android:name=".data.AppContentProvider"
-            android:authorities="com.aclass.edx.helloworld" />
-
         <activity
             android:name=".activity.AudioPlayerActivity"
             android:parentActivityName=".activity.ContentListActivity">
@@ -57,6 +52,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activity.AudioPlayerActivity" />
         </activity>
+        <provider
+            android:name=".data.provider.AppContentProvider"
+            android:authorities="com.aclass.edx.helloworld" />
     </application>
 
 </manifest>

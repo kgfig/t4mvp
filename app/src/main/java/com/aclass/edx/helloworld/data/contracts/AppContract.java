@@ -1,6 +1,5 @@
 package com.aclass.edx.helloworld.data.contracts;
 
-import android.content.ContentResolver;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
@@ -16,11 +15,6 @@ public final class AppContract {
     public static final String AUTHORITY = "com.aclass.edx.helloworld";
     // Content URL for AppContentProvider
     public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY);
-    // App identifier for mime type
-    private static final String APP_PACKAGE = "vnd.helloworld";
-
-    private static final String SQL_CONSTRAINT_FOREIGN_KEY = "FOREIGN KEY (%s) REFERENCES %s(%s)";
-    private static final String SQL_CONSTRAINT_UNIQUE = "UNIQUE(%s)";
 
     private AppContract() {
     }
@@ -42,12 +36,6 @@ public final class AppContract {
         public static final int TYPE_VIDEO = 2;
         // Content URL for this table
         public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME);
-        // MIME types
-        public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + APP_PACKAGE + "." + TABLE_NAME;
-        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + APP_PACKAGE + "." + TABLE_NAME;
-        // URI types
-        public static final int LIST = 100;
-        public static final int ITEM = 101;
     }
 
     public static class ModuleEntry implements BaseColumns {
@@ -60,12 +48,6 @@ public final class AppContract {
         };
         // Content URL for this table
         public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME);
-        // MIME types
-        public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + APP_PACKAGE + "." + TABLE_NAME;
-        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + APP_PACKAGE + "." + TABLE_NAME;
-        // URI types
-        public static final int LIST = 200;
-        public static final int ITEM = 201;
     }
 
     public static class ContentEntry implements BaseColumns {
@@ -93,11 +75,5 @@ public final class AppContract {
         public static final int TYPE_LESSON_MEDIA = 1;
         // Content URL for this table
         public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME);
-        // MIME types
-        public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + APP_PACKAGE + "." + TABLE_NAME;
-        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + APP_PACKAGE + "." + TABLE_NAME;
-        // URI types
-        public static final int LIST = 300;
-        public static final int ITEM = 301;
     }
 }
