@@ -52,9 +52,18 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.AudioPlayerActivity" />
         </activity>
+        <activity
+            android:name=".activities.InterviewActivity"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
+
         <provider
             android:name=".data.provider.AppContentProvider"
             android:authorities="com.aclass.edx.helloworld" />
+
     </application>
 
 </manifest>

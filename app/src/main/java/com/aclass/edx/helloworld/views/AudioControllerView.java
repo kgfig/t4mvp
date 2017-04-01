@@ -42,10 +42,10 @@ public class AudioControllerView extends FrameLayout {
     private static final int MILLS_PER_SECOND = 1000;
     private static final int SECONDS_PER_MINUTE = 60;
 
-    private Context context;
-    private ViewGroup anchor;
-    private View root;
-    private AudioPlayer player;
+    protected Context context;
+    protected ViewGroup anchor;
+    protected View root;
+    protected AudioPlayerControl player;
     private ProgressBar seekBar;
     private TextView textViewCurrentTime, textViewDuration;
     private boolean dragging;
@@ -72,7 +72,7 @@ public class AudioControllerView extends FrameLayout {
         }
     };
 
-    public void setPlayer(AudioPlayer audioPlayer) {
+    public void setPlayer(AudioPlayerControl audioPlayer) {
         player = audioPlayer;
         updatePausePlay();
     }
@@ -107,7 +107,7 @@ public class AudioControllerView extends FrameLayout {
     // TODO intended to be overriden by derived classes
     protected View makeControllerView() {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        root = inflater.inflate(R.layout.view_audio_controller, null);
+        root = inflater.inflate(R.layout.view_default_audio_controller, null);
         initControllerView(
                 root,
                 R.id.audio_controller_button_pause,
@@ -118,9 +118,9 @@ public class AudioControllerView extends FrameLayout {
         return root;
     }
 
-    private void initControllerView(View rootView, int pauseBtnId, int seekBarId, int currentTimeId, int durationId) {
+    protected void initControllerView(View rootView, int pauseBtnId, int seekBarId, int currentTimeId, int durationId) {
         pauseButton = (ImageButton) rootView.findViewById(pauseBtnId);
-        seekBar = (SeekBar) rootView.findViewById(seekBarId);
+        seekBar = (ProgressBar) rootView.findViewById(seekBarId);
         textViewCurrentTime = (TextView) rootView.findViewById(currentTimeId);
         textViewDuration = (TextView) rootView.findViewById(durationId);
 
@@ -170,6 +170,7 @@ public class AudioControllerView extends FrameLayout {
 
         if (duration > 0) {
             long pos = 1000L * position / duration;
+            seekBar.setProgress(1000);
             seekBar.setProgress((int) pos);
         }
 
@@ -234,7 +235,7 @@ public class AudioControllerView extends FrameLayout {
         removeCallbacks(showProgress);
     }
 
-    public interface AudioPlayer {
+    public interface AudioPlayerControl {
         void start();
 
         void pause();

@@ -10,6 +10,7 @@ import android.widget.ListView;
 
 import com.aclass.edx.helloworld.activities.AudioPlayerActivity;
 import com.aclass.edx.helloworld.activities.DashboardActivity;
+import com.aclass.edx.helloworld.activities.InterviewActivity;
 
 public class MainActivity extends ListActivity {
 
@@ -40,7 +41,7 @@ public class MainActivity extends ListActivity {
                 intent = new Intent(this, DashboardActivity.class);
                 break;
             case MENU_ITEM_CUSTOM_PLAYER_CONTROL:
-                intent = new Intent(this, AudioPlayerActivity.class);
+                intent = new Intent(this, InterviewActivity.class);
                 break;
         }
 

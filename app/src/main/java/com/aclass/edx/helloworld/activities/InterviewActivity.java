@@ -1,15 +1,18 @@
 package com.aclass.edx.helloworld.activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.TextView;
 
 import com.aclass.edx.helloworld.R;
 import com.aclass.edx.helloworld.data.contracts.AppContract;
@@ -18,16 +21,16 @@ import com.aclass.edx.helloworld.views.AudioControllerView;
 
 import java.io.IOException;
 
-public class AudioPlayerActivity extends AppCompatActivity implements SurfaceHolder.Callback, MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, AudioControllerView.AudioPlayerControl {
+public class InterviewActivity extends AppCompatActivity implements SurfaceHolder.Callback,
+        MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, AudioControllerView.AudioPlayerControl {
 
-    private static final String TAG = AudioPlayerActivity.class.getSimpleName();
+    private static final String TAG = InterviewActivity.class.getSimpleName();
 
     private MediaPlayer audioPlayer;
     private AudioControllerView controllerView;
     private Media audio;
     private int currentPosition = 0;
 
-    private TextView textViewTranscript;
     private FrameLayout surfaceViewContainer;
     private SurfaceView surfaceView;
     private SurfaceHolder surfaceHolder;
@@ -35,7 +38,8 @@ public class AudioPlayerActivity extends AppCompatActivity implements SurfaceHol
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_audio_player);
+        setContentView(R.layout.activity_interview);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         // Get or init Media object to be played
         Intent intent = getIntent();
@@ -46,11 +50,8 @@ public class AudioPlayerActivity extends AppCompatActivity implements SurfaceHol
         getSupportActionBar().setTitle(audio.getTitle());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        textViewTranscript = (TextView) findViewById(R.id.audio_player_textview_transcript);
-        surfaceViewContainer = (FrameLayout) findViewById(R.id.audio_player_surfaceview_container);
-        surfaceView = (SurfaceView) findViewById(R.id.audio_player_surfaceview);
-
-        textViewTranscript.setText(R.string.large_text);
+        surfaceViewContainer = (FrameLayout) findViewById(R.id.interview_framelayout_surfaceview_container);
+        surfaceView = (SurfaceView) findViewById(R.id.interview_surfaceview);
         surfaceHolder = surfaceView.getHolder();
         surfaceHolder.addCallback(this);
     }
@@ -178,7 +179,21 @@ public class AudioPlayerActivity extends AppCompatActivity implements SurfaceHol
             audioPlayer.setOnErrorListener(this);
             audioPlayer.setDataSource(this, audioUri);
             audioPlayer.prepareAsync();
-            controllerView = new AudioControllerView(this);
+            controllerView = new AudioControllerView(this) {
+                protected View makeControllerView() {
+                    LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    root = inflater.inflate(R.layout.view_interview_audio_controller, null);
+                    initControllerView(
+                            root,
+                            R.id.interview_audio_controller_button_pause,
+                            R.id.interview_audio_controller_seekbar,
+                            R.id.interview_audio_controller_textview_currenttime,
+                            R.id.interview_audio_controller_textview_duration
+                    );
+                    return root;
+                }
+            };
+
         } catch (IOException e) {
             Log.e(TAG, "Unable to prepare audio with uri " + audioUri);
         }
