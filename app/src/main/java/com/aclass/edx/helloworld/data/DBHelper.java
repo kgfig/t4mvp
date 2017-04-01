@@ -48,7 +48,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 ContentEntry.COLUMN_NAME_CONTENT_ID + INT_NOT_NULL + COMMA +
                 ContentEntry.COLUMN_NAME_SEQ_NUM + INT_NOT_NULL + COMMA +
                 ContentEntry.FOREIGN_KEY_MODULE_ID + COMMA +
-                ContentEntry.UNIQUE_MODULE_ID_CONTENT_ID + ");";
+                ContentEntry.UNIQUE_COMPOSITE_KEY_MODULE_CONTENT + ");";
 
         private static final String DROP_TABLE_IF_EXISTS = "DROP TABLE IF EXISTS %s;\n";
     }

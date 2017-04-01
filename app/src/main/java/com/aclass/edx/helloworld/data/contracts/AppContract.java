@@ -69,11 +69,46 @@ public final class AppContract {
         public static final String FOREIGN_KEY_MODULE_ID = "FOREIGN KEY (" +
                 ContentEntry.COLUMN_NAME_MODULE_ID + ") REFERENCES " +
                 ModuleEntry.TABLE_NAME + " (" + ModuleEntry._ID + ")";
-        public static final String UNIQUE_MODULE_ID_CONTENT_ID = "UNIQUE (" +
-                ContentEntry.COLUMN_NAME_MODULE_ID + "," + ContentEntry.COLUMN_NAME_CONTENT_ID + ")";
+        public static final String UNIQUE_COMPOSITE_KEY_MODULE_CONTENT = "UNIQUE (" +
+                ContentEntry.COLUMN_NAME_MODULE_ID + "," +
+                ContentEntry.COLUMN_NAME_CONTENT_ID + ")";
         // Types
         public static final int TYPE_LESSON_MEDIA = 1;
         // Content URL for this table
+        public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME);
+    }
+
+    public static class InterviewEntry implements BaseColumns {
+        // Schema
+        public static final String TABLE_NAME = "interview";
+        public static final String COLUMN_NAME_TITLE = "title";
+        public static final String[] ALL_COLUMN_NAMES = {
+                InterviewEntry._ID,
+                InterviewEntry.COLUMN_NAME_TITLE
+        };
+        public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME);
+    }
+
+    public static class InterviewQuestionEntry implements BaseColumns {
+        //Schema
+        public static final String TABLE_NAME = "interviewQuestion";
+        public static final String COLUMN_NAME_INTERVIEW_ID = "interviewId";
+        public static final String COLUMN_NAME_QUESTION = "question";
+        public static final String COLUMN_NAME_MEDIA_ID = "mediaId";
+        public static final String COLUMN_NAME_SEQ_NUM = "seqNum";
+        public static final String FOREIGN_KEY_INTERVIEW_ID = "FOREIGN KEY (" +
+                COLUMN_NAME_INTERVIEW_ID + ") REFERENCES " +
+                InterviewEntry.TABLE_NAME + "(" + InterviewEntry._ID + ")";
+        public static final String FOREIGN_KEY_MEDIA_ID = "FOREIGN KEY (" +
+                COLUMN_NAME_MEDIA_ID + " ) REFERENCES " +
+                MediaEntry._ID + " (" + MediaEntry._ID + ")";
+        public static final String[] ALL_COLUMN_NAMES = {
+                InterviewQuestionEntry._ID,
+                InterviewQuestionEntry.COLUMN_NAME_INTERVIEW_ID,
+                InterviewQuestionEntry.COLUMN_NAME_QUESTION,
+                InterviewQuestionEntry.COLUMN_NAME_MEDIA_ID,
+                InterviewQuestionEntry.COLUMN_NAME_SEQ_NUM
+        };
         public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME);
     }
 }
