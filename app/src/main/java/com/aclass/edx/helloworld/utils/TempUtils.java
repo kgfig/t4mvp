@@ -8,7 +8,10 @@ import static com.aclass.edx.helloworld.data.contracts.AppContract.ContentEntry;
 import static com.aclass.edx.helloworld.data.contracts.AppContract.MediaEntry;
 import static com.aclass.edx.helloworld.data.contracts.AppContract.ModuleEntry;
 
+import com.aclass.edx.helloworld.data.contracts.AppContract;
 import com.aclass.edx.helloworld.data.models.Content;
+import com.aclass.edx.helloworld.data.models.Interview;
+import com.aclass.edx.helloworld.data.models.InterviewQuestion;
 import com.aclass.edx.helloworld.data.models.Media;
 import com.aclass.edx.helloworld.data.models.Module;
 
@@ -86,13 +89,20 @@ public class TempUtils {
         String teamworkTitle = "TEAM stands for Together Everyone Achieves More";
         String knowledgeTitle = "Brush up your knowledge of products and services";
 
+        Interview interview = new Interview("Character Interview");
+        long interviewId = db.insert(AppContract.InterviewEntry.TABLE_NAME, null, interview.toContentValues());
+
+        InterviewQuestion question = new InterviewQuestion(interviewId, "Tell me about yourself.", audioId, 1);
+        long questionId = db.insert(AppContract.InterviewQuestionEntry.TABLE_NAME, null, question.toContentValues());
+
         Content meetingContent1 = new Content(meetingsId, ContentEntry.TYPE_LESSON_MEDIA, courtesyTitle, courtesyId, 1);
         Content meetingContent2 = new Content(meetingsId, ContentEntry.TYPE_LESSON_MEDIA, warmthTitle, warmthId, 2);
         Content interviewContent1 = new Content(interviewsId, ContentEntry.TYPE_LESSON_MEDIA, initiativeTitle, initiativeId, 1);
         Content interviewContent2 = new Content(interviewsId, ContentEntry.TYPE_LESSON_MEDIA, teamworkTitle, teamworkId, 2);
+        Content interviewContent3 = new Content(interviewId, ContentEntry.TYPE_LESSON_PRACTICE_INTERIEW, "Practice Interview", interviewId, 3);
         Content businessContent = new Content(businessId, ContentEntry.TYPE_LESSON_MEDIA, knowledgeTitle, knowledgeId, 1);
         Content audioContent = new Content(businessId, ContentEntry.TYPE_LESSON_MEDIA, "Sample audio lesson", audioId, 2);
-        Content[] contents = new Content[]{meetingContent1, meetingContent2, interviewContent1, interviewContent2, businessContent, audioContent};
+        Content[] contents = new Content[]{meetingContent1, meetingContent2, interviewContent1, interviewContent2, interviewContent3, businessContent, audioContent};
 
         for (Content content : contents) {
             db.insert(ContentEntry.TABLE_NAME, null, content.toContentValues());
@@ -110,6 +120,5 @@ public class TempUtils {
             content.setValues(cursor);
             Log.d("TEST", "fetched stuff " + content);
         }
-
     }
 }

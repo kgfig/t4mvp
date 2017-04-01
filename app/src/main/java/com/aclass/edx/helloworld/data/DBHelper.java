@@ -8,7 +8,11 @@ import android.util.Log;
 import static com.aclass.edx.helloworld.data.contracts.AppContract.ContentEntry;
 import static com.aclass.edx.helloworld.data.contracts.AppContract.MediaEntry;
 import static com.aclass.edx.helloworld.data.contracts.AppContract.ModuleEntry;
+import static com.aclass.edx.helloworld.data.contracts.AppContract.InterviewEntry;
+import static com.aclass.edx.helloworld.data.contracts.AppContract.InterviewQuestionEntry;
 
+import com.aclass.edx.helloworld.data.models.Interview;
+import com.aclass.edx.helloworld.data.models.InterviewQuestion;
 import com.aclass.edx.helloworld.utils.TempUtils;
 
 /**
@@ -50,6 +54,19 @@ public class DBHelper extends SQLiteOpenHelper {
                 ContentEntry.FOREIGN_KEY_MODULE_ID + COMMA +
                 ContentEntry.UNIQUE_COMPOSITE_KEY_MODULE_CONTENT + ");";
 
+        public static final String CREATE_TABLE_INTERVIEW = CREATE_TABLE + InterviewEntry.TABLE_NAME + " (" +
+                InterviewEntry._ID + INT_PK_AUTOINCREMENT + COMMA +
+                InterviewEntry.COLUMN_NAME_TITLE + TEXT_NOT_NULL + ");";
+
+        public static final String CREATE_TABLE_INTERVIEW_QUESTION = CREATE_TABLE + InterviewQuestionEntry.TABLE_NAME + " (" +
+                InterviewQuestionEntry._ID + INT_PK_AUTOINCREMENT + COMMA +
+                InterviewQuestionEntry.COLUMN_NAME_INTERVIEW_ID + INT_NOT_NULL + COMMA +
+                InterviewQuestionEntry.COLUMN_NAME_QUESTION + TEXT_NOT_NULL + COMMA +
+                InterviewQuestionEntry.COLUMN_NAME_MEDIA_ID + INT_NOT_NULL + COMMA +
+                InterviewQuestionEntry.COLUMN_NAME_SEQ_NUM + INT_NOT_NULL + COMMA +
+                InterviewQuestionEntry.FOREIGN_KEY_INTERVIEW_ID + COMMA +
+                InterviewQuestionEntry.FOREIGN_KEY_MEDIA_ID + ")";
+
         private static final String DROP_TABLE_IF_EXISTS = "DROP TABLE IF EXISTS %s;\n";
     }
 
@@ -70,11 +87,13 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        Log.d(TAG, DBQueries.CREATE_TABLE_CONTENT);
-
+        Log.d(TAG, DBQueries.CREATE_TABLE_INTERVIEW);
+        Log.d(TAG, DBQueries.CREATE_TABLE_INTERVIEW_QUESTION);
         db.execSQL(DBQueries.CREATE_TABLE_MEDIA);
         db.execSQL(DBQueries.CREATE_TABLE_MODULE);
         db.execSQL(DBQueries.CREATE_TABLE_CONTENT);
+        db.execSQL(DBQueries.CREATE_TABLE_INTERVIEW);
+        db.execSQL(DBQueries.CREATE_TABLE_INTERVIEW_QUESTION);
         TempUtils.insertMediaTestData(db);
         TempUtils.insertModuleTestData(db);
         TempUtils.insertContentTestData(db);
@@ -93,7 +112,13 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     private static String getDropTablesQuery() {
-        String[] tableNames = {MediaEntry.TABLE_NAME, ModuleEntry.TABLE_NAME, ContentEntry.TABLE_NAME};
+        String[] tableNames = {
+                MediaEntry.TABLE_NAME,
+                ModuleEntry.TABLE_NAME,
+                ContentEntry.TABLE_NAME,
+                InterviewEntry.TABLE_NAME,
+                InterviewQuestionEntry.TABLE_NAME
+        };
         StringBuilder query = new StringBuilder();
 
         for (String tableName : tableNames) {

@@ -1,13 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/interview_framelayout_surfaceview_container"
-    android:background="@color/colorBackground"
+    android:orientation="vertical"
     tools:context=".activities.InterviewActivity">
-    <SurfaceView
-        android:id="@+id/interview_surfaceview"
+
+    <TextView
+        android:id="@+id/interview_textview_question"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/text_margin"
+        android:layout_gravity="center_horizontal"
+        android:textSize="@dimen/header_size"
+        android:text="test"/>
+
+    <FrameLayout
+        android:id="@+id/interview_framelayout_surfaceview_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-</FrameLayout>
+        android:layout_height="320dp"
+        android:background="@color/colorBackground">
+
+        <SurfaceView
+            android:id="@+id/interview_surfaceview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </FrameLayout>
+
+    <Button
+        android:id="@+id/interview_button_record"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Record/Next"
+        android:layout_marginBottom="@dimen/controller_buttons_vertical_margin"/>
+
+    <TextView
+        android:id="@+id/interview_textview_questionnum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/text_margin"
+        android:layout_gravity="center_horizontal"
+        android:textSize="@dimen/text_size"
+        android:text="+test1"/>
+</LinearLayout>

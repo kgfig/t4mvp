@@ -231,6 +231,7 @@ public class AudioControllerView extends FrameLayout {
         updatePausePlay();
     }
 
+    // TODO call this when audio stops playing
     public void stopTracking() {
         removeCallbacks(showProgress);
     }

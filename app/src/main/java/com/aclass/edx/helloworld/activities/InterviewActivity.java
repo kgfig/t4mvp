@@ -12,10 +12,16 @@ import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.aclass.edx.helloworld.R;
+import com.aclass.edx.helloworld.data.InterviewController;
 import com.aclass.edx.helloworld.data.contracts.AppContract;
+import com.aclass.edx.helloworld.data.models.Interview;
+import com.aclass.edx.helloworld.data.models.InterviewQuestion;
 import com.aclass.edx.helloworld.data.models.Media;
 import com.aclass.edx.helloworld.views.AudioControllerView;
 
@@ -28,12 +34,14 @@ public class InterviewActivity extends AppCompatActivity implements SurfaceHolde
 
     private MediaPlayer audioPlayer;
     private AudioControllerView controllerView;
-    private Media audio;
+    private InterviewController interviewController;
     private int currentPosition = 0;
 
     private FrameLayout surfaceViewContainer;
     private SurfaceView surfaceView;
     private SurfaceHolder surfaceHolder;
+    private TextView textViewQuestion, textViewQuestionNum;
+    private Button buttonRecord;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,13 +49,14 @@ public class InterviewActivity extends AppCompatActivity implements SurfaceHolde
         setContentView(R.layout.activity_interview);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-        // Get or init Media object to be played
+        // Get Interview or init Media object to be played
         Intent intent = getIntent();
         String paramName = getString(R.string.content_list_selected_content_key);
-        audio = intent.hasExtra(paramName) ? (Media) intent.getParcelableExtra(paramName) : new Media("Sample audio", "audio1", AppContract.MediaEntry.TYPE_AUDIO);
+        Interview interview = intent.getParcelableExtra(paramName);
+        interviewController = new InterviewController(getContentResolver(), interview);
 
         // Init views
-        getSupportActionBar().setTitle(audio.getTitle());
+        getSupportActionBar().setTitle(interview.getTitle());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         surfaceViewContainer = (FrameLayout) findViewById(R.id.interview_framelayout_surfaceview_container);
@@ -94,7 +103,8 @@ public class InterviewActivity extends AppCompatActivity implements SurfaceHolde
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        initAudioPlayer();
+        initViews();
+        showNextQuestion();
     }
 
     @Override
@@ -170,8 +180,56 @@ public class InterviewActivity extends AppCompatActivity implements SurfaceHolde
         return 0;
     }
 
-    private void initAudioPlayer() {
-        Uri audioUri = Uri.parse("android.resource://" + getPackageName() + "/" + getResources().getIdentifier(audio.getFilename(), "raw", getPackageName()));
+    private final View.OnClickListener recordClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (interviewController.hasNext()) {
+                showNextQuestion();
+            } else {
+                finishInterview();
+            }
+        }
+    };
+
+    private void initViews() {
+        textViewQuestion = (TextView) findViewById(R.id.interview_textview_question);
+        textViewQuestionNum = (TextView) findViewById(R.id.interview_textview_questionnum);
+        buttonRecord = (Button) findViewById(R.id.interview_button_record);
+        buttonRecord.setOnClickListener(recordClickListener);
+        controllerView = new AudioControllerView(this) {
+            protected View makeControllerView() {
+                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                root = inflater.inflate(R.layout.view_interview_audio_controller, null);
+                initControllerView(
+                        root,
+                        R.id.interview_audio_controller_button_pause,
+                        R.id.interview_audio_controller_seekbar,
+                        R.id.interview_audio_controller_textview_currenttime,
+                        R.id.interview_audio_controller_textview_duration
+                );
+                return root;
+            }
+        };
+
+    }
+
+    private void stopPlayingQuestion() {
+        if (audioPlayer != null && audioPlayer.isPlaying()) {
+            audioPlayer.stop();
+            audioPlayer.release();
+        }
+    }
+
+    private void showNextQuestion() {
+        stopPlayingQuestion();
+
+        InterviewQuestion question = interviewController.nextQuestion();
+        textViewQuestion.setText(question.getQuestion());
+        textViewQuestionNum.setText(String.format("Question %d of %d", interviewController.getNumQuestions() + 1,
+                interviewController.getNumQuestions()));
+        Uri audioUri = Uri.parse("android.resource://" + getPackageName() + "/" +
+                getResources().getIdentifier(question.getMedia().getFilename(), "raw", getPackageName()));
+
         try {
             audioPlayer = new MediaPlayer();
             audioPlayer.setDisplay(surfaceHolder);
@@ -179,23 +237,13 @@ public class InterviewActivity extends AppCompatActivity implements SurfaceHolde
             audioPlayer.setOnErrorListener(this);
             audioPlayer.setDataSource(this, audioUri);
             audioPlayer.prepareAsync();
-            controllerView = new AudioControllerView(this) {
-                protected View makeControllerView() {
-                    LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                    root = inflater.inflate(R.layout.view_interview_audio_controller, null);
-                    initControllerView(
-                            root,
-                            R.id.interview_audio_controller_button_pause,
-                            R.id.interview_audio_controller_seekbar,
-                            R.id.interview_audio_controller_textview_currenttime,
-                            R.id.interview_audio_controller_textview_duration
-                    );
-                    return root;
-                }
-            };
-
         } catch (IOException e) {
             Log.e(TAG, "Unable to prepare audio with uri " + audioUri);
         }
+    }
+
+    private void finishInterview() {
+        stopPlayingQuestion();
+        Toast.makeText(this, "Interview done! TODO: Start playing whole sequence.", Toast.LENGTH_SHORT).show();
     }
 }

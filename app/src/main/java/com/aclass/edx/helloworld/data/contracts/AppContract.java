@@ -74,6 +74,7 @@ public final class AppContract {
                 ContentEntry.COLUMN_NAME_CONTENT_ID + ")";
         // Types
         public static final int TYPE_LESSON_MEDIA = 1;
+        public static final int TYPE_LESSON_PRACTICE_INTERIEW = 2;
         // Content URL for this table
         public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME);
     }

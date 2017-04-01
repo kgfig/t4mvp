@@ -10,14 +10,18 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.aclass.edx.helloworld.data.DBHelper;
 import com.aclass.edx.helloworld.data.exceptions.UnsupportedURIException;
 import com.aclass.edx.helloworld.data.contracts.AppContract;
+import com.aclass.edx.helloworld.data.models.Interview;
 import com.aclass.edx.helloworld.data.models.Module;
 
 
 import static com.aclass.edx.helloworld.data.contracts.AppContract.ContentEntry;
+import static com.aclass.edx.helloworld.data.contracts.AppContract.InterviewEntry;
+import static com.aclass.edx.helloworld.data.contracts.AppContract.InterviewQuestionEntry;
 import static com.aclass.edx.helloworld.data.contracts.AppContract.MediaEntry;
 import static com.aclass.edx.helloworld.data.contracts.AppContract.ModuleEntry;
 
@@ -33,6 +37,10 @@ public class AppContentProvider extends ContentProvider {
         uriMatcher.addURI(AppContract.AUTHORITY, ModuleEntry.TABLE_NAME + "/#", ProviderConstants.ITEM_MODULE);
         uriMatcher.addURI(AppContract.AUTHORITY, ContentEntry.TABLE_NAME, ProviderConstants.LIST_CONTENT);
         uriMatcher.addURI(AppContract.AUTHORITY, ContentEntry.TABLE_NAME + "/#", ProviderConstants.ITEM_CONTENT);
+        uriMatcher.addURI(AppContract.AUTHORITY, InterviewEntry.TABLE_NAME, ProviderConstants.LIST_INTERVIEW);
+        uriMatcher.addURI(AppContract.AUTHORITY, InterviewEntry.TABLE_NAME + "/#", ProviderConstants.ITEM_INTERVIEW);
+        uriMatcher.addURI(AppContract.AUTHORITY, InterviewQuestionEntry.TABLE_NAME, ProviderConstants.LIST_INTERVIEW_QUESTION);
+        uriMatcher.addURI(AppContract.AUTHORITY, InterviewQuestionEntry.TABLE_NAME + "/#", ProviderConstants.ITEM_INTERVIEW_QUESTION);
     }
 
     @Override
@@ -57,6 +65,12 @@ public class AppContentProvider extends ContentProvider {
             case ProviderConstants.LIST_CONTENT:
                 queryBuilder.setTables(ContentEntry.TABLE_NAME);
                 break;
+            case ProviderConstants.LIST_INTERVIEW:
+                queryBuilder.setTables(InterviewEntry.TABLE_NAME);
+                break;
+            case ProviderConstants.LIST_INTERVIEW_QUESTION:
+                queryBuilder.setTables(InterviewQuestionEntry.TABLE_NAME);
+                break;
             case ProviderConstants.ITEM_MEDIA:
                 queryBuilder.setTables(MediaEntry.TABLE_NAME);
                 queryBuilder.appendWhere(MediaEntry._ID + " = " + uri.getLastPathSegment());
@@ -69,11 +83,21 @@ public class AppContentProvider extends ContentProvider {
                 queryBuilder.setTables(ContentEntry.TABLE_NAME);
                 queryBuilder.appendWhere(ContentEntry._ID + " = " + uri.getLastPathSegment());
                 break;
+            case ProviderConstants.ITEM_INTERVIEW:
+                queryBuilder.setTables(InterviewEntry.TABLE_NAME);
+                queryBuilder.appendWhere(InterviewEntry._ID + " = " + uri.getLastPathSegment());
+                break;
+            case ProviderConstants.ITEM_INTERVIEW_QUESTION:
+                queryBuilder.setTables(InterviewQuestionEntry.TABLE_NAME);
+                queryBuilder.appendWhere(InterviewQuestionEntry._ID + " = " + uri.getLastPathSegment());
+                break;
             default:
                 throw new UnsupportedURIException(uri);
         }
 
         SQLiteDatabase db = DBHelper.getInstance(getContext()).getReadableDatabase();
+        Log.d("Provider", "Selection: " + selection);
+        Log.d("Provider", "Selection args; " + (selectionArgs!=null && selectionArgs.length > 0? selectionArgs[0] : " no args"));
         Cursor cursor = queryBuilder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
         cursor.setNotificationUri(getContext().getContentResolver(), uri);
 
@@ -118,6 +142,12 @@ public class AppContentProvider extends ContentProvider {
                 break;
             case ProviderConstants.LIST_CONTENT:
                 id = db.insertOrThrow(ContentEntry.TABLE_NAME, null, values);
+                break;
+            case ProviderConstants.LIST_INTERVIEW:
+                id = db.insertOrThrow(InterviewEntry.TABLE_NAME, null, values);
+                break;
+            case ProviderConstants.LIST_INTERVIEW_QUESTION:
+                id = db.insertOrThrow(InterviewQuestionEntry.TABLE_NAME, null, values);
                 break;
             default:
                 throw new UnsupportedURIException(uri);

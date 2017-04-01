@@ -29,9 +29,10 @@ public class InterviewQuestion extends DataModel {
     private String question;
     private long mediaId;
     private int seqNum;
+    private Media media;
 
-    public InterviewQuestion(long id) {
-        super(id);
+    public InterviewQuestion() {
+        super(0);
     }
 
     public InterviewQuestion(Parcel parcel) {
@@ -127,5 +128,13 @@ public class InterviewQuestion extends DataModel {
 
     public void setSeqNum(int seqNum) {
         this.seqNum = seqNum;
+    }
+
+    public Media getMedia() {
+        return media;
+    }
+
+    public void setMedia(Media media) {
+        this.media = media;
     }
 }

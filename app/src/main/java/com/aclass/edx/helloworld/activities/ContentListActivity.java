@@ -15,9 +15,11 @@ import android.widget.Toast;
 
 import static com.aclass.edx.helloworld.data.contracts.AppContract.ContentEntry;
 import static com.aclass.edx.helloworld.data.contracts.AppContract.MediaEntry;
+import static com.aclass.edx.helloworld.data.contracts.AppContract.InterviewEntry;
 
 import com.aclass.edx.helloworld.R;
 import com.aclass.edx.helloworld.data.models.Content;
+import com.aclass.edx.helloworld.data.models.Interview;
 import com.aclass.edx.helloworld.data.models.Media;
 import com.aclass.edx.helloworld.data.models.Module;
 import com.aclass.edx.helloworld.viewgroup.utils.ContentRecyclerAdapter;
@@ -93,11 +95,35 @@ public class ContentListActivity extends AppCompatActivity implements LoaderMana
             case ContentEntry.TYPE_LESSON_MEDIA:
                 goToMediaActivity(content);
                 break;
+            case ContentEntry.TYPE_LESSON_PRACTICE_INTERIEW:
+                goToInterviewActivity(content);
+                break;
             default:
                 Toast.makeText(this, "Content type " + content.getType() +
                         " not supported", Toast.LENGTH_SHORT);
         }
     }
+
+    private void goToInterviewActivity(Content content) {
+        Cursor cursor = getContentResolver().query(
+                Uri.parse(InterviewEntry.CONTENT_URI + "/" + content.getContentId()),
+                InterviewEntry.ALL_COLUMN_NAMES,
+                null,
+                null,
+                null
+        );
+
+        if (cursor.moveToNext()) {
+            Interview interview = new Interview();
+            interview.setValues(cursor);
+
+            Intent intent = new Intent(this, InterviewActivity.class);
+            intent.putExtra(getString(R.string.content_list_selected_content_key), interview);
+            Toast.makeText(this, String.format("Go to interview with id %d and title %s", interview.getId(), interview.getTitle()), Toast.LENGTH_SHORT).show();
+            startActivity(intent);
+        }
+    }
+
 
     private void goToMediaActivity(Content content) {
         Cursor mediaCursor = getContentResolver().query(

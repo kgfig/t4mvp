@@ -1,9 +1,15 @@
 package com.aclass.edx.helloworld.data.models;
 
+import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import static com.aclass.edx.helloworld.data.contracts.AppContract.InterviewQuestionEntry;
+
+import java.util.List;
 
 import static com.aclass.edx.helloworld.data.contracts.AppContract.InterviewEntry;
 
@@ -13,7 +19,7 @@ import static com.aclass.edx.helloworld.data.contracts.AppContract.InterviewEntr
 
 public class Interview extends DataModel {
 
-    static final Parcelable.Creator<Interview> CREATOR = new Parcelable.Creator<Interview>(){
+    static final Parcelable.Creator<Interview> CREATOR = new Parcelable.Creator<Interview>() {
         @Override
         public Interview createFromParcel(Parcel source) {
             return new Interview(source);
@@ -27,7 +33,9 @@ public class Interview extends DataModel {
 
     private String title;
 
-    public Interview() {super(0);}
+    public Interview() {
+        super(0);
+    }
 
     public Interview(Parcel parcel) {
         this(parcel.readLong(), parcel.readString());
@@ -86,4 +94,5 @@ public class Interview extends DataModel {
     public void setTitle(String title) {
         this.title = title;
     }
+
 }
