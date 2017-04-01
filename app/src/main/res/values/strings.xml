@@ -44,6 +44,9 @@
     <!-- Video Player and Audio Player -->
     <string name="media_player_position">position</string>
 
+    <!-- Recorder -->
+    <string name="recorder_audio_ext_name">.3gp</string>
+
     <!-- error messages -->
     <string name="all_error_no_media_found_by_id">No media with id %s in database</string>
     <string name="all_error_enter_name">Please enter your name or skip for now.</string>
