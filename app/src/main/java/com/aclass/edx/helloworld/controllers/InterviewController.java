@@ -1,6 +1,7 @@
-package com.aclass.edx.helloworld.data;
+package com.aclass.edx.helloworld.controllers;
 
 import android.content.ContentResolver;
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 
@@ -8,8 +9,10 @@ import com.aclass.edx.helloworld.data.contracts.AppContract;
 import com.aclass.edx.helloworld.data.models.Interview;
 import com.aclass.edx.helloworld.data.models.InterviewQuestion;
 import com.aclass.edx.helloworld.data.models.Media;
+import com.aclass.edx.helloworld.utils.PrefUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -18,20 +21,24 @@ import java.util.List;
 
 public class InterviewController {
 
+    private Context context;
     private Interview interview;
     private List<InterviewQuestion> questions;
     private int currentQuestionNo, numQuestions;
     private InterviewQuestion currentQuestion;
+    private HashMap<Long, String> answerFilenames;
 
-    public InterviewController(ContentResolver resolver, Interview interview) {
+    public InterviewController(Context context, Interview interview) {
+        this.context = context;
         this.interview = interview;
-        this.questions = initQuestions(resolver);
+        this.questions = initQuestions(context.getContentResolver());
         this.numQuestions = questions.size();
+        this.answerFilenames = new HashMap<Long, String>();
 
         // Init media per question
         for (InterviewQuestion question : questions) {
             Uri questionUri = Uri.parse(AppContract.MediaEntry.CONTENT_URI + "/" + question.getMediaId());
-            Cursor cursor = resolver.query(questionUri, AppContract.MediaEntry.ALL_COLUMN_NAMES, null, null, null);
+            Cursor cursor = context.getContentResolver().query(questionUri, AppContract.MediaEntry.ALL_COLUMN_NAMES, null, null, null);
             if (cursor.moveToNext()) {
                 Media media = new Media();
                 media.setValues(cursor);
@@ -80,5 +87,17 @@ public class InterviewController {
 
     public boolean hasNext() {
         return currentQuestionNo + 1 < numQuestions;
+    }
+
+    public boolean hasAnswerForCurrentQuestion() {
+        return answerFilenames.containsKey(currentQuestion.getId());
+    }
+
+    public void markCurrentQuestionAnswered() {
+        answerFilenames.put(currentQuestion.getId(), getAnswerFilename());
+    }
+    // format: interviewId_questionId_userId/nickname
+    public String getAnswerFilename() {
+        return String.format("%d_%d_%s", interview.getId(), currentQuestion.getId(), PrefUtils.getNickname(context));
     }
 }

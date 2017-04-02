@@ -3,9 +3,12 @@ package com.aclass.edx.helloworld.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.media.MediaPlayer;
+import android.media.MediaRecorder;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,34 +18,62 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aclass.edx.helloworld.R;
-import com.aclass.edx.helloworld.data.InterviewController;
+import com.aclass.edx.helloworld.controllers.InterviewController;
 import com.aclass.edx.helloworld.data.contracts.AppContract;
 import com.aclass.edx.helloworld.data.models.Interview;
 import com.aclass.edx.helloworld.data.models.InterviewQuestion;
-import com.aclass.edx.helloworld.data.models.Media;
 import com.aclass.edx.helloworld.views.AudioControllerView;
 
 import java.io.IOException;
 
-public class InterviewActivity extends AppCompatActivity implements SurfaceHolder.Callback,
-        MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, AudioControllerView.AudioPlayerControl {
+public class InterviewActivity extends AppCompatActivity implements SurfaceHolder.Callback, AudioControllerView.AudioPlayerControl {
 
     private static final String TAG = InterviewActivity.class.getSimpleName();
 
+    // Permission stuff
+    private static final int REQUEST_PERMISSION_CODE = 200;
+    private static final int RECORD_PERMISSION = 0;
+    private boolean permissionToRecordGranted = false;
+
+    // Media and interview controllers and status
     private MediaPlayer audioPlayer;
-    private AudioControllerView controllerView;
+    private MediaRecorder recorder;
     private InterviewController interviewController;
     private int currentPosition = 0;
 
+    // Views
+    private AudioControllerView audioControllerView;
     private FrameLayout surfaceViewContainer;
     private SurfaceView surfaceView;
     private SurfaceHolder surfaceHolder;
     private TextView textViewQuestion, textViewQuestionNum;
     private Button buttonRecord;
+    private SeekBar seekBarQuestion;
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        switch (requestCode) {
+            case REQUEST_PERMISSION_CODE:
+                if (grantResults.length >= 1) {
+                    permissionToRecordGranted = grantResults[RECORD_PERMISSION] == PackageManager.PERMISSION_GRANTED;
+                }
+                break;
+        }
+
+        if (permissionToRecordGranted) {
+            showNextQuestion();
+        } else {
+            finish();
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +81,7 @@ public class InterviewActivity extends AppCompatActivity implements SurfaceHolde
         setContentView(R.layout.activity_interview);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-        // Get Interview or init Media object to be played
+        // Get Interview or initialize controller
         Intent intent = getIntent();
         String paramName = getString(R.string.content_list_selected_content_key);
         Interview interview = intent.getParcelableExtra(paramName);
@@ -67,7 +98,8 @@ public class InterviewActivity extends AppCompatActivity implements SurfaceHolde
                 interview.setValues(cursor);
             }
         }
-        interviewController = new InterviewController(getContentResolver(), interview);
+
+        interviewController = new InterviewController(this, interview);
 
         // Init views
         getSupportActionBar().setTitle(interview.getTitle());
@@ -89,7 +121,7 @@ public class InterviewActivity extends AppCompatActivity implements SurfaceHolde
     protected void onDestroy() {
         if (audioPlayer != null) {
             audioPlayer.stop();
-            controllerView.stopTracking();
+            audioControllerView.stopTracking();
             audioPlayer.release();
         }
         super.onDestroy();
@@ -118,7 +150,6 @@ public class InterviewActivity extends AppCompatActivity implements SurfaceHolde
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         initViews();
-        showNextQuestion();
     }
 
     @Override
@@ -129,19 +160,6 @@ public class InterviewActivity extends AppCompatActivity implements SurfaceHolde
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
 
-    }
-
-    @Override
-    public void onPrepared(MediaPlayer mp) {
-        controllerView.setPlayer(this);
-        controllerView.setAnchorView(surfaceViewContainer);
-        audioPlayer.start();
-        controllerView.show();
-    }
-
-    @Override
-    public boolean onError(MediaPlayer mp, int what, int extra) {
-        return false;
     }
 
     @Override
@@ -198,7 +216,11 @@ public class InterviewActivity extends AppCompatActivity implements SurfaceHolde
         @Override
         public void onClick(View v) {
             if (interviewController.hasNext()) {
-                showNextQuestion();
+                if (interviewController.hasAnswerForCurrentQuestion()) {
+                    showNextQuestion();
+                } else {
+                    startRecording();
+                }
             } else {
                 finishInterview();
             }
@@ -209,8 +231,13 @@ public class InterviewActivity extends AppCompatActivity implements SurfaceHolde
         textViewQuestion = (TextView) findViewById(R.id.interview_textview_question);
         textViewQuestionNum = (TextView) findViewById(R.id.interview_textview_questionnum);
         buttonRecord = (Button) findViewById(R.id.interview_button_record);
+        seekBarQuestion = (SeekBar) findViewById(R.id.interview_seekbar_question);
+
         buttonRecord.setOnClickListener(recordClickListener);
-        controllerView = new AudioControllerView(this) {
+        seekBarQuestion.setMax(interviewController.getNumQuestions());
+        seekBarQuestion.setProgress(0);
+
+        audioControllerView = new AudioControllerView(this) {
             protected View makeControllerView() {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 root = inflater.inflate(R.layout.view_interview_audio_controller, null);
@@ -227,37 +254,104 @@ public class InterviewActivity extends AppCompatActivity implements SurfaceHolde
 
     }
 
-    private void stopPlayingQuestion() {
-        if (audioPlayer != null && audioPlayer.isPlaying()) {
-            audioPlayer.stop();
-            audioPlayer.release();
-        }
-    }
-
+    /**
+     * TODO is it a good idea to instantiate MediaPlayer and MediaRecorder for each question?
+     */
     private void showNextQuestion() {
         stopPlayingQuestion();
+        stopRecording();
 
         InterviewQuestion question = interviewController.nextQuestion();
         textViewQuestion.setText(question.getQuestion());
         textViewQuestionNum.setText(String.format("Question %d of %d", interviewController.getCurrentQuestionNo() + 1,
                 interviewController.getNumQuestions()));
-        Uri audioUri = Uri.parse("android.resource://" + getPackageName() + "/" +
-                getResources().getIdentifier(question.getMedia().getFilename(), "raw", getPackageName()));
+        seekBarQuestion.setProgress(interviewController.getCurrentQuestionNo());
 
         try {
-            audioPlayer = new MediaPlayer();
-            audioPlayer.setDisplay(surfaceHolder);
-            audioPlayer.setOnPreparedListener(this);
-            audioPlayer.setOnErrorListener(this);
-            audioPlayer.setDataSource(this, audioUri);
-            audioPlayer.prepareAsync();
+            initPlayer(question.getMedia().getFilename());
+            initRecorder();
         } catch (IOException e) {
-            Log.e(TAG, "Unable to prepare audio with uri " + audioUri);
+            Log.e(TAG, "Unable to init player or recorder");
+            e.printStackTrace();
         }
+    }
+
+    private void stopPlayingQuestion() {
+        if (audioPlayer != null && audioPlayer.isPlaying()) {
+            audioPlayer.stop();
+            audioPlayer.release();
+            audioPlayer = null;
+        }
+    }
+
+    private void stopRecording() {
+        buttonRecord.setText("Record you answer.");
+        buttonRecord.setEnabled(false);
+
+        if (recorder != null) {
+            recorder.stop();
+            recorder.release();
+            recorder = null;
+        }
+    }
+
+    private final MediaPlayer.OnPreparedListener onPreparedListener = new MediaPlayer.OnPreparedListener() {
+        @Override
+        public void onPrepared(MediaPlayer mp) {
+            audioControllerView.setPlayer(InterviewActivity.this);
+            audioControllerView.setAnchorView(surfaceViewContainer);
+            audioPlayer.start();
+            audioControllerView.show();
+        }
+    };
+
+    private final MediaPlayer.OnErrorListener onPlayerErrorListener = new MediaPlayer.OnErrorListener() {
+        @Override
+        public boolean onError(MediaPlayer mp, int what, int extra) {
+            return false;
+        }
+    };
+
+    private final MediaPlayer.OnCompletionListener onCompletionListener = new MediaPlayer.OnCompletionListener() {
+        @Override
+        public void onCompletion(MediaPlayer mp) {
+            buttonRecord.setEnabled(true);
+        }
+    };
+
+    private void initPlayer(String filename) throws IOException {
+        Uri audioUri = Uri.parse("android.resource://" + getPackageName() + "/" +
+                getResources().getIdentifier(filename, "raw", getPackageName()));
+        audioPlayer = new MediaPlayer();
+
+        audioPlayer.setDisplay(surfaceHolder);
+        audioPlayer.setOnPreparedListener(onPreparedListener);
+        audioPlayer.setOnCompletionListener(onCompletionListener);
+        audioPlayer.setOnErrorListener(onPlayerErrorListener);
+        audioPlayer.setDataSource(this, audioUri);
+        audioPlayer.prepareAsync();
+    }
+
+    private void initRecorder() throws IOException {
+        String filename = String.format("%s/%s%s", getExternalCacheDir().getAbsolutePath(),
+                interviewController.getAnswerFilename(), getString(R.string.recorder_audio_ext_name));
+        recorder = new MediaRecorder();
+
+        recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+        recorder.setOutputFile(filename);
+        recorder.prepare();
+    }
+
+    private void startRecording() {
+        recorder.start();
+        buttonRecord.setText("Ongoing recording...");
     }
 
     private void finishInterview() {
         stopPlayingQuestion();
+        stopRecording();
         Toast.makeText(this, "Interview done! TODO: Start playing whole sequence.", Toast.LENGTH_SHORT).show();
     }
 }
