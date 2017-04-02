@@ -3,6 +3,7 @@ package com.aclass.edx.helloworld.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.database.Cursor;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
@@ -53,6 +54,19 @@ public class InterviewActivity extends AppCompatActivity implements SurfaceHolde
         Intent intent = getIntent();
         String paramName = getString(R.string.content_list_selected_content_key);
         Interview interview = intent.getParcelableExtra(paramName);
+        if (interview == null) {
+            Cursor cursor = getContentResolver().query(
+                    Uri.parse(AppContract.InterviewEntry.CONTENT_URI + "/" + 1),
+                    AppContract.InterviewEntry.ALL_COLUMN_NAMES,
+                    null,
+                    null,
+                    null
+            );
+            if (cursor.moveToNext()) {
+                interview = new Interview();
+                interview.setValues(cursor);
+            }
+        }
         interviewController = new InterviewController(getContentResolver(), interview);
 
         // Init views
@@ -225,7 +239,7 @@ public class InterviewActivity extends AppCompatActivity implements SurfaceHolde
 
         InterviewQuestion question = interviewController.nextQuestion();
         textViewQuestion.setText(question.getQuestion());
-        textViewQuestionNum.setText(String.format("Question %d of %d", interviewController.getNumQuestions() + 1,
+        textViewQuestionNum.setText(String.format("Question %d of %d", interviewController.getCurrentQuestionNo() + 1,
                 interviewController.getNumQuestions()));
         Uri audioUri = Uri.parse("android.resource://" + getPackageName() + "/" +
                 getResources().getIdentifier(question.getMedia().getFilename(), "raw", getPackageName()));

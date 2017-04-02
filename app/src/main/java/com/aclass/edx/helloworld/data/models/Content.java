@@ -15,7 +15,7 @@ import static com.aclass.edx.helloworld.data.contracts.AppContract.ContentEntry;
 
 public class Content extends DataModel {
 
-    static final Parcelable.Creator<Content> CREATOR = new Parcelable.Creator<Content>() {
+    public static final Parcelable.Creator<Content> CREATOR = new Parcelable.Creator<Content>() {
         @Override
         public Content createFromParcel(Parcel source) {
             return new Content(source);

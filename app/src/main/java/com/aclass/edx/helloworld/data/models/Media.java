@@ -16,7 +16,7 @@ import static com.aclass.edx.helloworld.data.contracts.AppContract.MediaEntry;
 
 public class Media extends DataModel {
 
-    static final Parcelable.Creator<Media> CREATOR = new Parcelable.Creator<Media>() {
+    public static final Parcelable.Creator<Media> CREATOR = new Parcelable.Creator<Media>() {
         @Override
         public Media createFromParcel(Parcel source) {
             return new Media(source);

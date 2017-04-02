@@ -13,7 +13,7 @@ import static com.aclass.edx.helloworld.data.contracts.AppContract.InterviewQues
 
 public class InterviewQuestion extends DataModel {
 
-    static final Parcelable.Creator<InterviewQuestion> CREATOR = new Parcelable.Creator<InterviewQuestion>(){
+    public static final Parcelable.Creator<InterviewQuestion> CREATOR = new Parcelable.Creator<InterviewQuestion>(){
         @Override
         public InterviewQuestion createFromParcel(Parcel source) {
             return new InterviewQuestion(source);

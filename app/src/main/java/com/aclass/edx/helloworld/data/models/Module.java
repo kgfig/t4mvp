@@ -17,7 +17,7 @@ import static com.aclass.edx.helloworld.data.contracts.AppContract.ModuleEntry;
 
 public class Module extends DataModel {
 
-    static final Parcelable.Creator<Module> CREATOR = new Parcelable.Creator<Module>() {
+    public static final Parcelable.Creator<Module> CREATOR = new Parcelable.Creator<Module>() {
         @Override
         public Module createFromParcel(Parcel source) {
             return new Module(source);
