@@ -24,17 +24,14 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 public class AudioRecorderActivity extends AppCompatActivity implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener {
 
     private static final String TAG = AudioRecorderActivity.class.getSimpleName();
-    private static final int REQUEST_PERMISSION_CODE = 1;
-    private static final int STORE_PERMISSION = 0;
-    private static final int RECORD_PERMISSION = 1;
+    private static final int RECORD_PERMISSION = 0;
+    private static final int REQUEST_PERMISSION_CODE = 200;
 
     // Status fields
     private String[] activityPermissions = new String[]{
-            WRITE_EXTERNAL_STORAGE,
             RECORD_AUDIO
     };
-    private boolean permissionToRecordGranted = false,
-            permissionToStoreGranted = false;
+    private boolean permissionToRecordGranted = false;
     private boolean isRecording = false,
             isPlaying = false;
     private String audioFilename, action;
@@ -62,14 +59,13 @@ public class AudioRecorderActivity extends AppCompatActivity implements MediaPla
 
         switch (requestCode) {
             case REQUEST_PERMISSION_CODE:
-                if (grantResults.length >= 2) {
-                    permissionToStoreGranted = grantResults[STORE_PERMISSION] == PackageManager.PERMISSION_GRANTED;
+                if (grantResults.length >= 1) {
                     permissionToRecordGranted = grantResults[RECORD_PERMISSION] == PackageManager.PERMISSION_GRANTED;
                 }
                 break;
         }
 
-        if (permissionToStoreGranted && permissionToRecordGranted) {
+        if (permissionToRecordGranted) {
             initViews();
         } else {
             finish();
@@ -157,8 +153,7 @@ public class AudioRecorderActivity extends AppCompatActivity implements MediaPla
 
     private boolean hasPermission() {
         if (Build.VERSION.SDK_INT >= 23) {
-            if (ContextCompat.checkSelfPermission(this, activityPermissions[STORE_PERMISSION]) == PackageManager.PERMISSION_GRANTED
-                    && ContextCompat.checkSelfPermission(this, activityPermissions[RECORD_PERMISSION]) == PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(this, activityPermissions[RECORD_PERMISSION]) == PackageManager.PERMISSION_GRANTED) {
                 return true;
             } else {
                 requestPermissions();
