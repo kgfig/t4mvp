@@ -45,8 +45,10 @@
     <string name="media_player_position">position</string>
 
     <!-- Recorder -->
-    <string name="recorder_audio_ext_name">.3gp</string>
+    <string name="recorder_audio_path_format">%%s/%%s.3gp</string>
 
+    <!-- Interview -->
+    <string name="interview_recording_filename_format">%%d_%%d_%%s</string>
     <!-- error messages -->
     <string name="all_error_no_media_found_by_id">No media with id %s in database</string>
     <string name="all_error_enter_name">Please enter your name or skip for now.</string>

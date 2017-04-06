@@ -15,6 +15,9 @@ import com.aclass.edx.helloworld.data.models.InterviewQuestion;
 import com.aclass.edx.helloworld.data.models.Media;
 import com.aclass.edx.helloworld.data.models.Module;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by tictocproject on 20/03/2017.
  */
@@ -30,18 +33,35 @@ public class TempUtils {
     public static Media INITIATIVE = new Media("Initiative", "video3", MediaEntry.TYPE_VIDEO);
     public static Media TEAMWORK = new Media("Teamwork", "video4", MediaEntry.TYPE_VIDEO);
     public static Media KNOWLEDGE = new Media("Knowledge", "video5", MediaEntry.TYPE_VIDEO);
-    public static Media AUDIO = new Media("Audio Lesson Title", "audio1", MediaEntry.TYPE_AUDIO);
+    public static Media AUDIO1 = new Media("Audio Lesson Title", "audio1", MediaEntry.TYPE_AUDIO);
+    public static Media AUDIO_QUESTION1 = new Media("Interview question", "interview01_question01", MediaEntry.TYPE_AUDIO);
+    public static Media AUDIO_QUESTION2 = new Media("Interview question", "interview01_question02", MediaEntry.TYPE_AUDIO);
+    public static Media AUDIO_QUESTION3 = new Media("Interview question", "interview01_question03", MediaEntry.TYPE_AUDIO);
+    public static Media AUDIO_QUESTION4 = new Media("Interview question", "interview01_question04", MediaEntry.TYPE_AUDIO);
+    public static Media AUDIO_QUESTION5 = new Media("Interview closing", "interview01_question05", MediaEntry.TYPE_AUDIO);
     public static Module INTERVIEW = new Module("Interview");
     public static Module MEETINGS = new Module("Meetings");
     public static Module BUSINESS_CORRESPONDENCE = new Module("Business Writing");
 
     // List test data
-    public static Media[] TEST_DATA_MEDIA = new Media[]{COURTESY, WARMTH, INITIATIVE, TEAMWORK, KNOWLEDGE, AUDIO};
+    public static Media[] TEST_DATA_MEDIA = new Media[]{COURTESY, WARMTH, INITIATIVE, TEAMWORK, KNOWLEDGE, AUDIO1};
     public static Module[] TEST_DATA_MODULES = new Module[]{INTERVIEW, MEETINGS, BUSINESS_CORRESPONDENCE};
+    public static Media[] TEST_DATA_AUDIO = new Media[]{AUDIO_QUESTION1, AUDIO_QUESTION2, AUDIO_QUESTION3, AUDIO_QUESTION4, AUDIO_QUESTION5};
+    public static String[] TEST_DATA_INTERVIEW_QUESTIONS = new String[] {
+            "Tell me about yourself.",
+            "How do you see yourself 5 years from now?",
+            "What is your greatest achievement?",
+            "I see. Do you have any other questions?",
+            "Great. We will contact in a week's time."
+    };
 
     public static void insertMediaTestData(SQLiteDatabase db) {
         for (Media media : TEST_DATA_MEDIA) {
             db.insertOrThrow(MediaEntry.TABLE_NAME, null, media.toContentValues());
+        }
+
+        for (Media audio: TEST_DATA_AUDIO) {
+            db.insertOrThrow(MediaEntry.TABLE_NAME, null, audio.toContentValues());
         }
     }
 
@@ -78,7 +98,8 @@ public class TempUtils {
         long initiativeId = getMediaId(db, INITIATIVE.getFilename());
         long teamworkId = getMediaId(db, TEAMWORK.getFilename());
         long knowledgeId = getMediaId(db, KNOWLEDGE.getFilename());
-        long audioId = getMediaId(db, AUDIO.getFilename());
+        long audioId = getMediaId(db, AUDIO1.getFilename());
+
         long meetingsId = getModuleId(db, MEETINGS.getTitle());
         long interviewsId = getModuleId(db, INTERVIEW.getTitle());
         long businessId = getModuleId(db, BUSINESS_CORRESPONDENCE.getTitle());
@@ -92,8 +113,13 @@ public class TempUtils {
         Interview interview = new Interview("Character Interview");
         long interviewId = db.insert(AppContract.InterviewEntry.TABLE_NAME, null, interview.toContentValues());
 
-        InterviewQuestion question = new InterviewQuestion(interviewId, "Tell me about yourself.", audioId, 1);
-        long questionId = db.insert(AppContract.InterviewQuestionEntry.TABLE_NAME, null, question.toContentValues());
+        for (int i = 0; i < TEST_DATA_AUDIO.length ; i++) {
+            String textQuestion = TEST_DATA_INTERVIEW_QUESTIONS[i];
+            long audioQuestionId = getMediaId(db, "interview01_question0"+ (i+1));
+            Log.d(TempUtils.class.getSimpleName(), "Insert question: " + textQuestion + " with media id " + audioQuestionId);
+            InterviewQuestion question = new InterviewQuestion(interviewId, textQuestion, audioQuestionId, 1);
+            db.insert(AppContract.InterviewQuestionEntry.TABLE_NAME, null, question.toContentValues());
+        }
 
         Content meetingContent1 = new Content(meetingsId, ContentEntry.TYPE_LESSON_MEDIA, courtesyTitle, courtesyId, 1);
         Content meetingContent2 = new Content(meetingsId, ContentEntry.TYPE_LESSON_MEDIA, warmthTitle, warmthId, 2);

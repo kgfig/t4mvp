@@ -31,7 +31,7 @@
         android:id="@+id/interview_button_record"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Record/Next"
+        android:text="Record your answer."
         android:layout_marginBottom="@dimen/controller_buttons_vertical_margin"/>
 
     <TextView
@@ -40,17 +40,6 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/text_margin"
         android:layout_gravity="center_horizontal"
-        android:textSize="@dimen/text_size"
-        android:text="+test1"/>
-
-    <SeekBar
-        android:id="@+id/interview_seekbar_question"
-        style="@style/Widget.AppCompat.SeekBar.Discrete"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:max="5"
-        android:progress="0"
-        android:layout_marginLeft="@dimen/action_bar_margin"
-        android:layout_marginRight="@dimen/action_bar_margin"/>
+        android:textSize="@dimen/text_size"/>
 
 </LinearLayout>

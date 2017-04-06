@@ -174,8 +174,9 @@ public class AudioRecorderActivity extends AppCompatActivity implements MediaPla
     }
 
     private void startRecording() throws IOException {
-        audioFilename = getExternalCacheDir().getAbsolutePath() + "/";
-        audioFilename += "t4-" + ActivityUtils.generateRandomFilename() + getString(R.string.recorder_audio_ext_name);
+        audioFilename = String.format("%s/%s.3gp",
+                getExternalCacheDir().getAbsolutePath(),
+                "t4-" + ActivityUtils.generateRandomFilename());
 
         mediaRecorder = new MediaRecorder();
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);

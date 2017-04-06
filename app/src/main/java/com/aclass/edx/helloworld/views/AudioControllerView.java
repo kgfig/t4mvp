@@ -46,7 +46,7 @@ public class AudioControllerView extends FrameLayout {
     protected ViewGroup anchor;
     protected View root;
     protected AudioPlayerControl player;
-    private ProgressBar seekBar;
+    private ProgressBar progressBar;
     private TextView textViewCurrentTime, textViewDuration;
     private boolean dragging;
     StringBuilder timeFormatBuilder;
@@ -98,6 +98,10 @@ public class AudioControllerView extends FrameLayout {
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT
         );
+
+        if (getParent() != null) {
+            anchor.removeView(this);
+        }
         anchor.addView(this, frameParams);
 
         updatePausePlay();
@@ -120,16 +124,19 @@ public class AudioControllerView extends FrameLayout {
 
     protected void initControllerView(View rootView, int pauseBtnId, int seekBarId, int currentTimeId, int durationId) {
         pauseButton = (ImageButton) rootView.findViewById(pauseBtnId);
-        seekBar = (ProgressBar) rootView.findViewById(seekBarId);
+        progressBar = (ProgressBar) rootView.findViewById(seekBarId);
         textViewCurrentTime = (TextView) rootView.findViewById(currentTimeId);
         textViewDuration = (TextView) rootView.findViewById(durationId);
 
         pauseButton.requestFocus();
         pauseButton.setOnClickListener(pauseListener);
-        if (seekBar instanceof SeekBar) {
-            ((SeekBar) seekBar).setOnSeekBarChangeListener(seekListener);
+
+        if (progressBar != null) {
+            if (progressBar instanceof SeekBar) {
+                ((SeekBar) progressBar).setOnSeekBarChangeListener(seekListener);
+            }
+            progressBar.setMax(1000);
         }
-        seekBar.setMax(1000);
     }
 
     private final Runnable showProgress = new Runnable() {
@@ -159,8 +166,7 @@ public class AudioControllerView extends FrameLayout {
     }
 
     private int setProgress() {
-        if (player == null || seekBar == null || textViewCurrentTime == null
-                || textViewDuration == null || dragging) {
+        if (player == null || dragging) {
             return 0;
         }
 
@@ -168,19 +174,26 @@ public class AudioControllerView extends FrameLayout {
         int duration = player.getDuration();
         int percent = player.getBufferPercentage();
 
-        if (duration > 0) {
-            long pos = 1000L * position / duration;
-            seekBar.setProgress(1000);
-            seekBar.setProgress((int) pos);
+        if (progressBar != null) {
+            if (duration > 0) {
+                long pos = 1000L * position / duration;
+                progressBar.setProgress(1000);
+                progressBar.setProgress((int) pos);
+            }
+            progressBar.setSecondaryProgress(percent * 10);
+        }
+        if (textViewCurrentTime != null) {
+            textViewCurrentTime.setText(stringForTime(position));
         }
 
-        seekBar.setSecondaryProgress(percent * 10);
-        textViewCurrentTime.setText(stringForTime(position));
-        textViewDuration.setText(stringForTime(duration));
+        if (textViewDuration != null) {
+            textViewDuration.setText(stringForTime(duration));
+        }
 
         return position;
     }
 
+    // TODO fix this, does not update depending on progress
     public void updatePausePlay() {
         if (root == null || pauseButton == null || player == null)
             return;
@@ -201,7 +214,10 @@ public class AudioControllerView extends FrameLayout {
             long duration = player.getDuration();
             long newPosition = (duration * progress) / 1000L;
             player.seekTo((int) newPosition);
-            textViewCurrentTime.setText(stringForTime((int) newPosition));
+
+            if (textViewCurrentTime != null) {
+                textViewCurrentTime.setText(stringForTime((int) newPosition));
+            }
         }
 
         @Override
