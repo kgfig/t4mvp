@@ -22,6 +22,7 @@ import com.aclass.edx.helloworld.data.models.Content;
 import com.aclass.edx.helloworld.data.models.Interview;
 import com.aclass.edx.helloworld.data.models.Media;
 import com.aclass.edx.helloworld.data.models.Module;
+import com.aclass.edx.helloworld.data.models.Topic;
 import com.aclass.edx.helloworld.viewgroup.utils.ContentRecyclerAdapter;
 import com.aclass.edx.helloworld.viewgroup.utils.CursorRecyclerViewAdapter;
 
@@ -33,7 +34,7 @@ public class ContentListActivity extends AppCompatActivity implements LoaderMana
 
     private ContentRecyclerAdapter adapter;
     private RecyclerView lessonList;
-    private Module module;
+    private Topic topic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,10 +42,10 @@ public class ContentListActivity extends AppCompatActivity implements LoaderMana
         setContentView(R.layout.activity_content_list);
 
         // Get selected module
-        this.module = getIntent().getParcelableExtra(getString(R.string.dashboard_selected_module_key));
+        this.topic = getIntent().getParcelableExtra(getString(R.string.topics_selected_topic_key));
 
         // Init toolbar
-        getSupportActionBar().setTitle(module.getTitle());
+        getSupportActionBar().setTitle(topic.getTitle());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Init content
@@ -67,8 +68,8 @@ public class ContentListActivity extends AppCompatActivity implements LoaderMana
                 this,
                 ContentEntry.CONTENT_URI,
                 ContentEntry.ALL_COLUMN_NAMES,
-                ContentEntry.COLUMN_NAME_MODULE_ID + " = ?",
-                new String[]{module.getId() + ""},
+                ContentEntry.COLUMN_NAME_TOPIC_ID + " = ?",
+                new String[]{topic.getId() + ""},
                 null
         );
 

@@ -26,13 +26,20 @@
         <activity
             android:name=".activities.DashboardActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity
-            android:name=".activities.ContentListActivity"
+        <activity android:name=".activities.TopicsActivity"
             android:launchMode="singleTop"
             android:parentActivityName=".activities.DashboardActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.DashboardActivity" />
+        </activity>
+        <activity
+            android:name=".activities.ContentListActivity"
+            android:launchMode="singleTop"
+            android:parentActivityName=".activities.TopicsActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.TopicsActivity" />
         </activity>
         <activity
             android:name=".activities.VideoPlayerActivity"

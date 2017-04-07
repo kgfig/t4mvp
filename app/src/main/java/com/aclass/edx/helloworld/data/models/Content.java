@@ -27,7 +27,7 @@ public class Content extends DataModel {
         }
     };
 
-    private long moduleId;
+    private long topicId;
     private int type;
     private String title;
     private long contentId;
@@ -37,8 +37,8 @@ public class Content extends DataModel {
         super();
     }
 
-    public Content(long moduleId, int type, String title, long contentId, int seqNum) {
-        this(0, moduleId, type, title, contentId, seqNum);
+    public Content(long topicId, int type, String title, long contentId, int seqNum) {
+        this(0, topicId, type, title, contentId, seqNum);
     }
 
     public Content(Parcel parcel) {
@@ -47,7 +47,7 @@ public class Content extends DataModel {
 
     public Content(long id, long moduleId, int type, String title, long contentId, int seqNum) {
         super(id);
-        this.moduleId = moduleId;
+        this.topicId = moduleId;
         this.type = type;
         this.title = title;
         this.contentId = contentId;
@@ -62,7 +62,7 @@ public class Content extends DataModel {
     @Override
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeLong(id);
-        parcel.writeLong(moduleId);
+        parcel.writeLong(topicId);
         parcel.writeInt(type);
         parcel.writeString(title);
         parcel.writeLong(contentId);
@@ -72,7 +72,7 @@ public class Content extends DataModel {
     @Override
     public void setValues(Cursor cursor) {
         setId(cursor.getLong(cursor.getColumnIndex(ContentEntry._ID)));
-        setModuleId(cursor.getLong(cursor.getColumnIndex(ContentEntry.COLUMN_NAME_MODULE_ID)));
+        setTopicId(cursor.getLong(cursor.getColumnIndex(ContentEntry.COLUMN_NAME_TOPIC_ID)));
         setType(cursor.getInt(cursor.getColumnIndex(ContentEntry.COLUMN_NAME_TYPE)));
         setTitle(cursor.getString(cursor.getColumnIndex(ContentEntry.COLUMN_NAME_TITLE)));
         setContentId(cursor.getLong(cursor.getColumnIndex(ContentEntry.COLUMN_NAME_CONTENT_ID)));
@@ -87,7 +87,7 @@ public class Content extends DataModel {
             values.put(ContentEntry._ID, getId());
         }
 
-        values.put(ContentEntry.COLUMN_NAME_MODULE_ID, getModuleId());
+        values.put(ContentEntry.COLUMN_NAME_TOPIC_ID, getTopicId());
         values.put(ContentEntry.COLUMN_NAME_TITLE, getTitle());
         values.put(ContentEntry.COLUMN_NAME_TYPE, getType());
         values.put(ContentEntry.COLUMN_NAME_CONTENT_ID, getContentId());
@@ -100,7 +100,7 @@ public class Content extends DataModel {
         return String.format("%s(%s=%d, %s=%d, %s=%d, %s=%s, %s=%d, %s=%d)",
                 ContentEntry.TABLE_NAME,
                 ContentEntry._ID, id,
-                ContentEntry.COLUMN_NAME_MODULE_ID, moduleId,
+                ContentEntry.COLUMN_NAME_TOPIC_ID, topicId,
                 ContentEntry.COLUMN_NAME_TYPE, type,
                 ContentEntry.COLUMN_NAME_TITLE, title,
                 ContentEntry.COLUMN_NAME_CONTENT_ID, contentId,
@@ -122,12 +122,12 @@ public class Content extends DataModel {
         }
     }
 
-    public long getModuleId() {
-        return moduleId;
+    public long getTopicId() {
+        return topicId;
     }
 
-    public void setModuleId(long moduleId) {
-        this.moduleId = moduleId;
+    public void setTopicId(long topicId) {
+        this.topicId = topicId;
     }
 
     public int getType() {

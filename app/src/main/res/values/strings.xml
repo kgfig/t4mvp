@@ -38,6 +38,9 @@
     <string name="dashboard_selected_module_key">selected module</string>
     <string name="dashboard_choose_a_topic">Choose a topic</string>
 
+    <!-- in TopicActivity -->
+    <string name="topics_selected_topic_key">selected topic</string>
+
     <!-- Content list -->
     <string name="content_list_selected_content_key">selected content</string>
 

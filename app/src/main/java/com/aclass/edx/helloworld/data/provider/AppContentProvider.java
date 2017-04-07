@@ -24,6 +24,7 @@ import static com.aclass.edx.helloworld.data.contracts.AppContract.InterviewEntr
 import static com.aclass.edx.helloworld.data.contracts.AppContract.InterviewQuestionEntry;
 import static com.aclass.edx.helloworld.data.contracts.AppContract.MediaEntry;
 import static com.aclass.edx.helloworld.data.contracts.AppContract.ModuleEntry;
+import static com.aclass.edx.helloworld.data.contracts.AppContract.TopicEntry;
 
 public class AppContentProvider extends ContentProvider {
 
@@ -35,6 +36,8 @@ public class AppContentProvider extends ContentProvider {
         uriMatcher.addURI(AppContract.AUTHORITY, MediaEntry.TABLE_NAME + "/#", ProviderConstants.ITEM_MEDIA);
         uriMatcher.addURI(AppContract.AUTHORITY, ModuleEntry.TABLE_NAME, ProviderConstants.LIST_MODULE);
         uriMatcher.addURI(AppContract.AUTHORITY, ModuleEntry.TABLE_NAME + "/#", ProviderConstants.ITEM_MODULE);
+        uriMatcher.addURI(AppContract.AUTHORITY, TopicEntry.TABLE_NAME, ProviderConstants.LIST_TOPIC);
+        uriMatcher.addURI(AppContract.AUTHORITY, TopicEntry.TABLE_NAME + "/#", ProviderConstants.ITEM_TOPIC);
         uriMatcher.addURI(AppContract.AUTHORITY, ContentEntry.TABLE_NAME, ProviderConstants.LIST_CONTENT);
         uriMatcher.addURI(AppContract.AUTHORITY, ContentEntry.TABLE_NAME + "/#", ProviderConstants.ITEM_CONTENT);
         uriMatcher.addURI(AppContract.AUTHORITY, InterviewEntry.TABLE_NAME, ProviderConstants.LIST_INTERVIEW);
