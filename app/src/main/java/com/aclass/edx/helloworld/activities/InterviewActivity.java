@@ -10,6 +10,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.Manifest;
+import android.media.Image;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.net.Uri;
@@ -22,8 +23,11 @@ import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,12 +57,12 @@ public class InterviewActivity extends AppCompatActivity implements SurfaceHolde
     private boolean isRecording = false, isPlayingAnswer = false;
 
     // Views
-    private AudioControllerView audioControllerView;
-    private FrameLayout surfaceViewContainer;
-    private SurfaceView surfaceView;
-    private SurfaceHolder surfaceHolder;
+//    private ViewGroup surfaceViewContainer;
+//    private SurfaceView surfaceView;
+//    private SurfaceHolder surfaceHolder;
     private TextView textViewQuestion, textViewQuestionNum;
     private Button buttonRecord;
+    private ImageButton buttonPlay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,7 +131,6 @@ public class InterviewActivity extends AppCompatActivity implements SurfaceHolde
     protected void onDestroy() {
         if (audioPlayer != null) {
             audioPlayer.stop();
-            audioControllerView.stopTracking();
             audioPlayer.release();
         }
         super.onDestroy();
@@ -243,16 +246,31 @@ public class InterviewActivity extends AppCompatActivity implements SurfaceHolde
         getSupportActionBar().setTitle(interviewController.getTitle());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        /*
         surfaceViewContainer = (FrameLayout) findViewById(R.id.interview_framelayout_surfaceview_container);
         surfaceView = (SurfaceView) findViewById(R.id.interview_surfaceview);
         surfaceHolder = surfaceView.getHolder();
         surfaceHolder.addCallback(this);
+        */
 
         textViewQuestion = (TextView) findViewById(R.id.interview_textview_question);
         textViewQuestionNum = (TextView) findViewById(R.id.interview_textview_questionnum);
         buttonRecord = (Button) findViewById(R.id.interview_button_record);
+        buttonPlay = (ImageButton) findViewById(R.id.interview_button_play_question);
         buttonRecord.setOnClickListener(recordClickListener);
+        buttonPlay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (audioPlayer != null) {
+                    if (!audioPlayer.isPlaying()) {
+                        audioPlayer.seekTo(0);
+                        audioPlayer.start();
+                    }
+                }
+            }
+        });
 
+        /*
         audioControllerView = new AudioControllerView(this) {
             protected View makeControllerView() {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -260,14 +278,14 @@ public class InterviewActivity extends AppCompatActivity implements SurfaceHolde
                 initControllerView(
                         root,
                         R.id.interview_audio_controller_button_pause,
-                        R.id.interview_audio_controller_seekbar,
-                        R.id.interview_audio_controller_textview_currenttime,
-                        R.id.interview_audio_controller_textview_duration
+                        AudioControllerView.NO_VIEW,
+                        AudioControllerView.NO_VIEW,
+                        AudioControllerView.NO_VIEW
                 );
                 return root;
             }
         };
-
+        */
     }
 
     /**
@@ -282,7 +300,7 @@ public class InterviewActivity extends AppCompatActivity implements SurfaceHolde
         textViewQuestionNum.setText(String.format("Question %d of %d", interviewController.getCurrentQuestionNo() + 1,
                 interviewController.getNumQuestions()));
         try {
-            initPlayer(question.getMedia().getFilename(), surfaceHolder, onPreparedListener, onCompletionListener);
+            initPlayer(question.getMedia().getFilename(), null, onPreparedListener, onCompletionListener);
         } catch (IOException e) {
             Log.e(TAG, "Unable to init player or recorder");
             e.printStackTrace();
@@ -313,10 +331,10 @@ public class InterviewActivity extends AppCompatActivity implements SurfaceHolde
     private final MediaPlayer.OnPreparedListener onPreparedListener = new MediaPlayer.OnPreparedListener() {
         @Override
         public void onPrepared(MediaPlayer mp) {
-            audioControllerView.setPlayer(InterviewActivity.this);
-            audioControllerView.setAnchorView(surfaceViewContainer);
+            //audioControllerView.setPlayer(InterviewActivity.this);
+            //audioControllerView.setAnchorView(surfaceViewContainer);
             audioPlayer.start();
-            audioControllerView.show();
+            //audioControllerView.show();
         }
     };
 
@@ -376,7 +394,7 @@ public class InterviewActivity extends AppCompatActivity implements SurfaceHolde
                 getResources().getIdentifier(filename, "raw", getPackageName()));
         audioPlayer = new MediaPlayer();
 
-        audioPlayer.setDisplay(display);
+        //audioPlayer.setDisplay(display);
         audioPlayer.setOnPreparedListener(thisOnPreparedListener);
         audioPlayer.setOnCompletionListener(thisOnCompletionListener);
         audioPlayer.setOnErrorListener(onPlayerErrorListener);

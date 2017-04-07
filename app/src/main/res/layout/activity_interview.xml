@@ -6,40 +6,38 @@
     android:orientation="vertical"
     tools:context=".activities.InterviewActivity">
 
-    <TextView
-        android:id="@+id/interview_textview_question"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
-        android:layout_gravity="center_horizontal"
-        android:textSize="@dimen/header_size"
-        android:text="test"/>
-
-    <FrameLayout
-        android:id="@+id/interview_framelayout_surfaceview_container"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="280dp"
-        android:background="@color/colorBackground">
+        android:layout_height="wrap_content">
 
-        <SurfaceView
-            android:id="@+id/interview_surfaceview"
+        <ImageButton
+            android:id="@+id/interview_button_play_question"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_media_play"/>
+
+        <TextView
+            android:id="@+id/interview_textview_question"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </FrameLayout>
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/text_margin"
+            android:text="test"
+            android:textSize="@dimen/header_size" />
+    </LinearLayout>
 
     <Button
         android:id="@+id/interview_button_record"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Record your answer."
-        android:layout_marginBottom="@dimen/controller_buttons_vertical_margin"/>
+        android:layout_marginBottom="@dimen/controller_buttons_vertical_margin"
+        android:text="Record your answer." />
 
     <TextView
         android:id="@+id/interview_textview_questionnum"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
         android:layout_gravity="center_horizontal"
-        android:textSize="@dimen/text_size"/>
+        android:layout_margin="@dimen/text_margin"
+        android:textSize="@dimen/text_size" />
 
 </LinearLayout>

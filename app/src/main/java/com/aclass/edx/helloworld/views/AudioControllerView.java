@@ -41,6 +41,7 @@ public class AudioControllerView extends FrameLayout {
     private static final String TAG = AudioControllerView.class.getSimpleName();
     private static final int MILLS_PER_SECOND = 1000;
     private static final int SECONDS_PER_MINUTE = 60;
+    public static final int NO_VIEW = 0;
 
     protected Context context;
     protected ViewGroup anchor;
@@ -124,10 +125,15 @@ public class AudioControllerView extends FrameLayout {
 
     protected void initControllerView(View rootView, int pauseBtnId, int seekBarId, int currentTimeId, int durationId) {
         pauseButton = (ImageButton) rootView.findViewById(pauseBtnId);
-        progressBar = (ProgressBar) rootView.findViewById(seekBarId);
-        textViewCurrentTime = (TextView) rootView.findViewById(currentTimeId);
-        textViewDuration = (TextView) rootView.findViewById(durationId);
-
+        if (seekBarId != NO_VIEW) {
+            progressBar = (ProgressBar) rootView.findViewById(seekBarId);
+        }
+        if (currentTimeId != NO_VIEW) {
+            textViewCurrentTime = (TextView) rootView.findViewById(currentTimeId);
+        }
+        if (durationId != NO_VIEW) {
+            textViewDuration = (TextView) rootView.findViewById(durationId);
+        }
         pauseButton.requestFocus();
         pauseButton.setOnClickListener(pauseListener);
 
