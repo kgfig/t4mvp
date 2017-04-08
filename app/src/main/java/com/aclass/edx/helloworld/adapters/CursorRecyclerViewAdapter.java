@@ -1,11 +1,10 @@
-package com.aclass.edx.helloworld.viewgroup.utils;
+package com.aclass.edx.helloworld.adapters;
 
 
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DataSetObserver;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 
 /**
  * By: skyfish.jy@gmail.com
@@ -27,7 +26,7 @@ public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHold
     private DataSetObserver mDataSetObserver;
 
     public interface ListItemClickListener {
-        public void onListItemClick(int clickedItemPosition);
+        void onListItemClick(int clickedItemPosition);
     }
 
     public CursorRecyclerViewAdapter(Context context, Cursor cursor) {

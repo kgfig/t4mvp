@@ -38,8 +38,8 @@ public class Media extends DataModel {
         this(0, title, filename, type);
     }
 
-    public Media(Parcel parcel) {
-        this(parcel.readLong(), parcel.readString(), parcel.readString(), parcel.readInt());
+    public Media(Parcel source) {
+        this(source.readLong(), source.readString(), source.readString(), source.readInt());
     }
 
     public Media(long id, String title, String filename, int type) {
@@ -55,11 +55,11 @@ public class Media extends DataModel {
     }
 
     @Override
-    public void writeToParcel(Parcel parcel, int flags) {
-        parcel.writeLong(id);
-        parcel.writeString(title);
-        parcel.writeString(filename);
-        parcel.writeInt(type);
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(id);
+        dest.writeString(title);
+        dest.writeString(filename);
+        dest.writeInt(type);
     }
 
     /**

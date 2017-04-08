@@ -83,10 +83,10 @@ public final class AppContract {
                 ContentEntry.COLUMN_NAME_CONTENT_ID,
                 ContentEntry.COLUMN_NAME_SEQ_NUM
         };
-        public static final String FOREIGN_KEY_MODULE_ID = "FOREIGN KEY (" +
+        public static final String FOREIGN_KEY_TOPIC_ID = "FOREIGN KEY (" +
                 ContentEntry.COLUMN_NAME_TOPIC_ID + ") REFERENCES " +
                 TopicEntry.TABLE_NAME + " (" + TopicEntry._ID + ")";
-        public static final String UNIQUE_COMPOSITE_KEY_MODULE_CONTENT = "UNIQUE (" +
+        public static final String UNIQUE_COMPOSITE_KEY_TOPIC_CONTENT = "UNIQUE (" +
                 ContentEntry.COLUMN_NAME_TOPIC_ID + "," +
                 ContentEntry.COLUMN_NAME_CONTENT_ID + ")";
         // Types
@@ -98,7 +98,7 @@ public final class AppContract {
 
     public static class InterviewEntry implements BaseColumns {
         // Schema
-        public static final String TABLE_NAME = "interview";
+        public static final String TABLE_NAME = "INTERVIEW";
         public static final String COLUMN_NAME_TITLE = "title";
         public static final String[] ALL_COLUMN_NAMES = {
                 InterviewEntry._ID,

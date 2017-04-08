@@ -36,7 +36,7 @@
 
     <!-- in DashboardActivity -->
     <string name="dashboard_selected_module_key">selected module</string>
-    <string name="dashboard_choose_a_topic">Choose a topic</string>
+    <string name="dashboard_tv_prompt">What do you want to learn?</string>
 
     <!-- in TopicActivity -->
     <string name="topics_selected_topic_key">selected topic</string>

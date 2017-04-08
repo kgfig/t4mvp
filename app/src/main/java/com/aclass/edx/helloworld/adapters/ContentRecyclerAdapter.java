@@ -1,26 +1,29 @@
-package com.aclass.edx.helloworld.viewgroup.utils;
+package com.aclass.edx.helloworld.adapters;
+
+/**
+ * Created by tictocproject on 20/03/2017.
+ */
 
 import android.content.Context;
 import android.database.Cursor;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.aclass.edx.helloworld.R;
-import com.aclass.edx.helloworld.data.models.Media;
-import com.aclass.edx.helloworld.data.models.Module;
+import com.aclass.edx.helloworld.data.models.Content;
 
 /**
  * Created by ertd on 3/9/2017.
  */
 
-public class MediaRecyclerAdapter extends CursorRecyclerViewAdapter<ClickableViewHolder> {
+public class ContentRecyclerAdapter extends CursorRecyclerViewAdapter<ClickableViewHolder> {
+
+    private static final String TAG  = ContentRecyclerAdapter.class.getSimpleName();
 
     private ListItemClickListener clickListener;
 
-    public MediaRecyclerAdapter(Context context, Cursor cursor, ListItemClickListener clickListener) {
+    public ContentRecyclerAdapter(Context context, Cursor cursor, ListItemClickListener clickListener) {
         super(context, cursor);
         this.clickListener = clickListener;
     }
@@ -34,8 +37,8 @@ public class MediaRecyclerAdapter extends CursorRecyclerViewAdapter<ClickableVie
 
     @Override
     public void onBindViewHolder(ClickableViewHolder holder, Cursor cursor) {
-        Media media = new Media();
-        media.setValues(cursor);
-        holder.bind(media);
+        Content content = new Content();
+        content.setValues(cursor);
+        holder.bind(content);
     }
 }

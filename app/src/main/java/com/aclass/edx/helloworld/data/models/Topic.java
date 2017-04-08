@@ -37,8 +37,8 @@ public class Topic extends DataModel {
         this(0, moduleId, title);
     }
 
-    public Topic(Parcel parcel) {
-        this(parcel.readLong(), parcel.readLong(), parcel.readString());
+    public Topic(Parcel source) {
+        this(source.readLong(), source.readLong(), source.readString());
     }
 
     public Topic(long id, long moduleId, String title) {
@@ -56,7 +56,15 @@ public class Topic extends DataModel {
 
     @Override
     public ContentValues toContentValues() {
-        return null;
+        ContentValues values = new ContentValues();
+
+        if (id > 0) {
+            values.put(TopicEntry._ID, getId());
+        }
+        values.put(TopicEntry.COLUMN_NAME_MODULE_ID, getModuleId());
+        values.put(TopicEntry.COLUMN_NAME_TITLE, getTitle());
+
+        return values;
     }
 
     @Override

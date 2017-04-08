@@ -16,6 +16,7 @@ import com.aclass.edx.helloworld.data.DBHelper;
 import com.aclass.edx.helloworld.data.exceptions.UnsupportedURIException;
 import com.aclass.edx.helloworld.data.contracts.AppContract;
 import com.aclass.edx.helloworld.data.models.Interview;
+import com.aclass.edx.helloworld.data.models.InterviewQuestion;
 import com.aclass.edx.helloworld.data.models.Module;
 
 
@@ -65,6 +66,9 @@ public class AppContentProvider extends ContentProvider {
             case ProviderConstants.LIST_MODULE:
                 queryBuilder.setTables(ModuleEntry.TABLE_NAME);
                 break;
+            case ProviderConstants.LIST_TOPIC:
+                queryBuilder.setTables(TopicEntry.TABLE_NAME);
+                break;
             case ProviderConstants.LIST_CONTENT:
                 queryBuilder.setTables(ContentEntry.TABLE_NAME);
                 break;
@@ -81,6 +85,10 @@ public class AppContentProvider extends ContentProvider {
             case ProviderConstants.ITEM_MODULE:
                 queryBuilder.setTables(ModuleEntry.TABLE_NAME);
                 queryBuilder.appendWhere(ModuleEntry._ID + " = " + uri.getLastPathSegment());
+                break;
+            case ProviderConstants.ITEM_TOPIC:
+                queryBuilder.setTables(TopicEntry.TABLE_NAME);
+                queryBuilder.appendWhere(TopicEntry._ID + " = " + uri.getLastPathSegment());
                 break;
             case ProviderConstants.ITEM_CONTENT:
                 queryBuilder.setTables(ContentEntry.TABLE_NAME);
@@ -100,7 +108,7 @@ public class AppContentProvider extends ContentProvider {
 
         SQLiteDatabase db = DBHelper.getInstance(getContext()).getReadableDatabase();
         Log.d("Provider", "Selection: " + selection);
-        Log.d("Provider", "Selection args; " + (selectionArgs!=null && selectionArgs.length > 0? selectionArgs[0] : " no args"));
+        Log.d("Provider", "Selection args; " + (selectionArgs != null && selectionArgs.length > 0 ? selectionArgs[0] : " no args"));
         Cursor cursor = queryBuilder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
         cursor.setNotificationUri(getContext().getContentResolver(), uri);
 
@@ -112,18 +120,30 @@ public class AppContentProvider extends ContentProvider {
     public String getType(Uri uri) {
         int uriType = uriMatcher.match(uri);
         switch (uriType) {
+            case ProviderConstants.LIST_MODULE:
+                return ProviderConstants.CONTENT_TYPE_MODULE;
+            case ProviderConstants.LIST_TOPIC:
+                return ProviderConstants.CONTENT_TYPE_TOPIC;
             case ProviderConstants.LIST_CONTENT:
                 return ProviderConstants.CONTENT_TYPE_CONTENT;
             case ProviderConstants.LIST_MEDIA:
                 return ProviderConstants.CONTENT_TYPE_MEDIA;
-            case ProviderConstants.LIST_MODULE:
-                return ProviderConstants.CONTENT_TYPE_MODULE;
+            case ProviderConstants.LIST_INTERVIEW:
+                return ProviderConstants.CONTENT_TYPE_INTERVIEW;
+            case ProviderConstants.LIST_INTERVIEW_QUESTION:
+                return ProviderConstants.CONTENT_TYPE_INTERVIEW_QUESTION;
+            case ProviderConstants.ITEM_MODULE:
+                return ProviderConstants.CONTENT_ITEM_TYPE_MODULE;
+            case ProviderConstants.ITEM_TOPIC:
+                return ProviderConstants.CONTENT_ITEM_TYPE_TOPIC;
             case ProviderConstants.ITEM_CONTENT:
                 return ProviderConstants.CONTENT_ITEM_TYPE_CONTENT;
             case ProviderConstants.ITEM_MEDIA:
                 return ProviderConstants.CONTENT_ITEM_TYPE_MEDIA;
-            case ProviderConstants.ITEM_MODULE:
-                return ProviderConstants.CONTENT_ITEM_TYPE_MODULE;
+            case ProviderConstants.ITEM_INTERVIEW:
+                return ProviderConstants.CONTENT_ITEM_TYPE_INTERVIEW;
+            case ProviderConstants.ITEM_INTERVIEW_QUESTION:
+                return ProviderConstants.CONTENT_ITEM_TYPE_INTERVIEW_QUESTION;
             default:
                 throw new UnsupportedURIException(uri);
         }
@@ -137,14 +157,17 @@ public class AppContentProvider extends ContentProvider {
         long id = 0;
 
         switch (uriType) {
-            case ProviderConstants.LIST_MEDIA:
-                id = db.insertOrThrow(MediaEntry.TABLE_NAME, null, values);
-                break;
             case ProviderConstants.LIST_MODULE:
                 id = db.insertOrThrow(ModuleEntry.TABLE_NAME, null, values);
                 break;
+            case ProviderConstants.LIST_TOPIC:
+                id = db.insertOrThrow(TopicEntry.TABLE_NAME, null, values);
+                break;
             case ProviderConstants.LIST_CONTENT:
                 id = db.insertOrThrow(ContentEntry.TABLE_NAME, null, values);
+                break;
+            case ProviderConstants.LIST_MEDIA:
+                id = db.insertOrThrow(MediaEntry.TABLE_NAME, null, values);
                 break;
             case ProviderConstants.LIST_INTERVIEW:
                 id = db.insertOrThrow(InterviewEntry.TABLE_NAME, null, values);
@@ -169,17 +192,34 @@ public class AppContentProvider extends ContentProvider {
         SQLiteDatabase db = DBHelper.getInstance(getContext()).getWritableDatabase();
         int uriType = uriMatcher.match(uri);
         int rowsDeleted = 0;
-        String id = "";
+        String id;
 
         switch (uriType) {
+            case ProviderConstants.LIST_MODULE:
+                rowsDeleted = db.delete(ModuleEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            case ProviderConstants.LIST_TOPIC:
+                rowsDeleted = db.delete(TopicEntry.TABLE_NAME, selection, selectionArgs);
+                break;
             case ProviderConstants.LIST_CONTENT:
                 rowsDeleted = db.delete(ContentEntry.TABLE_NAME, selection, selectionArgs);
                 break;
             case ProviderConstants.LIST_MEDIA:
                 rowsDeleted = db.delete(MediaEntry.TABLE_NAME, selection, selectionArgs);
                 break;
-            case ProviderConstants.LIST_MODULE:
-                rowsDeleted = db.delete(ModuleEntry.TABLE_NAME, selection, selectionArgs);
+            case ProviderConstants.LIST_INTERVIEW:
+                rowsDeleted = db.delete(InterviewEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            case ProviderConstants.LIST_INTERVIEW_QUESTION:
+                rowsDeleted = db.delete(InterviewQuestionEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            case ProviderConstants.ITEM_MODULE:
+                id = uri.getLastPathSegment();
+                rowsDeleted = db.delete(ModuleEntry.TABLE_NAME, ModuleEntry._ID + " = ? ", new String[]{id});
+                break;
+            case ProviderConstants.ITEM_TOPIC:
+                id = uri.getLastPathSegment();
+                rowsDeleted = db.delete(TopicEntry.TABLE_NAME, TopicEntry._ID + " = ?", new String[]{id});
                 break;
             case ProviderConstants.ITEM_CONTENT:
                 id = uri.getLastPathSegment();
@@ -189,9 +229,13 @@ public class AppContentProvider extends ContentProvider {
                 id = uri.getLastPathSegment();
                 rowsDeleted = db.delete(MediaEntry.TABLE_NAME, MediaEntry._ID + " = ? ", new String[]{id});
                 break;
-            case ProviderConstants.ITEM_MODULE:
+            case ProviderConstants.ITEM_INTERVIEW:
                 id = uri.getLastPathSegment();
-                rowsDeleted = db.delete(ModuleEntry.TABLE_NAME, ModuleEntry._ID + " = ? ", new String[]{id});
+                rowsDeleted = db.delete(InterviewEntry.TABLE_NAME, InterviewEntry._ID + " = ? ", new String[]{id});
+                break;
+            case ProviderConstants.ITEM_INTERVIEW_QUESTION:
+                id = uri.getLastPathSegment();
+                rowsDeleted = db.delete(InterviewQuestionEntry.TABLE_NAME, InterviewQuestionEntry._ID + " = ? ", new String[]{id});
                 break;
             default:
                 throw new UnsupportedURIException(uri);

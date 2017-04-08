@@ -31,7 +31,7 @@
 
     <TextView
         android:id="@+id/dashboard_choose_a_topic"
-        android:text="@string/dashboard_choose_a_topic"
+        android:text="@string/dashboard_tv_prompt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/text_margin"

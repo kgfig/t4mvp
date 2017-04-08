@@ -49,7 +49,7 @@ public class InterviewActivity extends AppCompatActivity implements SurfaceHolde
     private boolean permissionToRecordGranted = false;
     private String[] activityPermissions = new String[]{Manifest.permission.RECORD_AUDIO};
 
-    // Media and interview controllers and status
+    // Media and INTERVIEW controllers and status
     private MediaPlayer audioPlayer;
     private MediaRecorder recorder;
     private InterviewController interviewController;
@@ -446,7 +446,7 @@ public class InterviewActivity extends AppCompatActivity implements SurfaceHolde
                         Toast.makeText(InterviewActivity.this, "Play next question!", Toast.LENGTH_LONG).show();
                         InterviewQuestion question = interviewController.nextQuestion();
                         prepareAudioForPlayback(question.getMedia().getFilename());
-                    } else { // interview playback done
+                    } else { // INTERVIEW playback done
                         Toast.makeText(InterviewActivity.this, "Playback done!", Toast.LENGTH_LONG).show();
                         cleanup();
                     }
@@ -455,7 +455,7 @@ public class InterviewActivity extends AppCompatActivity implements SurfaceHolde
                     prepareAudioForPlayback(interviewController.getAnswerFilename());
                 }
             } catch (IOException e) {
-                Log.e(TAG, "Cannot prepare player for interview playback");
+                Log.e(TAG, "Cannot prepare player for INTERVIEW playback");
                 e.printStackTrace();
             }
         }

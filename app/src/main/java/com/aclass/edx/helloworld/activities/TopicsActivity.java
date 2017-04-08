@@ -21,10 +21,12 @@ import static com.aclass.edx.helloworld.data.contracts.AppContract.TopicEntry;
 
 import com.aclass.edx.helloworld.data.models.Module;
 import com.aclass.edx.helloworld.data.models.Topic;
-import com.aclass.edx.helloworld.viewgroup.utils.ClickableViewHolder;
-import com.aclass.edx.helloworld.viewgroup.utils.CursorRecyclerViewAdapter;
+import com.aclass.edx.helloworld.adapters.ClickableViewHolder;
+import com.aclass.edx.helloworld.adapters.CursorRecyclerViewAdapter;
 
 public class TopicsActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, CursorRecyclerViewAdapter.ListItemClickListener {
+
+    private static final int FETCH_TOPICS_LOADER = 3;
 
     private RecyclerView topicsView;
     private CursorRecyclerViewAdapter<ClickableViewHolder> topicsViewAdapter;
@@ -51,6 +53,8 @@ public class TopicsActivity extends AppCompatActivity implements LoaderManager.L
         topicsView.setLayoutManager(layoutManager);
         topicsView.addItemDecoration(divider);
         topicsView.setAdapter(topicsViewAdapter);
+
+        getLoaderManager().initLoader(FETCH_TOPICS_LOADER, null, this);
     }
 
     @Override

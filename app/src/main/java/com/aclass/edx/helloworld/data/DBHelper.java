@@ -10,9 +10,8 @@ import static com.aclass.edx.helloworld.data.contracts.AppContract.MediaEntry;
 import static com.aclass.edx.helloworld.data.contracts.AppContract.ModuleEntry;
 import static com.aclass.edx.helloworld.data.contracts.AppContract.InterviewEntry;
 import static com.aclass.edx.helloworld.data.contracts.AppContract.InterviewQuestionEntry;
+import static com.aclass.edx.helloworld.data.contracts.AppContract.TopicEntry;
 
-import com.aclass.edx.helloworld.data.models.Interview;
-import com.aclass.edx.helloworld.data.models.InterviewQuestion;
 import com.aclass.edx.helloworld.utils.TempUtils;
 
 /**
@@ -44,15 +43,20 @@ public class DBHelper extends SQLiteOpenHelper {
                 ModuleEntry._ID + INT_PK_AUTOINCREMENT + COMMA +
                 ModuleEntry.COLUMN_NAME_TITLE + TEXT_NOT_NULL + ");";
 
+        public static final String CREATE_TABLE_TOPIC = CREATE_TABLE + TopicEntry.TABLE_NAME + " (" +
+                TopicEntry._ID + INT_PK_AUTOINCREMENT + COMMA +
+                TopicEntry.COLUMN_NAME_MODULE_ID + INT_NOT_NULL + COMMA +
+                TopicEntry.COLUMN_NAME_TITLE + TEXT_NOT_NULL + ");";
+
         public static final String CREATE_TABLE_CONTENT = CREATE_TABLE + ContentEntry.TABLE_NAME + " (" +
                 ContentEntry._ID + INT_PK_AUTOINCREMENT + COMMA +
-                ContentEntry.COLUMN_NAME_MODULE_ID + INT_NOT_NULL + COMMA +
+                ContentEntry.COLUMN_NAME_TOPIC_ID + INT_NOT_NULL + COMMA +
                 ContentEntry.COLUMN_NAME_TITLE + TEXT_NOT_NULL + COMMA +
                 ContentEntry.COLUMN_NAME_TYPE + INT_NOT_NULL + COMMA +
                 ContentEntry.COLUMN_NAME_CONTENT_ID + INT_NOT_NULL + COMMA +
                 ContentEntry.COLUMN_NAME_SEQ_NUM + INT_NOT_NULL + COMMA +
-                ContentEntry.FOREIGN_KEY_MODULE_ID + COMMA +
-                ContentEntry.UNIQUE_COMPOSITE_KEY_MODULE_CONTENT + ");";
+                ContentEntry.FOREIGN_KEY_TOPIC_ID + COMMA +
+                ContentEntry.UNIQUE_COMPOSITE_KEY_TOPIC_CONTENT + ");";
 
         public static final String CREATE_TABLE_INTERVIEW = CREATE_TABLE + InterviewEntry.TABLE_NAME + " (" +
                 InterviewEntry._ID + INT_PK_AUTOINCREMENT + COMMA +
@@ -65,7 +69,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 InterviewQuestionEntry.COLUMN_NAME_MEDIA_ID + INT_NOT_NULL + COMMA +
                 InterviewQuestionEntry.COLUMN_NAME_SEQ_NUM + INT_NOT_NULL + COMMA +
                 InterviewQuestionEntry.FOREIGN_KEY_INTERVIEW_ID + COMMA +
-                InterviewQuestionEntry.FOREIGN_KEY_MEDIA_ID + ")";
+                InterviewQuestionEntry.FOREIGN_KEY_MEDIA_ID + ");";
 
         private static final String DROP_TABLE_IF_EXISTS = "DROP TABLE IF EXISTS %s;\n";
     }
@@ -87,15 +91,16 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        Log.d(TAG, DBQueries.CREATE_TABLE_INTERVIEW);
-        Log.d(TAG, DBQueries.CREATE_TABLE_INTERVIEW_QUESTION);
-        db.execSQL(DBQueries.CREATE_TABLE_MEDIA);
         db.execSQL(DBQueries.CREATE_TABLE_MODULE);
         db.execSQL(DBQueries.CREATE_TABLE_CONTENT);
+        db.execSQL(DBQueries.CREATE_TABLE_TOPIC);
+        db.execSQL(DBQueries.CREATE_TABLE_MEDIA);
         db.execSQL(DBQueries.CREATE_TABLE_INTERVIEW);
         db.execSQL(DBQueries.CREATE_TABLE_INTERVIEW_QUESTION);
         TempUtils.insertMediaTestData(db);
         TempUtils.insertModuleTestData(db);
+        TempUtils.insertInterviewTestData(db);
+        TempUtils.insertTopicTestData(db);
         TempUtils.insertContentTestData(db);
     }
 

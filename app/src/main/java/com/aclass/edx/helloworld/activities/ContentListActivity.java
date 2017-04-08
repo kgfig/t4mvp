@@ -21,10 +21,9 @@ import com.aclass.edx.helloworld.R;
 import com.aclass.edx.helloworld.data.models.Content;
 import com.aclass.edx.helloworld.data.models.Interview;
 import com.aclass.edx.helloworld.data.models.Media;
-import com.aclass.edx.helloworld.data.models.Module;
 import com.aclass.edx.helloworld.data.models.Topic;
-import com.aclass.edx.helloworld.viewgroup.utils.ContentRecyclerAdapter;
-import com.aclass.edx.helloworld.viewgroup.utils.CursorRecyclerViewAdapter;
+import com.aclass.edx.helloworld.adapters.ContentRecyclerAdapter;
+import com.aclass.edx.helloworld.adapters.CursorRecyclerViewAdapter;
 
 public class ContentListActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, CursorRecyclerViewAdapter.ListItemClickListener {
 
@@ -120,7 +119,7 @@ public class ContentListActivity extends AppCompatActivity implements LoaderMana
 
             Intent intent = new Intent(this, InterviewActivity.class);
             intent.putExtra(getString(R.string.content_list_selected_content_key), interview);
-            Toast.makeText(this, String.format("Go to interview with id %d and title %s", interview.getId(), interview.getTitle()), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, String.format("Go to INTERVIEW with id %d and title %s", interview.getId(), interview.getTitle()), Toast.LENGTH_SHORT).show();
             startActivity(intent);
         }
     }

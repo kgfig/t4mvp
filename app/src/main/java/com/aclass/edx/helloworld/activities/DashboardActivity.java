@@ -21,8 +21,8 @@ import static com.aclass.edx.helloworld.data.contracts.AppContract.ModuleEntry;
 import com.aclass.edx.helloworld.R;
 import com.aclass.edx.helloworld.data.models.Module;
 import com.aclass.edx.helloworld.utils.PrefUtils;
-import com.aclass.edx.helloworld.viewgroup.utils.CursorRecyclerViewAdapter;
-import com.aclass.edx.helloworld.viewgroup.utils.ModuleRecyclerAdapter;
+import com.aclass.edx.helloworld.adapters.CursorRecyclerViewAdapter;
+import com.aclass.edx.helloworld.adapters.ModuleRecyclerAdapter;
 
 public class DashboardActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, CursorRecyclerViewAdapter.ListItemClickListener {
 
