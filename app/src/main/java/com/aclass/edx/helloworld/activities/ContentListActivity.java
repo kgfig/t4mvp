@@ -70,7 +70,7 @@ public class ContentListActivity extends AppCompatActivity implements LoaderMana
                 ContentEntry.ALL_COLUMN_NAMES,
                 ContentEntry.COLUMN_NAME_TOPIC_ID + " = ?",
                 new String[]{topic.getId() + ""},
-                null
+                ContentEntry.COLUMN_NAME_SEQ_NUM
         );
 
         return loader;

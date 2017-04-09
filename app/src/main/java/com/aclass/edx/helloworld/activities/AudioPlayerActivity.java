@@ -13,7 +13,9 @@ import android.widget.TextView;
 
 import com.aclass.edx.helloworld.R;
 import com.aclass.edx.helloworld.data.contracts.AppContract;
+import com.aclass.edx.helloworld.data.models.Content;
 import com.aclass.edx.helloworld.data.models.Media;
+import com.aclass.edx.helloworld.fragments.NextButtonFragment;
 import com.aclass.edx.helloworld.views.AudioControllerView;
 
 import java.io.IOException;
@@ -25,6 +27,7 @@ public class AudioPlayerActivity extends AppCompatActivity implements SurfaceHol
     private MediaPlayer audioPlayer;
     private AudioControllerView controllerView;
     private Media audio;
+    private Content content;
     private int currentPosition = 0;
 
     private TextView textViewTranscript;
@@ -39,8 +42,8 @@ public class AudioPlayerActivity extends AppCompatActivity implements SurfaceHol
 
         // Get or init Media object to be played
         Intent intent = getIntent();
-        String paramName = getString(R.string.content_list_selected_video_key);
-        audio = intent.hasExtra(paramName) ? (Media) intent.getParcelableExtra(paramName) : new Media("Sample audio", "audio1", AppContract.MediaEntry.TYPE_AUDIO);
+        audio = intent.getParcelableExtra(getString(R.string.content_list_selected_audio_key));
+        content = intent.getParcelableExtra(getString(R.string.content_list_selected_content_key));
 
         // Init views
         getSupportActionBar().setTitle(audio.getTitle());
@@ -50,15 +53,25 @@ public class AudioPlayerActivity extends AppCompatActivity implements SurfaceHol
         surfaceViewContainer = (FrameLayout) findViewById(R.id.audio_player_surfaceview_container);
         surfaceView = (SurfaceView) findViewById(R.id.audio_player_surfaceview);
 
-        textViewTranscript.setText(R.string.large_text);
+        if (textViewTranscript != null) {
+            textViewTranscript.setText(R.string.large_text);
+        }
         surfaceHolder = surfaceView.getHolder();
         surfaceHolder.addCallback(this);
+
+        NextButtonFragment nextButtonFragment = new NextButtonFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(getString(R.string.current_content), content);
+        nextButtonFragment.setArguments(bundle);
+        getFragmentManager().beginTransaction().add(R.id.audio_player_container_next, nextButtonFragment).commit();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        currentPosition = audioPlayer.getCurrentPosition();
+        if (audioPlayer != null) {
+            currentPosition = audioPlayer.getCurrentPosition();
+        }
     }
 
     @Override

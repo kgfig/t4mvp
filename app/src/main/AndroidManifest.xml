@@ -52,6 +52,7 @@
         <activity android:name=".AudioRecorderActivity" />
         <activity
             android:name=".activities.AudioPlayerActivity"
+            android:configChanges="orientation"
             android:parentActivityName=".activities.ContentListActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
