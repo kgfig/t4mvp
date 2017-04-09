@@ -56,6 +56,7 @@ public class RecordButtonFragment extends Fragment {
                 onButtonPressed(v);
             }
         });
+        setButtonEnabled(false);
         return view;
     }
 
@@ -116,7 +117,9 @@ public class RecordButtonFragment extends Fragment {
     }
 
     public void setButtonEnabled(boolean enabled) {
-        buttonRecord.setEnabled(enabled);
+        if (buttonRecord != null) {
+            buttonRecord.setEnabled(enabled);
+        }
     }
 
     /**
