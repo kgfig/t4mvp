@@ -24,6 +24,7 @@ import com.aclass.edx.helloworld.data.models.Media;
 import com.aclass.edx.helloworld.data.models.Topic;
 import com.aclass.edx.helloworld.adapters.ContentRecyclerAdapter;
 import com.aclass.edx.helloworld.adapters.CursorRecyclerViewAdapter;
+import com.aclass.edx.helloworld.utils.ActivityUtils;
 
 public class ContentListActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, CursorRecyclerViewAdapter.ListItemClickListener {
 
@@ -93,10 +94,10 @@ public class ContentListActivity extends AppCompatActivity implements LoaderMana
 
         switch (content.getType()) {
             case ContentEntry.TYPE_LESSON_MEDIA:
-                goToMediaActivity(content);
+                ActivityUtils.goToMediaActivity(this, content);
                 break;
             case ContentEntry.TYPE_LESSON_PRACTICE_INTERIEW:
-                goToInterviewActivity(content);
+                ActivityUtils.goToInterviewActivity(this, content);
                 break;
             default:
                 Toast.makeText(this, "Content type " + content.getType() +
@@ -104,61 +105,4 @@ public class ContentListActivity extends AppCompatActivity implements LoaderMana
         }
     }
 
-    private void goToInterviewActivity(Content content) {
-        Cursor cursor = getContentResolver().query(
-                Uri.parse(InterviewEntry.CONTENT_URI + "/" + content.getContentId()),
-                InterviewEntry.ALL_COLUMN_NAMES,
-                null,
-                null,
-                null
-        );
-
-        if (cursor.moveToNext()) {
-            Interview interview = new Interview();
-            interview.setValues(cursor);
-
-            Intent intent = new Intent(this, InterviewActivity.class);
-            intent.putExtra(getString(R.string.content_list_selected_content_key), interview);
-            Toast.makeText(this, String.format("Go to INTERVIEW with id %d and title %s", interview.getId(), interview.getTitle()), Toast.LENGTH_SHORT).show();
-            startActivity(intent);
-        }
-    }
-
-
-    private void goToMediaActivity(Content content) {
-        Cursor mediaCursor = getContentResolver().query(
-                Uri.parse(MediaEntry.CONTENT_URI + "/" + content.getContentId()),
-                MediaEntry.ALL_COLUMN_NAMES,
-                null,
-                null,
-                null
-        );
-
-        if (mediaCursor.moveToNext()) {
-            Media media = new Media();
-            media.setValues(mediaCursor);
-
-            goToMediaActivity(media);
-        } else {
-            throw new RuntimeException(getString(R.string.all_error_no_media_found_by_id));
-        }
-    }
-
-    private void goToMediaActivity(Media media) {
-        Intent intent;
-
-        switch (media.getType()) {
-            case MediaEntry.TYPE_VIDEO:
-                intent = new Intent(this, VideoPlayerActivity.class);
-                break;
-            case MediaEntry.TYPE_AUDIO:
-                intent = new Intent(this, AudioPlayerActivity.class);
-                break;
-            default:
-                throw new RuntimeException("Invalid media type " + media.getType());
-        }
-
-        intent.putExtra(getString(R.string.content_list_selected_content_key), media);
-        startActivity(intent);
-    }
 }

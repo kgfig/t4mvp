@@ -161,4 +161,8 @@ public class Content extends DataModel {
     public void setSeqNum(int seqNum) {
         this.seqNum = seqNum;
     }
+
+    public boolean isEmpty() {
+        return topicId == 0 && id == 0;
+    }
 }

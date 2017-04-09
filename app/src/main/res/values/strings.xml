@@ -52,6 +52,9 @@
 
     <!-- Interview -->
     <string name="interview_recording_filename_format">%%d_%%d_%%s</string>
+
+    <!-- Content -->
+    <string name="current_content">current content</string>
     <!-- error messages -->
     <string name="all_error_no_media_found_by_id">No media with id %s in database</string>
     <string name="all_error_enter_name">Please enter your name or skip for now.</string>
@@ -151,4 +154,7 @@
     <string name="dummy_content">DUMMY\nCONTENT</string>
 
     <string name="title_activity_another_fullscreen">AnotherFullscreenActivity</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

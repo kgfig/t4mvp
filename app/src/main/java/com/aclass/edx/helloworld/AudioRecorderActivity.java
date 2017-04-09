@@ -19,7 +19,6 @@ import com.aclass.edx.helloworld.utils.ActivityUtils;
 import java.io.IOException;
 
 import static android.Manifest.permission.RECORD_AUDIO;
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 public class AudioRecorderActivity extends AppCompatActivity implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener {
 
@@ -176,7 +175,7 @@ public class AudioRecorderActivity extends AppCompatActivity implements MediaPla
     private void startRecording() throws IOException {
         audioFilename = String.format("%s/%s.3gp",
                 getExternalCacheDir().getAbsolutePath(),
-                "t4-" + ActivityUtils.generateRandomFilename());
+                "t4-" + ActivityUtils.generateRandomString());
 
         mediaRecorder = new MediaRecorder();
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
