@@ -2,7 +2,6 @@ package com.aclass.edx.helloworld.utils;
 
 import java.util.Random;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -48,6 +47,7 @@ public class ActivityUtils {
      */
     public static Content getNextContent(Context context, Content currentContent) {
         Content nextContent = new Content();
+        int nextSeqNum = currentContent.getSeqNum() + 1;
 
         // Check if there's a succeeding content in the same topic
         Cursor cursor = context.getContentResolver().query(
@@ -57,7 +57,7 @@ public class ActivityUtils {
                         ContentEntry.COLUMN_NAME_SEQ_NUM + " = ?",
                 new String[]{
                         currentContent.getTopicId() + "",
-                        currentContent.getSeqNum() + ""
+                        nextSeqNum + ""
                 },
                 null
         );
@@ -95,6 +95,7 @@ public class ActivityUtils {
 
     /**
      * Returns the parent Module of the given Topic
+     *
      * @param context
      * @param topic
      * @return parent Module of topic
@@ -106,7 +107,7 @@ public class ActivityUtils {
                 ModuleEntry.CONTENT_URI,
                 ModuleEntry.ALL_COLUMN_NAMES,
                 ModuleEntry._ID + " = ?",
-                new String[]{topic.getModule() + ""},
+                new String[]{topic.getModuleId() + ""},
                 null
         );
 
@@ -120,6 +121,20 @@ public class ActivityUtils {
     // TODO should we put the ff methods in a non-UI fragment?
     // Used by ContentListActivity and NextButtonFragment to figure out
     // which activity to go to based on content type
+    public static void goToActivityBasedOnContentType(Context context, Content content) {
+        switch (content.getType()) {
+            case ContentEntry.TYPE_LESSON_MEDIA:
+                ActivityUtils.goToMediaActivity(context, content);
+                break;
+            case ContentEntry.TYPE_LESSON_PRACTICE_INTERIEW:
+                ActivityUtils.goToInterviewActivity(context, content);
+                break;
+            default:
+                Toast.makeText(context, "Content type " + content.getType() +
+                        " not supported", Toast.LENGTH_SHORT);
+        }
+
+    }
 
     public static void goToInterviewActivity(Context context, Content content) {
         Cursor cursor = context.getContentResolver().query(
@@ -135,7 +150,7 @@ public class ActivityUtils {
             interview.setValues(cursor);
 
             Intent intent = new Intent(context, InterviewActivity.class);
-            intent.putExtra(context.getString(R.string.content_list_selected_content_key), interview);
+            intent.putExtra(context.getString(R.string.content_list_selected_video_key), interview);
             Toast.makeText(context, String.format("Go to INTERVIEW with id %d and title %s", interview.getId(), interview.getTitle()), Toast.LENGTH_SHORT).show();
             context.startActivity(intent);
         }
@@ -155,27 +170,29 @@ public class ActivityUtils {
             Media media = new Media();
             media.setValues(mediaCursor);
 
-            goToMediaActivity(context, media);
+            goToMediaActivity(context, content, media);
         } else {
             throw new RuntimeException(context.getString(R.string.all_error_no_media_found_by_id));
         }
     }
 
-    public static void goToMediaActivity(Context context, Media media) {
+    public static void goToMediaActivity(Context context, Content content, Media media) {
         Intent intent;
 
         switch (media.getType()) {
             case AppContract.MediaEntry.TYPE_VIDEO:
                 intent = new Intent(context, VideoPlayerActivity.class);
+                intent.putExtra(context.getString(R.string.content_list_selected_video_key), media);
                 break;
             case AppContract.MediaEntry.TYPE_AUDIO:
                 intent = new Intent(context, AudioPlayerActivity.class);
+                intent.putExtra(context.getString(R.string.content_list_selected_audio_key), media);
                 break;
             default:
                 throw new RuntimeException("Invalid media type " + media.getType());
         }
 
-        intent.putExtra(context.getString(R.string.content_list_selected_content_key), media);
+        intent.putExtra(context.getString(R.string.content_list_selected_content_key), content);
         context.startActivity(intent);
     }
 

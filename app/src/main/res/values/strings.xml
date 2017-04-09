@@ -43,6 +43,9 @@
 
     <!-- Content list -->
     <string name="content_list_selected_content_key">selected content</string>
+    <string name="content_list_selected_video_key">selected content:video</string>
+    <string name="content_list_selected_audio_key">selected content:audio</string>
+    <string name="content_list_selected_interview_key">selected content:interview</string>
 
     <!-- Video Player and Audio Player -->
     <string name="media_player_position">position</string>

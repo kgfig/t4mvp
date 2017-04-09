@@ -39,7 +39,7 @@ public class AudioPlayerActivity extends AppCompatActivity implements SurfaceHol
 
         // Get or init Media object to be played
         Intent intent = getIntent();
-        String paramName = getString(R.string.content_list_selected_content_key);
+        String paramName = getString(R.string.content_list_selected_video_key);
         audio = intent.hasExtra(paramName) ? (Media) intent.getParcelableExtra(paramName) : new Media("Sample audio", "audio1", AppContract.MediaEntry.TYPE_AUDIO);
 
         // Init views

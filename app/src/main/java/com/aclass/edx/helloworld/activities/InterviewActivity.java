@@ -4,13 +4,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.Manifest;
-import android.media.Image;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.net.Uri;
@@ -19,15 +17,10 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -72,7 +65,7 @@ public class InterviewActivity extends AppCompatActivity implements SurfaceHolde
 
         // Get Interview or initialize controller
         Intent intent = getIntent();
-        String paramName = getString(R.string.content_list_selected_content_key);
+        String paramName = getString(R.string.content_list_selected_video_key);
         Interview interview = intent.getParcelableExtra(paramName);
         if (interview == null) {
             Cursor cursor = getContentResolver().query(

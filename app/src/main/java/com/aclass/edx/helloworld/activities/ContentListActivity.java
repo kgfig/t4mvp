@@ -92,17 +92,7 @@ public class ContentListActivity extends AppCompatActivity implements LoaderMana
         Content content = new Content();
         content.setValues(contentCursor);
 
-        switch (content.getType()) {
-            case ContentEntry.TYPE_LESSON_MEDIA:
-                ActivityUtils.goToMediaActivity(this, content);
-                break;
-            case ContentEntry.TYPE_LESSON_PRACTICE_INTERIEW:
-                ActivityUtils.goToInterviewActivity(this, content);
-                break;
-            default:
-                Toast.makeText(this, "Content type " + content.getType() +
-                        " not supported", Toast.LENGTH_SHORT);
-        }
+        ActivityUtils.goToActivityBasedOnContentType(this, content);
     }
 
 }

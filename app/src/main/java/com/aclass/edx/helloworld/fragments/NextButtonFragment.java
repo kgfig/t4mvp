@@ -1,12 +1,12 @@
 package com.aclass.edx.helloworld.fragments;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,14 +27,12 @@ public class NextButtonFragment extends Fragment {
     private Button buttonNextContent;
     private Content currentContent;
 
-    public NextButtonFragment() {
-    }
+    public NextButtonFragment() {}
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-        currentContent = savedInstanceState.getParcelable(getString(R.string.current_content));
+        currentContent = getArguments().getParcelable(getString(R.string.current_content));
     }
 
     @Override
@@ -56,7 +54,7 @@ public class NextButtonFragment extends Fragment {
      * Go to the activity for the next content or return to the list of topics
      */
     public void onButtonPressed() {
-        Context context = getContext();
+        Context context = getActivity();
         Content nextContent = ActivityUtils.getNextContent(context, currentContent);
         Topic parent = ActivityUtils.getParentTopic(context, currentContent);
         Module ancestor = ActivityUtils.getParentModule(context, parent);
@@ -65,6 +63,7 @@ public class NextButtonFragment extends Fragment {
             // If this topic is done, go to the list of topics for the ancestor module
             Intent intent = new Intent(context, TopicsActivity.class);
             intent.putExtra(getString(R.string.dashboard_selected_module_key), ancestor);
+            startActivity(intent);
         } else {
             // Otherwise, proceed to the next content in the same topic
             switch (nextContent.getType()) {
