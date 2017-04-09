@@ -29,10 +29,10 @@ import com.aclass.edx.helloworld.controllers.InterviewController;
 import com.aclass.edx.helloworld.data.contracts.AppContract;
 import com.aclass.edx.helloworld.data.models.Interview;
 import com.aclass.edx.helloworld.data.models.InterviewQuestion;
+import com.aclass.edx.helloworld.fragments.RecordButtonFragment;
 import com.aclass.edx.helloworld.utils.PrefUtils;
-import com.aclass.edx.helloworld.views.AudioControllerView;
 
-public class InterviewActivity extends AppCompatActivity implements AudioControllerView.AudioPlayerControl {
+public class InterviewActivity extends AppCompatActivity implements RecordButtonFragment.OnRecordButtonClickListener {
 
     private static final String TAG = InterviewActivity.class.getSimpleName();
 
@@ -44,18 +44,14 @@ public class InterviewActivity extends AppCompatActivity implements AudioControl
 
     // Media and INTERVIEW controllers and status
     private MediaPlayer audioPlayer;
-    private MediaRecorder recorder;
     private InterviewController interviewController;
     private int currentPosition = 0;
     private boolean isRecording = false, isPlayingAnswer = false;
 
     // Views
-//    private ViewGroup surfaceViewContainer;
-//    private SurfaceView surfaceView;
-//    private SurfaceHolder surfaceHolder;
     private TextView textViewQuestion, textViewQuestionNum;
-    private Button buttonRecord;
     private ImageButton buttonPlay;
+    private RecordButtonFragment recordButtonFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,94 +144,26 @@ public class InterviewActivity extends AppCompatActivity implements AudioControl
             audioPlayer.seekTo(currentPosition);
             audioPlayer.start();
         }
-    }
-
-    @Override
-    public void start() {
-        if (audioPlayer != null) {
-            audioPlayer.start();
-        }
-    }
-
-    @Override
-    public void pause() {
-        if (audioPlayer != null) {
-            audioPlayer.pause();
-        }
-    }
-
-    @Override
-    public int getDuration() {
-        if (audioPlayer != null) {
-            return audioPlayer.getDuration();
-        }
-        return 0;
-    }
-
-    @Override
-    public int getCurrentPosition() {
-        if (audioPlayer != null) {
-            return audioPlayer.getCurrentPosition();
-        }
-        return 0;
-    }
-
-    @Override
-    public void seekTo(int pos) {
-        if (audioPlayer != null) {
-            audioPlayer.seekTo(pos);
-        }
-    }
-
-    @Override
-    public boolean isPlaying() {
-        if (audioPlayer != null) {
-            return audioPlayer.isPlaying();
-        }
-        return false;
-    }
-
-    @Override
-    public int getBufferPercentage() {
-        return 0;
-    }
-
-    private final View.OnClickListener recordClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (isRecording) {
-                isRecording = false;
-                stopRecording();
-                interviewController.markCurrentQuestionAnswered();
-
-                if (interviewController.hasNext()) {
-                    showNextQuestion();
-                } else {
-                    finishInterview();
-                }
-            } else {
-                isRecording = true;
-                startRecording();
-            }
-        }
     };
+
+    @Override
+    public void onStopRecording() {
+        interviewController.markCurrentQuestionAnswered();
+
+        if (interviewController.hasNext()) {
+            showNextQuestion();
+        } else {
+            finishInterview();
+        }
+    }
 
     private void initViews() {
         getSupportActionBar().setTitle(interviewController.getTitle());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        /*
-        surfaceViewContainer = (FrameLayout) findViewById(R.id.interview_framelayout_surfaceview_container);
-        surfaceView = (SurfaceView) findViewById(R.id.interview_surfaceview);
-        surfaceHolder = surfaceView.getHolder();
-        surfaceHolder.addCallback(this);
-        */
-
         textViewQuestion = (TextView) findViewById(R.id.interview_textview_question);
         textViewQuestionNum = (TextView) findViewById(R.id.interview_textview_questionnum);
-        buttonRecord = (Button) findViewById(R.id.interview_button_record);
         buttonPlay = (ImageButton) findViewById(R.id.interview_button_play_question);
-        buttonRecord.setOnClickListener(recordClickListener);
         buttonPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -248,22 +176,9 @@ public class InterviewActivity extends AppCompatActivity implements AudioControl
             }
         });
 
-        /*
-        audioControllerView = new AudioControllerView(this) {
-            protected View makeControllerView() {
-                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                root = inflater.inflate(R.layout.view_interview_audio_controller, null);
-                initControllerView(
-                        root,
-                        R.id.interview_audio_controller_button_pause,
-                        AudioControllerView.NO_VIEW,
-                        AudioControllerView.NO_VIEW,
-                        AudioControllerView.NO_VIEW
-                );
-                return root;
-            }
-        };
-        */
+        recordButtonFragment = RecordButtonFragment.newInstance();
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.interview_btn_answer_container, recordButtonFragment).commit();
     }
 
     /**
@@ -271,7 +186,8 @@ public class InterviewActivity extends AppCompatActivity implements AudioControl
      */
     private void showNextQuestion() {
         stopPlaying();
-        stopRecording();
+        // TODO make sure to stop ongoing recording before this point
+        // stopRecording();
 
         InterviewQuestion question = interviewController.nextQuestion();
         textViewQuestion.setText(question.getQuestion());
@@ -295,25 +211,11 @@ public class InterviewActivity extends AppCompatActivity implements AudioControl
         }
     }
 
-    private void stopRecording() {
-        buttonRecord.setText("Tap to record your answer.");
-        buttonRecord.setEnabled(false);
-
-        if (recorder != null) {
-            recorder.stop();
-            recorder.release();
-            recorder = null;
-        }
-    }
-
     private final MediaPlayer.OnPreparedListener onPreparedListener = new MediaPlayer.OnPreparedListener() {
         @Override
         public void onPrepared(MediaPlayer mp) {
-            //audioControllerView.setPlayer(InterviewActivity.this);
-            //audioControllerView.setAnchorView(surfaceViewContainer);
             audioPlayer.start();
             buttonPlay.setEnabled(false);
-            //audioControllerView.show();
         }
     };
 
@@ -358,8 +260,14 @@ public class InterviewActivity extends AppCompatActivity implements AudioControl
         public void onCompletion(MediaPlayer mp) {
             try {
                 Toast.makeText(InterviewActivity.this, "Finished playing question", Toast.LENGTH_SHORT).show();
-                initRecorder();
-                buttonRecord.setEnabled(true);
+                String filename = String.format("%d_%d_%s",
+                        interviewController.getInterviewId(),
+                        interviewController.getCurrentQuestionId(),
+                        PrefUtils.getNickname(InterviewActivity.this));
+
+                interviewController.saveAnswerForCurrentQuestion(filename);
+                recordButtonFragment.initializeRecorder(makePathInCacheDir(filename));
+                recordButtonFragment.setButtonEnabled(true);
                 buttonPlay.setEnabled(true);
             } catch (IOException e) {
                 Toast.makeText(InterviewActivity.this, "Failed to initialize recorder", Toast.LENGTH_SHORT).show();
@@ -378,35 +286,11 @@ public class InterviewActivity extends AppCompatActivity implements AudioControl
     private void initPlayer(Uri audioUri, SurfaceHolder display, MediaPlayer.OnPreparedListener thisOnPreparedListener,
                             MediaPlayer.OnCompletionListener thisOnCompletionListener) throws IOException {
         audioPlayer = new MediaPlayer();
-
-        //audioPlayer.setDisplay(display);
         audioPlayer.setOnPreparedListener(thisOnPreparedListener);
         audioPlayer.setOnCompletionListener(thisOnCompletionListener);
         audioPlayer.setOnErrorListener(onPlayerErrorListener);
         audioPlayer.setDataSource(this, audioUri);
         audioPlayer.prepareAsync();
-    }
-
-    private void initRecorder() throws IOException {
-        String filename = String.format("%d_%d_%s",
-                interviewController.getInterviewId(),
-                interviewController.getCurrentQuestionId(),
-                PrefUtils.getNickname(this)
-        );
-        String absPath = makePathInCacheDir(filename);
-        interviewController.saveAnswerForCurrentQuestion(filename);
-
-        recorder = new MediaRecorder();
-        recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-        recorder.setOutputFile(absPath);
-        recorder.prepare();
-    }
-
-    private void startRecording() {
-        recorder.start();
-        buttonRecord.setText("Tap to stop recording");
     }
 
     private final MediaPlayer.OnPreparedListener playbackOnPreparedListener = new MediaPlayer.OnPreparedListener() {
@@ -453,7 +337,8 @@ public class InterviewActivity extends AppCompatActivity implements AudioControl
 
     private void finishInterview() {
         stopPlaying();
-        stopRecording();
+        //TODO make sure recording is done before this method
+        //stopRecording();
         Toast.makeText(this, "Interview done! TODO: Start playing whole sequence.", Toast.LENGTH_SHORT).show();
 
         try {

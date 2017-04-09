@@ -25,12 +25,12 @@
             android:textSize="@dimen/header_size" />
     </LinearLayout>
 
-    <Button
-        android:id="@+id/interview_button_record"
+    <FrameLayout
+        android:id="@+id/interview_btn_answer_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/controller_buttons_vertical_margin"
-        android:text="Record your answer." />
+        android:layout_height="wrap_content">
+
+    </FrameLayout>
 
     <TextView
         android:id="@+id/interview_textview_questionnum"

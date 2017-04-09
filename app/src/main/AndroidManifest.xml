@@ -7,6 +7,9 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
+    <!-- To access Google+ APIs: -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:debuggable="true"
@@ -26,7 +29,8 @@
         <activity
             android:name=".activities.DashboardActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity android:name=".activities.TopicsActivity"
+        <activity
+            android:name=".activities.TopicsActivity"
             android:launchMode="singleTop"
             android:parentActivityName=".activities.DashboardActivity">
             <meta-data
@@ -69,7 +73,6 @@
         <provider
             android:name=".data.provider.AppContentProvider"
             android:authorities="com.aclass.edx.helloworld" />
-
     </application>
 
 </manifest>
