@@ -23,7 +23,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String TAG = DBHelper.class.getSimpleName();
 
     public static final String DATABASE_NAME = "t4.db";
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
 
     private class DBQueries {
 
@@ -71,7 +71,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 InterviewQuestionEntry.FOREIGN_KEY_INTERVIEW_ID + COMMA +
                 InterviewQuestionEntry.FOREIGN_KEY_MEDIA_ID + ");";
 
-        private static final String DROP_TABLE_IF_EXISTS = "DROP TABLE IF EXISTS %s;\n";
+        private static final String DROP_TABLE_IF_EXISTS = "DROP TABLE IF EXISTS %s;";
     }
 
     // Singleton
@@ -120,6 +120,7 @@ public class DBHelper extends SQLiteOpenHelper {
         String[] tableNames = {
                 MediaEntry.TABLE_NAME,
                 ModuleEntry.TABLE_NAME,
+                TopicEntry.TABLE_NAME,
                 ContentEntry.TABLE_NAME,
                 InterviewEntry.TABLE_NAME,
                 InterviewQuestionEntry.TABLE_NAME

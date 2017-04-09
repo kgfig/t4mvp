@@ -32,7 +32,7 @@ import com.aclass.edx.helloworld.data.models.InterviewQuestion;
 import com.aclass.edx.helloworld.utils.PrefUtils;
 import com.aclass.edx.helloworld.views.AudioControllerView;
 
-public class InterviewActivity extends AppCompatActivity implements SurfaceHolder.Callback, AudioControllerView.AudioPlayerControl {
+public class InterviewActivity extends AppCompatActivity implements AudioControllerView.AudioPlayerControl {
 
     private static final String TAG = InterviewActivity.class.getSimpleName();
 
@@ -107,6 +107,7 @@ public class InterviewActivity extends AppCompatActivity implements SurfaceHolde
 
         if (permissionToRecordGranted) {
             initViews();
+            showNextQuestion();
         } else {
             finish();
         }
@@ -147,22 +148,6 @@ public class InterviewActivity extends AppCompatActivity implements SurfaceHolde
             audioPlayer.seekTo(currentPosition);
             audioPlayer.start();
         }
-    }
-
-    @Override
-    public void surfaceCreated(SurfaceHolder holder) {
-        showNextQuestion();
-        Toast.makeText(this, "Show first question", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
-    }
-
-    @Override
-    public void surfaceDestroyed(SurfaceHolder holder) {
-
     }
 
     @Override
@@ -327,6 +312,7 @@ public class InterviewActivity extends AppCompatActivity implements SurfaceHolde
             //audioControllerView.setPlayer(InterviewActivity.this);
             //audioControllerView.setAnchorView(surfaceViewContainer);
             audioPlayer.start();
+            buttonPlay.setEnabled(false);
             //audioControllerView.show();
         }
     };
@@ -363,7 +349,7 @@ public class InterviewActivity extends AppCompatActivity implements SurfaceHolde
                     Log.e(TAG, "unknown playback error");
                     break;
             }
-            return false;
+            return true;
         }
     };
 
@@ -374,6 +360,7 @@ public class InterviewActivity extends AppCompatActivity implements SurfaceHolde
                 Toast.makeText(InterviewActivity.this, "Finished playing question", Toast.LENGTH_SHORT).show();
                 initRecorder();
                 buttonRecord.setEnabled(true);
+                buttonPlay.setEnabled(true);
             } catch (IOException e) {
                 Toast.makeText(InterviewActivity.this, "Failed to initialize recorder", Toast.LENGTH_SHORT).show();
                 Log.e(TAG, "Failed to initialize recorder");
@@ -385,6 +372,11 @@ public class InterviewActivity extends AppCompatActivity implements SurfaceHolde
                             MediaPlayer.OnCompletionListener thisOnCompletionListener) throws IOException {
         Uri audioUri = Uri.parse("android.resource://" + getPackageName() + "/" +
                 getResources().getIdentifier(filename, "raw", getPackageName()));
+        initPlayer(audioUri, display, thisOnPreparedListener, thisOnCompletionListener);
+    }
+
+    private void initPlayer(Uri audioUri, SurfaceHolder display, MediaPlayer.OnPreparedListener thisOnPreparedListener,
+                            MediaPlayer.OnCompletionListener thisOnCompletionListener) throws IOException {
         audioPlayer = new MediaPlayer();
 
         //audioPlayer.setDisplay(display);
@@ -427,6 +419,7 @@ public class InterviewActivity extends AppCompatActivity implements SurfaceHolde
     /**
      * After playing the question for this item, prepare the answer for playback.
      * After playing the answer for this item, prepare the next question for playback if there's any.
+     * TODO refactor this messy method
      */
     private final MediaPlayer.OnCompletionListener playbackOnCompletionListener = new MediaPlayer.OnCompletionListener() {
         @Override
@@ -436,16 +429,19 @@ public class InterviewActivity extends AppCompatActivity implements SurfaceHolde
 
                 if (isPlayingAnswer) {
                     if (interviewController.hasNext()) {
-                        Toast.makeText(InterviewActivity.this, "Play next question!", Toast.LENGTH_LONG).show();
+                        isPlayingAnswer = !isPlayingAnswer;
                         InterviewQuestion question = interviewController.nextQuestion();
-                        prepareAudioForPlayback(question.getMedia().getFilename());
+                        Toast.makeText(InterviewActivity.this, "Play next question!" + question.getMedia().getFilename(), Toast.LENGTH_LONG).show();
+                        initPlayer(question.getMedia().getFilename(), null, playbackOnPreparedListener, playbackOnCompletionListener);
                     } else { // INTERVIEW playback done
                         Toast.makeText(InterviewActivity.this, "Playback done!", Toast.LENGTH_LONG).show();
                         cleanup();
                     }
                 } else {
-                    Toast.makeText(InterviewActivity.this, "Play answer!", Toast.LENGTH_LONG).show();
-                    prepareAudioForPlayback(interviewController.getAnswerFilename());
+                    Toast.makeText(InterviewActivity.this, "Play answer! " + interviewController.getAnswerFilename(), Toast.LENGTH_LONG).show();
+                    isPlayingAnswer = !isPlayingAnswer;
+                    Uri audioUri = Uri.parse(makePathInCacheDir(interviewController.getAnswerFilename()));
+                    initPlayer(audioUri, null, playbackOnPreparedListener, playbackOnCompletionListener);
                 }
             } catch (IOException e) {
                 Log.e(TAG, "Cannot prepare player for INTERVIEW playback");
@@ -454,10 +450,6 @@ public class InterviewActivity extends AppCompatActivity implements SurfaceHolde
         }
     };
 
-    private void prepareAudioForPlayback(String audioFilename) throws IOException {
-        isPlayingAnswer = !isPlayingAnswer;
-        initPlayer(makePathInCacheDir(audioFilename), null, playbackOnPreparedListener, playbackOnCompletionListener);
-    }
 
     private void finishInterview() {
         stopPlaying();
