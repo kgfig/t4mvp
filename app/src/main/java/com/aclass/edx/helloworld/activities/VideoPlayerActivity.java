@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.widget.FrameLayout;
 import android.widget.MediaController;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -65,7 +66,9 @@ public class VideoPlayerActivity extends AppCompatActivity {
 
         mediaController.setAnchorView(videoView);
         mediaController.setMediaPlayer(videoView);
-        textViewTranscript.setText(getString(R.string.large_text));
+        if (textViewTranscript != null) {
+            textViewTranscript.setText(getString(R.string.large_text));
+        }
 
         // Pass arguments to next button fragment
         NextButtonFragment nextButtonFragment = new NextButtonFragment();
